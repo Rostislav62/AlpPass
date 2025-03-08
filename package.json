@@ -25,5 +25,15 @@
   "bugs": {
     "url": "https://github.com/Rostislav62/AlpPass/issues"
   },
-  "homepage": "https://github.com/Rostislav62/AlpPass#readme"
+  "homepage": "https://github.com/Rostislav62/AlpPass#readme",
+  "devDependencies": {
+    "@babel/preset-env": "^7.26.9",
+    "@babel/preset-react": "^7.26.3",
+    "@babel/preset-typescript": "^7.26.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "babel-jest": "^29.7.0",
+    "jest": "^27.5.1"
+  }
 }
