@@ -12,4 +12,3 @@
   "outputDirectory": "build",
   "public": true
 }
-'@ > vercel.json
