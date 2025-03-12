@@ -1,3 +1,5 @@
+cd C:\Users\rsmiglix\Documents\AlpPass
+echo @'
 {
   "version": 2,
   "builds": [
@@ -12,3 +14,4 @@
   "outputDirectory": "build",
   "public": true
 }
+'@ > vercel.json
