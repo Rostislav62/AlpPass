@@ -10,11 +10,5 @@
     }
   ],
   "outputDirectory": "build",
-  "routes": [
-    {
-      "src": "/.*",
-      "dest": "/"
-    }
-  ],
   "public": true
 }
