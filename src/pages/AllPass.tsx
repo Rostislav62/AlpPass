@@ -35,7 +35,7 @@ interface AllPassProps {
 }
 
 // const API_URL = "http://127.0.0.1:8000/api/submitData/list/";
-const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+const API_URL = process.env.REACT_APP_API_URL || "https://rostislav62.pythonanywhere.com"; //"http://127.0.0.1:8000";
 fetch(`${API_URL}/api/submitData/list/`);
 
 const AllPass: React.FC<AllPassProps> = ({ darkMode, toggleTheme }) => {

@@ -18,7 +18,7 @@ interface FormData {
 }
 
 /* Константа с URL API для регистрации */
-const API_URL = "http://127.0.0.1:8000/api/auth/register/";
+const API_URL = "https://rostislav62.pythonanywhere.com/api/auth/register/"; //"http://127.0.0.1:8000/api/auth/register/";
 
 /* Определение компонента UserRegister с использованием пропсов */
 const UserRegister: React.FC<UserRegisterProps> = ({ darkMode, toggleTheme }) => {

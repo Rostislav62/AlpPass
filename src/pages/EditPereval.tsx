@@ -22,7 +22,7 @@ interface Photo {
     title: string;
 }
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "https://rostislav62.pythonanywhere.com"; //"http://127.0.0.1:8000";
 const API_URL = `${BASE_URL}/api/submitData/`;
 const PHOTOS_API_URL = `${BASE_URL}/api/uploadImage/photos/`;
 const MEDIA_URL = `${BASE_URL}/media/`;

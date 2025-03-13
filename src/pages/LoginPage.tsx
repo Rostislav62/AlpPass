@@ -26,7 +26,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ darkMode, toggleTheme }) => {
     }
 
     setIsChecking(true);
-    const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+    const API_URL = process.env.REACT_APP_API_URL || "https://rostislav62.pythonanywhere.com"; //"http://127.0.0.1:8000";
     try {
       const response = await fetch(`${API_URL}/api/auth/users/${email}/`);
       const data = await response.json();

@@ -21,7 +21,7 @@ interface Photo {
 }
 
 // const BASE_URL = "http://127.0.0.1:8000";
-const BASE_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+const BASE_URL = process.env.REACT_APP_API_URL || "https://rostislav62.pythonanywhere.com"; //"http://127.0.0.1:8000";
 const IMAGE_API_URL = `${BASE_URL}/api/uploadImage/`;
 const PHOTOS_API_URL = `${BASE_URL}/api/uploadImage/photos/`;
 const DELETE_API_URL = `${BASE_URL}/api/uploadImage/delete/`;

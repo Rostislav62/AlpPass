@@ -17,7 +17,7 @@ interface ImageData {
 }
 
 /* Константа с URL API для загрузки изображений */
-const IMAGE_API_URL = "http://127.0.0.1:8000/api/uploadImage/";
+const IMAGE_API_URL = "https://rostislav62.pythonanywhere.com/api/uploadImage/"; //"http://127.0.0.1:8000/api/uploadImage/";
 
 /* Определение компонента UploadPhotos как функционального компонента */
 const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) => {
