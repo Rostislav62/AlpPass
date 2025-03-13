@@ -44,7 +44,7 @@ const AllPass: React.FC<AllPassProps> = ({ darkMode, toggleTheme }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(API_URL)
+        fetch(`${API_URL}/api/submitData/list/`)
             .then(response => response.json())
             .then((data: Pereval[]) => {
                 console.log("📥 Полный ответ от /api/submitData/list/:", data);

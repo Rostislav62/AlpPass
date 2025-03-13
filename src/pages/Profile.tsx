@@ -43,7 +43,7 @@ const Profile: React.FC<ProfileProps> = ({ darkMode, toggleTheme }) => {
             return; /* Прерывание выполнения */
         }
 
-        fetch(`${API_URL}${userEmail}/`) /* Выполнение GET-запроса к API с email пользователя */
+        fetch(`${API_URL}/api/auth/users/${userEmail}/`) /* Выполнение GET-запроса к API с email пользователя */
             .then(response => response.json()) /* Преобразование ответа в JSON */
             .then(data => { /* Обработка полученных данных */
                 if (data.email) { /* Проверка наличия email в ответе */
