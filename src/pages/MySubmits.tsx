@@ -71,6 +71,7 @@ const MySubmits: React.FC<MySubmitsProps> = ({ darkMode, toggleTheme }) => {
                     <thead> // Заголовки таблицы
                         <tr>
                             <th className="mysubmits-th">Название</th> // Столбец "Название"
+                            <th className="mysubmits-th">Название</th> // Столбец "Название"
                             <th className="mysubmits-th">Статус</th> // Столбец "Статус"
                             <th className="mysubmits-th">Действия</th> // Столбец "Действия"
                         </tr>
