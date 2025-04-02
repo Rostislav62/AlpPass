@@ -74,14 +74,17 @@ const MySubmits: React.FC<MySubmitsProps> = ({ darkMode, toggleTheme }) => {
                             <th className="mysubmits-th">Название</th> // Столбец "Название"
                             <th className="mysubmits-th">Статус</th> // Столбец "Статус"
                             <th className="mysubmits-th">Действия</th> // Столбец "Действия"
+                            <th className="mysubmits-th">Дата добавления</th> // В <thead>
                         </tr>
                     </thead>
                     <tbody> // Тело таблицы
                         {perevals.map((p) => ( // Перебираем перевалы
                             <tr key={p.id} className="mysubmits-row"> // Строка для каждого перевала
                                 <td className="mysubmits-td">{p.title}</td> // Название перевала
+                                <td className="mysubmits-td">{p.add_time}</td> // В <tbody>
                                 <td className="mysubmits-td">{p.status === 1 ? "new" : "Обработан"}</td> // Статус
                                 <td className="mysubmits-td"> // Действия
+                                <td className="mysubmits-td">{p.add_time}</td> // В <tbody>
                                     {p.status === 1 && ( // Если статус "new"
                                         <Link to={`/edit/${p.id}`} className="edit-link">Редактировать</Link> // Ссылка на редактирование
                                     )}
