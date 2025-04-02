@@ -36,7 +36,7 @@ const MySubmits: React.FC<MySubmitsProps> = ({ darkMode, toggleTheme }) => {
             return; // Прерываем эффект
         }
 
-        const url = `${API_URL}/api/auth/users/${userEmail}/submits/`; // Формируем URL, как в Swagger
+        const url = `${API_URL}/api/auth/users/${userEmail}/submits/?nocache=${new Date().getTime()}`; // Формируем правильный URL с nocache
         console.log("Fetching submits from:", url); // Логируем URL для проверки
 
         fetch(url) // Отправляем GET-запрос
