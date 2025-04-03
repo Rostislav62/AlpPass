@@ -58,33 +58,31 @@ const MySubmits: React.FC<MySubmitsProps> = ({ darkMode, toggleTheme }) => {
                 console.error("Ошибка загрузки перевалов:", error); // Лог ошибки
                 setErrorMessage("Ошибка сети или сервера. Проверьте подключение."); // Сообщение для UI
             });
-    }, [userEmail]); // Зависимость от userEmail
+    }, [userEmail, API_URL]); // Добавили API_URL в зависимости
 
     return ( // JSX для рендеринга
-        <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}> // Контейнер с темой
-            <h1 className="submit-title centered-title">Мои перевалы (обновлено)</h1> // Заголовок с тестом
+        <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}> {/* Контейнер с темой */}
+            <h1 className="submit-title centered-title">Мои перевалы (обновлено)</h1> {/* Заголовок с тестом */}
             {errorMessage && ( // Если есть ошибка
                 <p className="error-message">{errorMessage}</p> // Показываем её
             )}
-            <div className="table-wrapper"> // Обёртка таблицы
-                <table className="mysubmits-table"> // Таблица
-                    <thead> // Заголовки таблицы
+            <div className="table-wrapper"> {/* Обёртка таблицы */}
+                <table className="mysubmits-table"> {/* Таблица */}
+                    <thead> {/* Заголовки таблицы */}
                         <tr>
-                            <th className="mysubmits-th">Название</th> // Столбец "Название"
-                            <th className="mysubmits-th">Название</th> // Столбец "Название
-                            <th className="mysubmits-th">Статус</th> // Столбец "Статус"
-                            <th className="mysubmits-th">Дата добавления</th> // Новый столбец "Дата добавления"
-                            <th className="mysubmits-th">Действия</th> // Столбец "Действия"
+                            <th className="mysubmits-th">Название</th> {/* Столбец "Название" */}
+                            <th className="mysubmits-th">Статус</th> {/* Столбец "Статус" */}
+                            <th className="mysubmits-th">Дата добавления</th> {/* Новый столбец "Дата добавления" */}
+                            <th className="mysubmits-th">Действия</th> {/* Столбец "Действия" */}
                         </tr>
-                    </thead> // Закрывающий тег для заголовков
-                    <tbody> // Тело таблицы
+                    </thead> {/* Закрывающий тег для заголовков */}
+                    <tbody> {/* Тело таблицы */}
                         {perevals.map((p) => ( // Перебираем перевалы
-                            <tr key={p.id} className="mysubmits-row"> // Строка для каждого перевала
-                                <td className="mysubmits-td">{p.title}</td> // Название перевала
-                                <td className="mysubmits-td">{p.title}</td> // Название перевала
-                                <td className="mysubmits-td">{p.status === 1 ? "new" : "Обработан"}</td> // Статус
-                                <td className="mysubmits-td">{p.add_time}</td> // Дата добавления
-                                <td className="mysubmits-td"> // Действия
+                            <tr key={p.id} className="mysubmits-row"> {/* Строка для каждого перевала */}
+                                <td className="mysubmits-td">{p.title}</td> {/* Название перевала */}
+                                <td className="mysubmits-td">{p.status === 1 ? "new" : "Обработан"}</td> {/* Статус */}
+                                <td className="mysubmits-td">{p.add_time}</td> {/* Дата добавления */}
+                                <td className="mysubmits-td"> {/* Действия */}
                                     {p.status === 1 && ( // Если статус "new"
                                         <Link to={`/edit/${p.id}`} className="edit-link">Редактировать</Link> // Ссылка на редактирование
                                     )}
@@ -94,8 +92,8 @@ const MySubmits: React.FC<MySubmitsProps> = ({ darkMode, toggleTheme }) => {
                     </tbody>
                 </table>
             </div>
-            <button onClick={toggleTheme} className="theme-btn centered-btn"> // Кнопка смены темы
-                {darkMode ? "Светлая тема" : "Тёмная тема"} // Текст кнопки
+            <button onClick={toggleTheme} className="theme-btn centered-btn"> {/* Кнопка смены темы */}
+                {darkMode ? "Светлая тема" : "Тёмная тема"} {/* Текст кнопки */}
             </button>
         </div>
     );
