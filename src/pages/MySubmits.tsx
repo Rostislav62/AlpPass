@@ -8,7 +8,7 @@ interface MySubmitsProps {
     toggleTheme: () => void; // Пропс для переключения темы
 }
 
-// Интерфейс данных перевала (основан на твоём JSON)
+// Интерфейс данных перевала
 interface Pereval {
     id: number; // ID перевала
     beautyTitle: string; // Красивое название перевала
@@ -62,7 +62,7 @@ const MySubmits: React.FC<MySubmitsProps> = ({ darkMode, toggleTheme }) => {
 
     return ( // JSX для рендеринга
         <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}> // Контейнер с темой
-            <h1 className="submit-title centered-title">Мои перевалы</h1> // Заголовок
+            <h1 className="submit-title centered-title">Мои перевалы (обновлено)</h1> // Заголовок с тестом
             {errorMessage && ( // Если есть ошибка
                 <p className="error-message">{errorMessage}</p> // Показываем её
             )}
@@ -71,20 +71,18 @@ const MySubmits: React.FC<MySubmitsProps> = ({ darkMode, toggleTheme }) => {
                     <thead> // Заголовки таблицы
                         <tr>
                             <th className="mysubmits-th">Название</th> // Столбец "Название"
-                            <th className="mysubmits-th">Название</th> // Столбец "Название"
                             <th className="mysubmits-th">Статус</th> // Столбец "Статус"
+                            <th className="mysubmits-th">Дата добавления</th> // Новый столбец "Дата добавления"
                             <th className="mysubmits-th">Действия</th> // Столбец "Действия"
-                            <th className="mysubmits-th">Дата добавления</th> // В <thead>
                         </tr>
-                    </thead>
+                    </thead> // Закрывающий тег для заголовков
                     <tbody> // Тело таблицы
                         {perevals.map((p) => ( // Перебираем перевалы
                             <tr key={p.id} className="mysubmits-row"> // Строка для каждого перевала
                                 <td className="mysubmits-td">{p.title}</td> // Название перевала
-                                <td className="mysubmits-td">{p.add_time}</td> // В <tbody>
                                 <td className="mysubmits-td">{p.status === 1 ? "new" : "Обработан"}</td> // Статус
+                                <td className="mysubmits-td">{p.add_time}</td> // Дата добавления
                                 <td className="mysubmits-td"> // Действия
-                                <td className="mysubmits-td">{p.add_time}</td> // В <tbody>
                                     {p.status === 1 && ( // Если статус "new"
                                         <Link to={`/edit/${p.id}`} className="edit-link">Редактировать</Link> // Ссылка на редактирование
                                     )}
