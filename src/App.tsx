@@ -33,11 +33,21 @@ function App() {
     const [userName, setUserName] = useState(localStorage.getItem("user_name") || "Гость"); // Состояние для имени
     const [userEmail, setUserEmail] = useState(localStorage.getItem("user_email") || "Нет email"); // Состояние для email
 
-    useEffect(() => { // Хук для инициализации темы
+    useEffect(() => { // Хук для инициализации и очистки
         const savedTheme = localStorage.getItem("theme"); // Читаем сохранённую тему
         if (savedTheme === "dark") { // Если тёмная
             setDarkMode(true); // Устанавливаем тёмную тему
         }
+
+        // Функция очистки localStorage при закрытии страницы
+        const handleBeforeUnload = () => {
+            localStorage.clear(); // Очищаем весь localStorage
+            setUserName("Гость"); // Сбрасываем имя
+            setUserEmail("Нет email"); // Сбрасываем email
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload); // Добавляем слушатель на закрытие страницы
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload); // Убираем слушатель при размонтировании
     }, []); // Пустой массив — эффект только при монтировании
 
     const toggleTheme = () => { // Функция переключения темы
@@ -46,9 +56,9 @@ function App() {
         localStorage.setItem("theme", newTheme); // Сохраняем в localStorage
     };
 
-    const handleLogin = (email: string, name: string) => { // Новая функция для обновления пользователя
-        setUserEmail(email); // Обновляем email в состоянии
-        setUserName(name); // Обновляем имя в состоянии
+    const handleLogin = (email: string, name: string) => { // Функция обновления пользователя после логина
+        setUserEmail(email); // Обновляем email
+        setUserName(name); // Обновляем имя
     };
 
     return ( // JSX структура приложения
