@@ -989,3 +989,88 @@ body {
   max-width: 90%;
   max-height: 90%;
 }
+
+/* Центрирование элементов в EditPhotos */
+.upload-photos-container {
+    text-align: center; /* Центрируем текст внутри контейнера */
+    padding: 20px; /* Добавляем отступы */
+}
+
+.upload-photos-title {
+    text-align: center; /* Центрируем заголовок */
+    margin-bottom: 20px; /* Отступ снизу */
+}
+
+.submit-section {
+    margin: 20px auto; /* Центрируем секцию */
+    max-width: 800px; /* Ограничиваем ширину */
+}
+
+.current-photos-list, .image-list {
+    display: flex; /* Используем flex для выравнивания */
+    flex-wrap: wrap; /* Перенос элементов на новую строку */
+    justify-content: center; /* Центрируем элементы по горизонтали */
+    gap: 20px; /* Расстояние между элементами */
+}
+
+.photo-item, .image-item {
+    display: flex; /* Используем flex для внутренней структуры */
+    flex-direction: column; /* Вертикальное расположение */
+    align-items: center; /* Центрируем содержимое */
+    width: 200px; /* Фиксированная ширина элемента */
+}
+
+.form-group {
+    margin: 10px 0; /* Отступы сверху и снизу */
+    text-align: center; /* Центрируем текст внутри формы */
+}
+
+.form-group label {
+    display: block; /* Подпись на новой строке */
+    margin-bottom: 5px; /* Отступ снизу */
+}
+
+.upload-photos-input {
+    width: 100%; /* Полная ширина поля ввода */
+    max-width: 180px; /* Ограничение ширины */
+    margin: 0 auto; /* Центрируем поле */
+}
+
+.image-actions {
+    display: flex; /* Кнопки в ряд */
+    justify-content: center; /* Центрируем кнопки */
+    gap: 10px; /* Расстояние между кнопками */
+    margin-top: 10px; /* Отступ сверху */
+}
+
+.upload-btn, .delete-btn {
+    padding: 5px 10px; /* Отступы внутри кнопок */
+}
+
+/* Уменьшение размера превью изображений */
+.photo-preview, .image-preview {
+    max-width: 180px; /* Ограничение ширины превью */
+    max-height: 180px; /* Ограничение высоты превью */
+    object-fit: cover; /* Сохранение пропорций с обрезкой */
+    cursor: pointer; /* Курсор указателя при наведении */
+}
+
+/* Стили для модального окна */
+.modal {
+    position: fixed; /* Фиксированное положение */
+    top: 0;
+    left: 0;
+    width: 100%; /* Полная ширина */
+    height: 100%; /* Полная высота */
+    background: rgba(0, 0, 0, 0.8); /* Полупрозрачный фон */
+    display: flex; /* Центрирование содержимого */
+    justify-content: center; /* По горизонтали */
+    align-items: center; /* По вертикали */
+    z-index: 1000; /* Поверх всего */
+}
+
+.modal-image {
+    max-width: 90%; /* Ограничение ширины в модальном окне */
+    max-height: 90vh; /* Ограничение высоты относительно экрана */
+    object-fit: contain; /* Сохранение пропорций без обрезки */
+}
