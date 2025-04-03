@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"; // Импорт React и хуков
-import { BrowserRouter as Router, Route, Routes, Link, useLocation, Navigate } from "react-router-dom"; // Импорт маршрутизации и Navigate
+import { BrowserRouter as Router, Route, Routes, Link, useLocation, Navigate } from "react-router-dom"; // Импорт маршрутизации
 import MySubmits from "./pages/MySubmits"; // Импорт MySubmits
 import AllPass from "./pages/AllPass"; // Импорт AllPass
 import Submit from "./pages/Submit"; // Импорт Submit
@@ -38,21 +38,17 @@ function App() {
         if (savedTheme === "dark") { // Если тёмная
             setDarkMode(true); // Устанавливаем тёмную тему
         }
-
-        // Слушаем изменения localStorage
-        const handleStorageChange = () => {
-            setUserName(localStorage.getItem("user_name") || "Гость"); // Обновляем имя
-            setUserEmail(localStorage.getItem("user_email") || "Нет email"); // Обновляем email
-        };
-
-        window.addEventListener("storage", handleStorageChange); // Добавляем слушатель изменений localStorage
-        return () => window.removeEventListener("storage", handleStorageChange); // Убираем слушатель при размонтировании
     }, []); // Пустой массив — эффект только при монтировании
 
     const toggleTheme = () => { // Функция переключения темы
         const newTheme = darkMode ? "light" : "dark"; // Новая тема
         setDarkMode(!darkMode); // Переключаем состояние
         localStorage.setItem("theme", newTheme); // Сохраняем в localStorage
+    };
+
+    const handleLogin = (email: string, name: string) => { // Новая функция для обновления пользователя
+        setUserEmail(email); // Обновляем email в состоянии
+        setUserName(name); // Обновляем имя в состоянии
     };
 
     return ( // JSX структура приложения
@@ -67,7 +63,7 @@ function App() {
                 </header>
                 <Routes> {/* Маршруты */}
                     <Route path="/" element={<HomePage darkMode={darkMode} toggleTheme={toggleTheme} />} />
-                    <Route path="/login" element={<LoginPage darkMode={darkMode} toggleTheme={toggleTheme} />} />
+                    <Route path="/login" element={<LoginPage darkMode={darkMode} toggleTheme={toggleTheme} onLogin={handleLogin} />} />
                     <Route path="/register" element={<UserRegister darkMode={darkMode} toggleTheme={toggleTheme} />} />
                     <Route path="/menu" element={<MenuPage darkMode={darkMode} toggleTheme={toggleTheme} />} />
                     <Route path="/my-submits" element={userEmail !== "Нет email" ? <MySubmits darkMode={darkMode} toggleTheme={toggleTheme} /> : <Navigate to="/" />} />
