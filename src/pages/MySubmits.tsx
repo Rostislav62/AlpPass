@@ -71,6 +71,7 @@ const MySubmits: React.FC<MySubmitsProps> = ({ darkMode, toggleTheme }) => {
                     <thead> // Заголовки таблицы
                         <tr>
                             <th className="mysubmits-th">Название</th> // Столбец "Название"
+                            <th className="mysubmits-th">Название</th> // Столбец "Название
                             <th className="mysubmits-th">Статус</th> // Столбец "Статус"
                             <th className="mysubmits-th">Дата добавления</th> // Новый столбец "Дата добавления"
                             <th className="mysubmits-th">Действия</th> // Столбец "Действия"
@@ -79,6 +80,7 @@ const MySubmits: React.FC<MySubmitsProps> = ({ darkMode, toggleTheme }) => {
                     <tbody> // Тело таблицы
                         {perevals.map((p) => ( // Перебираем перевалы
                             <tr key={p.id} className="mysubmits-row"> // Строка для каждого перевала
+                                <td className="mysubmits-td">{p.title}</td> // Название перевала
                                 <td className="mysubmits-td">{p.title}</td> // Название перевала
                                 <td className="mysubmits-td">{p.status === 1 ? "new" : "Обработан"}</td> // Статус
                                 <td className="mysubmits-td">{p.add_time}</td> // Дата добавления
