@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"; // Импорт React и хуков для эффектов и состояния
+import "../index.css";
 
 // Интерфейс пропсов для компонента Profile
 interface ProfileProps {
