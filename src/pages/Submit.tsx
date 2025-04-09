@@ -1,3 +1,6 @@
+// AlpPass/src/pages/Submit.tsx
+// Создаёт новый перевал.
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
@@ -110,6 +113,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000"; // Перенесли сюда
     try {
       console.log("📤 Отправка данных перевала на сервер:", formData);
+      console.log("Отправляемые данные:", JSON.stringify(formData, null, 2));
       const perevalResponse = await fetch(`${API_URL}/api/submitData/`, {
         method: "POST",
         headers: {
