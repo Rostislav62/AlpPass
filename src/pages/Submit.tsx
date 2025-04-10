@@ -79,13 +79,20 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
   // Базовый URL API, берётся из переменной окружения или по умолчанию
   const API_URL = process.env.REACT_APP_API_URL || "https://rostislav62.pythonanywhere.com";
 
+
   // Эффект для загрузки сезонов и сложностей при монтировании компонента
   useEffect(() => {
     // Асинхронная функция для получения сезонов
     const fetchSeasons = async () => {
       try {
+        console.log("Запрос сезонов: начало"); // Логируем начало запроса
         const response = await fetch(`${API_URL}/api/seasons/`); // Запрос к API сезонов
+        console.log("Запрос сезонов: статус", response.status); // Логируем статус ответа
+        if (!response.ok) {
+          throw new Error(`Ошибка запроса сезонов: ${response.status}`);
+        }
         const data = await response.json(); // Парсим ответ в JSON
+        console.log("Полученные сезоны:", data); // Логируем полученные данные
         setSeasons(data); // Устанавливаем сезоны в состояние
       } catch (error) {
         console.error("Ошибка загрузки сезонов:", error); // Логируем ошибку
@@ -95,8 +102,14 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     // Асинхронная функция для получения категорий сложности
     const fetchDifficulties = async () => {
       try {
+        console.log("Запрос сложностей: начало"); // Логируем начало запроса
         const response = await fetch(`${API_URL}/api/difficulty-levels/`); // Запрос к API сложностей
+        console.log("Запрос сложностей: статус", response.status); // Логируем статус ответа
+        if (!response.ok) {
+          throw new Error(`Ошибка запроса сложностей: ${response.status}`);
+        }
         const data = await response.json(); // Парсим ответ в JSON
+        console.log("Полученные сложности:", data); // Логируем полученные данные
         setDifficulties(data); // Устанавливаем категории в состояние
       } catch (error) {
         console.error("Ошибка загрузки сложностей:", error); // Логируем ошибку
@@ -106,6 +119,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     fetchSeasons(); // Вызываем загрузку сезонов
     fetchDifficulties(); // Вызываем загрузку сложностей
   }, [API_URL]); // Добавляем API_URL в зависимости, чтобы убрать предупреждение ESLint
+
 
   // Обработчик изменения значений в полях формы
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
