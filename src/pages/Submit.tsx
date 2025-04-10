@@ -105,7 +105,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
 
     fetchSeasons(); // Вызываем загрузку сезонов
     fetchDifficulties(); // Вызываем загрузку сложностей
-  }, []); // Пустой массив зависимостей — выполняется один раз при монтировании
+  }, [API_URL]); // Добавляем API_URL в зависимости, чтобы убрать предупреждение ESLint
 
   // Обработчик изменения значений в полях формы
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
