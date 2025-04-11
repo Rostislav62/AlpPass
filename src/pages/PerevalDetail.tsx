@@ -67,53 +67,95 @@ const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) 
   }, [id, API_URL]); // Добавляем API_URL в зависимости
 
   if (loading) {
-    return <div className={`loading ${darkMode ? "dark-mode" : "light-mode"}`}>Загрузка...</div>;
+    return <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>Загрузка...</div>;
   }
 
   if (error) {
-    return <div className={`error ${darkMode ? "dark-mode" : "light-mode"}`}>{error}</div>;
+    return <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>{error}</div>;
   }
 
   if (!pereval) {
-    return <div className={`error ${darkMode ? "dark-mode" : "light-mode"}`}>Перевал не найден</div>;
+    return <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>Перевал не найден</div>;
   }
 
   return (
-    <div className={`pereval-detail-container ${darkMode ? "dark-mode" : "light-mode"}`}>
-      <h1 className="pereval-detail-title">{pereval.title}</h1>
-      <button onClick={() => navigate("/submit")} className="back-btn">Назад</button>
+    <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>
+      <h1 className="submit-title">{pereval.title}</h1>
+      <button onClick={() => navigate("/submit")} className="theme-btn">Назад</button>
 
-      <fieldset className="pereval-section">
+      <fieldset className="submit-section">
         <legend>Данные перевала</legend>
-        <p><strong>Название массива:</strong> {pereval.beautyTitle}</p>
-        <p><strong>Официальное название:</strong> {pereval.title}</p>
-        <p><strong>Местное название:</strong> {pereval.other_titles || "Не указано"}</p>
-        <p><strong>Связь:</strong> {pereval.connect ? "Да" : "Нет"}</p>
-        <p><strong>Дата добавления:</strong> {new Date(pereval.add_time).toLocaleString()}</p>
-        <p><strong>Описание маршрута:</strong> {pereval.route_description || "Не указано"}</p>
+        <div className="form-group">
+          <label>Название массива:</label>
+          <p>{pereval.beautyTitle}</p>
+        </div>
+        <div className="form-group">
+          <label>Официальное название:</label>
+          <p>{pereval.title}</p>
+        </div>
+        <div className="form-group">
+          <label>Местное название:</label>
+          <p>{pereval.other_titles || "Не указано"}</p>
+        </div>
+        <div className="form-group">
+          <label>Связь:</label>
+          <p>{pereval.connect ? "Да" : "Нет"}</p>
+        </div>
+        <div className="form-group">
+          <label>Дата добавления:</label>
+          <p>{new Date(pereval.add_time).toLocaleString()}</p>
+        </div>
+        <div className="form-group">
+          <label>Описание маршрута:</label>
+          <p>{pereval.route_description || "Не указано"}</p>
+        </div>
       </fieldset>
 
-      <fieldset className="pereval-section">
+      <fieldset className="submit-section">
         <legend>Пользователь</legend>
-        <p><strong>Фамилия:</strong> {pereval.user.family_name}</p>
-        <p><strong>Имя:</strong> {pereval.user.first_name}</p>
-        <p><strong>Отчество:</strong> {pereval.user.father_name || "Не указано"}</p>
-        <p><strong>Телефон:</strong> {pereval.user.phone}</p>
-        <p><strong>Email:</strong> {pereval.user.email}</p>
+        <div className="form-group">
+          <label>Фамилия:</label>
+          <p>{pereval.user.family_name}</p>
+        </div>
+        <div className="form-group">
+          <label>Имя:</label>
+          <p>{pereval.user.first_name}</p>
+        </div>
+        <div className="form-group">
+          <label>Отчество:</label>
+          <p>{pereval.user.father_name || "Не указано"}</p>
+        </div>
+        <div className="form-group">
+          <label>Телефон:</label>
+          <p>{pereval.user.phone}</p>
+        </div>
+        <div className="form-group">
+          <label>Email:</label>
+          <p>{pereval.user.email}</p>
+        </div>
       </fieldset>
 
-      <fieldset className="pereval-section">
+      <fieldset className="submit-section">
         <legend>Координаты</legend>
-        <p><strong>Широта:</strong> {pereval.coord.latitude}</p>
-        <p><strong>Долгота:</strong> {pereval.coord.longitude}</p>
-        <p><strong>Высота:</strong> {pereval.coord.height} м</p>
+        <div className="form-group">
+          <label>Широта:</label>
+          <p>{pereval.coord.latitude}</p>
+        </div>
+        <div className="form-group">
+          <label>Долгота:</label>
+          <p>{pereval.coord.longitude}</p>
+        </div>
+        <div className="form-group">
+          <label>Высота:</label>
+          <p>{pereval.coord.height} м</p>
+        </div>
       </fieldset>
 
-      <fieldset className="pereval-section">
+      <fieldset className="submit-section">
         <legend>Сложности</legend>
         {pereval.difficulties.length > 0 ? (
           pereval.difficulties.map((diff, index) => (
-            <div key={index}>
+            <div key={index} className="form-group">
               <p><strong>Сезон:</strong> {diff.season.name} ({diff.season.code})</p>
               <p><strong>Сложность:</strong> {diff.difficulty.code} - {diff.difficulty.description}</p>
               <p><strong>Характеристики:</strong> {diff.difficulty.characteristics}</p>
@@ -125,18 +167,20 @@ const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) 
         )}
       </fieldset>
 
-      <fieldset className="pereval-section">
+      <fieldset className="submit-section">
         <legend>Изображения</legend>
-        {pereval.images.length > 0 ? (
-          pereval.images.map((img) => (
-            <div key={img.id} className="image-item">
-              <img src={img.data} alt={img.title} className="pereval-image" />
-              <p>{img.title}</p>
-            </div>
-          ))
-        ) : (
-          <p>Изображения отсутствуют</p>
-        )}
+        <div className="photos-list">
+          {pereval.images.length > 0 ? (
+            pereval.images.map((img) => (
+              <div key={img.id} className="photo-item">
+                <img src={img.data} alt={img.title} className="photo-preview" />
+                <p>{img.title}</p>
+              </div>
+            ))
+          ) : (
+            <p>Изображения отсутствуют</p>
+          )}
+        </div>
       </fieldset>
 
       <button onClick={toggleTheme} className="theme-btn">
