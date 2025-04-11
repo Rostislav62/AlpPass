@@ -1,6 +1,6 @@
 // AlpPass/src/pages/PerevalDetail.tsx
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "../index.css";
 
 interface PerevalDetailProps {
@@ -40,7 +40,6 @@ interface PerevalData {
 
 const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [pereval, setPereval] = useState<PerevalData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -95,7 +94,7 @@ const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) 
     <div className={`pereval-container ${darkMode ? "dark-mode" : "light-mode"}`}>
       <div className="pereval-header">
         <span className="pereval-title">
-          Пер. {pereval.title} &nbsp;&nbsp; {pereval.difficulties[0]?.difficulty.code} &nbsp;&nbsp; {pereval.coord.height}м
+          Пер. {pereval.title} &nbsp;&nbsp;&nbsp; {pereval.difficulties[0]?.difficulty.code} &nbsp;&nbsp;&nbsp; {pereval.coord.height}м
         </span>
         <span className="pereval-dropdown">▼</span>
       </div>
