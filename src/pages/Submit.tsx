@@ -126,7 +126,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
   // Обработчик изменения значений в полях формы
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target; // Извлекаем имя и значение поля
-    console.log(`Изменение поля ${name}: значение ${value}`); // Логируем изменение для отладки
+    console.log(`Изменение поля ${name}: сырое значение "${value}"`); // Логируем сырое значение
 
     if (["latitude", "longitude", "height"].includes(name)) {
       // Если поле относится к координатам, обновляем coord
@@ -136,12 +136,20 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
       }));
     } else if (["season", "difficulty"].includes(name)) {
       // Если поле относится к сложности, обновляем difficulties
-      const newValue = value ? parseInt(value) : 0; // Преобразуем в число, если пусто — 0
+      const newValue = parseInt(value, 10); // Преобразуем в число с явным основанием 10
+      if (isNaN(newValue)) {
+        console.error(`Ошибка: ${name} получил невалидное значение "${value}"`); // Логируем ошибку
+        return; // Прерываем, если значение не число
+      }
       console.log(`Новое значение для ${name}: ${newValue}`); // Логируем новое значение
-      setFormData((prev) => ({
-        ...prev,
-        difficulties: [{ ...prev.difficulties[0], [name]: newValue }],
-      }));
+      setFormData((prev) => {
+        const updatedDifficulties = [{ ...prev.difficulties[0], [name]: newValue }];
+        console.log("Обновлённые difficulties:", updatedDifficulties); // Логируем обновлённое состояние
+        return {
+          ...prev,
+          difficulties: updatedDifficulties,
+        };
+      });
       // Если выбрана сложность, обновляем selectedDifficulty
       if (name === "difficulty" && newValue !== 0) {
         const selected = difficulties.find((diff) => diff.id === newValue) || null;
@@ -203,6 +211,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
       formData.difficulties[0].difficulty === 0 // Проверяем, выбрана ли сложность
     ) {
       setErrorMessage("❌ Все обязательные поля должны быть заполнены!"); // Сообщение об ошибке
+      console.log("Текущее состояние formData:", formData); // Логируем текущее состояние для отладки
       return;
     }
 
@@ -350,7 +359,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
               className="submit-input"
               required
             > {/* Выпадающий список сезонов */}
-              <option value="0">Выберите сезон</option> {/* Плейсхолдер */}
+              <option value={0}>Выберите сезон</option> {/* Плейсхолдер с числом */}
               {seasons.map((season) => (
                 <option key={season.id} value={season.id}>
                   {season.name} ({season.code})
@@ -368,7 +377,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
               className="submit-input"
               required
             > {/* Выпадающий список категорий */}
-              <option value="0">Выберите сложность</option> {/* Плейсхолдер */}
+              <option value={0}>Выберите сложность</option> {/* Плейсхолдер с числом */}
               {difficulties.map((diff) => (
                 <option key={diff.id} value={diff.id}>
                   {diff.code} - {diff.description}
