@@ -45,83 +45,71 @@ interface Difficulty {
 
 // Основной компонент Submit для добавления нового перевала
 const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
-  // Инициализируем хук для навигации
   const navigate = useNavigate();
 
-  // Состояние для данных формы
   const [formData, setFormData] = useState<FormData>({
-    beautyTitle: "", // Начальное значение для названия массива
-    title: "", // Начальное значение для официального названия
-    other_titles: "", // Начальное значение для местного названия
-    connect: true, // По умолчанию перевал считается "на связи"
+    beautyTitle: "",
+    title: "",
+    other_titles: "",
+    connect: true,
     user: {
-      email: localStorage.getItem("user_email") || "", // Email из localStorage или пустая строка
-      family_name: localStorage.getItem("user_family_name") || "", // Фамилия из localStorage
-      first_name: localStorage.getItem("user_first_name") || "", // Имя из localStorage
-      phone: localStorage.getItem("user_phone") || "", // Телефон из localStorage
+      email: localStorage.getItem("user_email") || "",
+      family_name: localStorage.getItem("user_family_name") || "",
+      first_name: localStorage.getItem("user_first_name") || "",
+      phone: localStorage.getItem("user_phone") || "",
     },
-    coord: { latitude: "", longitude: "", height: "" }, // Начальные пустые координаты
-    status: 1, // Статус по умолчанию "new"
-    difficulties: [{ season: 0, difficulty: 0 }], // Начальные значения 0 для сезона и сложности
-    route_description: "", // Начальное значение описания маршрута
-    images: [], // Пустой массив для изображений
+    coord: { latitude: "", longitude: "", height: "" },
+    status: 1,
+    difficulties: [{ season: 0, difficulty: 0 }],
+    route_description: "",
+    images: [],
   });
 
-  // Состояние для статуса отправки формы (например, "Сохранение...")
   const [submitStatus, setSubmitStatus] = useState<string | null>(null);
-  // Состояние для сообщения об ошибке
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  // Состояние для индикации загрузки GPS
   const [loadingGPS, setLoadingGPS] = useState(false);
-  // Состояние для списка сезонов из базы
   const [seasons, setSeasons] = useState<Season[]>([]);
-  // Состояние для списка категорий сложности из базы
   const [difficulties, setDifficulties] = useState<Difficulty[]>([]);
-  // Состояние для хранения выбранной сложности (для отображения деталей)
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
 
-  // Базовый URL API, берётся из переменной окружения или по умолчанию
   const API_URL = process.env.REACT_APP_API_URL || "https://rostislav62.pythonanywhere.com";
 
-  // Эффект для загрузки сезонов и сложностей при монтировании компонента
   useEffect(() => {
-    // Асинхронная функция для получения сезонов
     const fetchSeasons = async () => {
       try {
-        console.log("Запрос сезонов: начало"); // Логируем начало запроса
-        const response = await fetch(`${API_URL}/api/seasons/`); // Запрос к API сезонов
-        console.log("Запрос сезонов: статус", response.status); // Логируем статус ответа
+        console.log("Запрос сезонов: начало");
+        const response = await fetch(`${API_URL}/api/seasons/`);
+        console.log("Запрос сезонов: статус", response.status);
         if (!response.ok) {
           throw new Error(`Ошибка запроса сезонов: ${response.status}`);
         }
-        const data = await response.json(); // Парсим ответ в JSON
-        console.log("Полученные сезоны:", data); // Логируем полученные данные
-        setSeasons(data); // Устанавливаем сезоны в состояние
+        const data = await response.json();
+        console.log("Полученные сезоны:", data);
+        setSeasons(data);
       } catch (error) {
-        console.error("Ошибка загрузки сезонов:", error); // Логируем ошибку
+        console.error("Ошибка загрузки сезонов:", error);
       }
     };
 
-    // Асинхронная функция для получения категорий сложности
     const fetchDifficulties = async () => {
       try {
-        console.log("Запрос сложностей: начало"); // Логируем начало запроса
-        const response = await fetch(`${API_URL}/api/difficulty-levels/`); // Запрос к API сложностей
-        console.log("Запрос сложностей: статус", response.status); // Логируем статус ответа
+        console.log("Запрос сложностей: начало");
+        const response = await fetch(`${API_URL}/api/difficulty-levels/`);
+        console.log("Запрос сложностей: статус", response.status);
         if (!response.ok) {
           throw new Error(`Ошибка запроса сложностей: ${response.status}`);
         }
-        const data = await response.json(); // Парсим ответ в JSON
-        console.log("Полученные сложности:", data); // Логируем полученные данные
-        setDifficulties(data); // Устанавливаем категории в состояние
+        const data = await response.json();
+        console.log("Полученные сложности:", data);
+        setDifficulties(data);
       } catch (error) {
-        console.error("Ошибка загрузки сложностей:", error); // Логируем ошибку
+        console.error("Ошибка загрузки сложностей:", error);
       }
     };
 
-    fetchSeasons(); // Вызываем загрузку сезонов
-    fetchDifficulties(); // Вызываем загрузку сложностей
-  }, [API_URL]); // Добавляем API_URL в зависимости, чтобы убрать предупреждение ESLint
+    fetchSeasons();
+    fetchDifficulties();
+  }, [API_URL]);
 
   // Обработчик изменения значений в полях формы
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -136,7 +124,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
       }));
     } else if (["season", "difficulty"].includes(name)) {
       // Если поле относится к сложности, обновляем difficulties
-      const newValue = parseInt(value, 10); // Преобразуем в число с явным основанием 10
+      const newValue = parseInt(value, 10); // Преобразуем в число
       if (isNaN(newValue)) {
         console.error(`Ошибка: ${name} получил невалидное значение "${value}"`); // Логируем ошибку
         return; // Прерываем, если значение не число
@@ -361,7 +349,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
             > {/* Выпадающий список сезонов */}
               <option value={0}>Выберите сезон</option> {/* Плейсхолдер с числом */}
               {seasons.map((season) => (
-                <option key={season.id} value={season.id}>
+                <option key={season.id} value={season.id.toString()}>
                   {season.name} ({season.code})
                 </option>
               ))}
@@ -379,7 +367,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
             > {/* Выпадающий список категорий */}
               <option value={0}>Выберите сложность</option> {/* Плейсхолдер с числом */}
               {difficulties.map((diff) => (
-                <option key={diff.id} value={diff.id}>
+                <option key={diff.id} value={diff.id.toString()}>
                   {diff.code} - {diff.description}
                 </option>
               ))}
