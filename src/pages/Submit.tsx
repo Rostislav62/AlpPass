@@ -69,8 +69,8 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
   const [submitStatus, setSubmitStatus] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loadingGPS, setLoadingGPS] = useState(false);
-  const [seasons, setSeasons] = useState<Season[]>([]); // Пустой массив как начальное значение
-  const [difficulties, setDifficulties] = useState<Difficulty[]>([]); // Пустой массив как начальное значение
+  const [seasons, setSeasons] = useState<Season[]>([]);
+  const [difficulties, setDifficulties] = useState<Difficulty[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
 
   const API_URL = process.env.REACT_APP_API_URL || "https://rostislav62.pythonanywhere.com";
@@ -112,72 +112,80 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     fetchDifficulties();
   }, [API_URL]);
 
+  // Обработчик изменения значений в полях формы
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    console.log(`Изменение поля ${name}: сырое значение "${value}"`);
+    const { name, value } = e.target; // Извлекаем имя и значение поля
+    console.log(`Изменение поля ${name}: сырое значение "${value}"`); // Логируем сырое значение
 
     if (["latitude", "longitude", "height"].includes(name)) {
+      // Если поле относится к координатам, обновляем coord
       setFormData((prev) => ({
         ...prev,
         coord: { ...prev.coord, [name]: value },
       }));
     } else if (["season", "difficulty"].includes(name)) {
-      const newValue = parseInt(value, 10);
+      // Если поле относится к сложности, обновляем difficulties
+      const newValue = parseInt(value, 10); // Преобразуем в число
       if (isNaN(newValue)) {
-        console.error(`Ошибка: ${name} получил невалидное значение "${value}"`);
-        return;
+        console.error(`Ошибка: ${name} получил невалидное значение "${value}"`); // Логируем ошибку
+        return; // Прерываем, если значение не число
       }
-      console.log(`Новое значение для ${name}: ${newValue}`);
+      console.log(`Новое значение для ${name}: ${newValue}`); // Логируем новое значение
       setFormData((prev) => {
         const updatedDifficulties = [{ ...prev.difficulties[0], [name]: newValue }];
-        console.log("Обновлённые difficulties:", updatedDifficulties);
+        console.log("Обновлённые difficulties:", updatedDifficulties); // Логируем обновлённое состояние
         return {
           ...prev,
           difficulties: updatedDifficulties,
         };
       });
+      // Если выбрана сложность, обновляем selectedDifficulty
       if (name === "difficulty" && newValue !== 0) {
         const selected = difficulties.find((diff) => diff.id === newValue) || null;
-        console.log("Выбрана сложность:", selected);
+        console.log("Выбрана сложность:", selected); // Логируем выбранную сложность
         setSelectedDifficulty(selected);
       }
     } else {
+      // Для остальных полей обновляем напрямую
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
+  // Обработчик получения координат через GPS
   const handleGetGPS = () => {
-    if ("geolocation" in navigator) {
-      setLoadingGPS(true);
-      setErrorMessage(null);
+    if ("geolocation" in navigator) { // Проверяем поддержку геолокации в браузере
+      setLoadingGPS(true); // Устанавливаем флаг загрузки
+      setErrorMessage(null); // Сбрасываем сообщение об ошибке
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        (position) => { // Успешный callback при получении позиции
           setFormData((prev) => ({
             ...prev,
             coord: {
-              latitude: position.coords.latitude.toFixed(6),
-              longitude: position.coords.longitude.toFixed(6),
-              height: position.coords.altitude ? position.coords.altitude.toFixed(0) : prev.coord.height,
+              latitude: position.coords.latitude.toFixed(6), // Широта с 6 знаками
+              longitude: position.coords.longitude.toFixed(6), // Долгота с 6 знаками
+              height: position.coords.altitude ? position.coords.altitude.toFixed(0) : prev.coord.height, // Высота или прежнее значение
             },
           }));
-          setLoadingGPS(false);
-          if (!position.coords.altitude) {
+          setLoadingGPS(false); // Сбрасываем флаг загрузки
+          if (!position.coords.altitude) { // Если высота недоступна
             setErrorMessage("⚠️ Высота недоступна на этом устройстве, введите вручную");
           }
         },
-        (error) => {
+        (error) => { // Callback при ошибке
           setErrorMessage(`❌ Ошибка GPS: ${error.message}`);
           setLoadingGPS(false);
         },
-        { enableHighAccuracy: true }
+        { enableHighAccuracy: true } // Опции для высокой точности
       );
     } else {
-      setErrorMessage("❌ Геолокация не поддерживается вашим устройством");
+      setErrorMessage("❌ Геолокация не поддерживается вашим устройством"); // Браузер не поддерживает GPS
     }
   };
 
+  // Обработчик отправки формы
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault(); // Предотвращаем стандартное поведение формы
+    // Проверяем, что все обязательные поля заполнены
     if (
       !formData.beautyTitle ||
       !formData.title ||
@@ -188,56 +196,57 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
       !formData.coord.latitude ||
       !formData.coord.longitude ||
       !formData.coord.height ||
-      formData.difficulties[0].season === 0 ||
-      formData.difficulties[0].difficulty === 0
+      formData.difficulties[0].season === 0 || // Проверяем, выбран ли сезон
+      formData.difficulties[0].difficulty === 0 // Проверяем, выбрана ли сложность
     ) {
-      setErrorMessage("❌ Все обязательные поля должны быть заполнены!");
-      console.log("Текущее состояние formData:", formData);
+      setErrorMessage("❌ Все обязательные поля должны быть заполнены!"); // Сообщение об ошибке
+      console.log("Текущее состояние formData:", formData); // Логируем текущее состояние для отладки
       return;
     }
 
-    setSubmitStatus("Сохранение перевала...");
-    setErrorMessage(null);
+    setSubmitStatus("Сохранение перевала..."); // Устанавливаем статус отправки
+    setErrorMessage(null); // Сбрасываем ошибку
 
     try {
-      console.log("📤 Отправка данных перевала на сервер:", formData);
-      const perevalResponse = await fetch(`${API_URL}/api/submitData/`, {
+      console.log("📤 Отправка данных перевала на сервер:", formData); // Логируем данные перед отправкой
+      const perevalResponse = await fetch(`${API_URL}/api/submitData/`, { // Отправляем POST-запрос
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json", // Указываем тип данных
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData), // Преобразуем данные в JSON
       });
 
-      const perevalData = await perevalResponse.json();
-      console.log("✅ Ответ от сервера (перевал):", perevalData);
+      const perevalData = await perevalResponse.json(); // Получаем ответ от сервера
+      console.log("✅ Ответ от сервера (перевал):", perevalData); // Логируем ответ
 
-      if (!perevalResponse.ok) {
+      if (!perevalResponse.ok) { // Проверяем, успешен ли запрос
         throw new Error(`Ошибка сервера: ${perevalData.message || JSON.stringify(perevalData)}`);
       }
 
-      const perevalId = perevalData.id;
-      localStorage.setItem("last_pereval_id", perevalId);
-      setSubmitStatus("✅ Перевал успешно добавлен! Перенаправление...");
+      const perevalId = perevalData.id; // Извлекаем ID созданного перевала
+      localStorage.setItem("last_pereval_id", perevalId); // Сохраняем ID в localStorage
+      setSubmitStatus("✅ Перевал успешно добавлен! Перенаправление..."); // Устанавливаем статус успеха
 
-      setTimeout(() => navigate(`/add-images/${perevalId}`), 1000);
+      setTimeout(() => navigate(`/add-images/${perevalId}`), 1000); // Перенаправляем через 1 секунду
     } catch (error) {
-      console.error("❌ Ошибка отправки данных:", error);
-      setErrorMessage(`❌ Ошибка: ${(error as Error).message}`);
-      setSubmitStatus(null);
+      console.error("❌ Ошибка отправки данных:", error); // Логируем ошибку
+      setErrorMessage(`❌ Ошибка: ${(error as Error).message}`); // Показываем ошибку пользователю
+      setSubmitStatus(null); // Сбрасываем статус отправки
     }
   };
 
+  // Рендеринг формы
   return (
-    <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>
-      <h1 className="submit-title">Добавить новый перевал</h1>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      {submitStatus && <p className="submit-status">{submitStatus}</p>}
-      <form onSubmit={handleSubmit} className="submit-form">
-        <fieldset className="submit-section">
-          <legend>Данные перевала</legend>
-          <div className="form-group">
-            <label htmlFor="beautyTitle">Название горного массива:</label>
+    <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}> {/* Основной контейнер с динамической темой */}
+      <h1 className="submit-title">Добавить новый перевал</h1> {/* Заголовок формы */}
+      {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Сообщение об ошибке, если есть */}
+      {submitStatus && <p className="submit-status">{submitStatus}</p>} {/* Статус отправки, если есть */}
+      <form onSubmit={handleSubmit} className="submit-form"> {/* Форма с обработчиком отправки */}
+        <fieldset className="submit-section"> {/* Секция данных перевала */}
+          <legend>Данные перевала</legend> {/* Заголовок секции */}
+          <div className="form-group"> {/* Группа для названия массива */}
+            <label htmlFor="beautyTitle">Название горного массива:</label> {/* Метка */}
             <input
               type="text"
               id="beautyTitle"
@@ -246,10 +255,10 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
               onChange={handleChange}
               className="submit-input"
               required
-            />
+            /> {/* Поле ввода названия массива */}
           </div>
-          <div className="form-group">
-            <label htmlFor="title">Официальное название перевала:</label>
+          <div className="form-group"> {/* Группа для официального названия */}
+            <label htmlFor="title">Официальное название перевала:</label> {/* Метка */}
             <input
               type="text"
               id="title"
@@ -258,10 +267,10 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
               onChange={handleChange}
               className="submit-input"
               required
-            />
+            /> {/* Поле ввода официального названия */}
           </div>
-          <div className="form-group">
-            <label htmlFor="other_titles">Местное название перевала:</label>
+          <div className="form-group"> {/* Группа для местного названия */}
+            <label htmlFor="other_titles">Местное название перевала:</label> {/* Метка */}
             <input
               type="text"
               id="other_titles"
@@ -269,10 +278,10 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
               value={formData.other_titles}
               onChange={handleChange}
               className="submit-input"
-            />
+            /> {/* Поле ввода местного названия, необязательное */}
           </div>
-          <div className="form-group">
-            <label htmlFor="route_description">Описание маршрута:</label>
+          <div className="form-group"> {/* Группа для описания маршрута */}
+            <label htmlFor="route_description">Описание маршрута:</label> {/* Метка */}
             <textarea
               id="route_description"
               name="route_description"
@@ -280,14 +289,14 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
               onChange={handleChange}
               className="submit-input"
               rows={3}
-            />
+            /> {/* Текстовое поле для описания маршрута */}
           </div>
         </fieldset>
 
-        <fieldset className="submit-section">
-          <legend>Координаты</legend>
-          <div className="form-group">
-            <label htmlFor="latitude">Широта:</label>
+        <fieldset className="submit-section"> {/* Секция координат */}
+          <legend>Координаты</legend> {/* Заголовок секции */}
+          <div className="form-group"> {/* Группа для широты */}
+            <label htmlFor="latitude">Широта:</label> {/* Метка */}
             <input
               type="text"
               id="latitude"
@@ -296,10 +305,10 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
               onChange={handleChange}
               className="submit-input"
               required
-            />
+            /> {/* Поле ввода широты */}
           </div>
-          <div className="form-group">
-            <label htmlFor="longitude">Долгота:</label>
+          <div className="form-group"> {/* Группа для долготы */}
+            <label htmlFor="longitude">Долгота:</label> {/* Метка */}
             <input
               type="text"
               id="longitude"
@@ -308,10 +317,10 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
               onChange={handleChange}
               className="submit-input"
               required
-            />
+            /> {/* Поле ввода долготы */}
           </div>
-          <div className="form-group">
-            <label htmlFor="height">Высота:</label>
+          <div className="form-group"> {/* Группа для высоты */}
+            <label htmlFor="height">Высота:</label> {/* Метка */}
             <input
               type="text"
               id="height"
@@ -320,26 +329,26 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
               onChange={handleChange}
               className="submit-input"
               required
-            />
+            /> {/* Поле ввода высоты */}
           </div>
           <button type="button" onClick={handleGetGPS} disabled={loadingGPS} className="gps-btn">
-            {loadingGPS ? "Загрузка..." : "Получить с GPS"}
+            {loadingGPS ? "Загрузка..." : "Получить с GPS"} {/* Кнопка для получения GPS */}
           </button>
         </fieldset>
 
-        <fieldset className="submit-section">
-          <legend>Уровень сложности</legend>
-          <div className="form-group">
-            <label htmlFor="season">Сезон:</label>
+        <fieldset className="submit-section"> {/* Секция уровня сложности */}
+          <legend>Уровень сложности</legend> {/* Заголовок секции */}
+          <div className="form-group"> {/* Группа для сезона */}
+            <label htmlFor="season">Сезон:</label> {/* Метка */}
             <select
               id="season"
               name="season"
-              value={formData.difficulties[0].season}
-              onChange={handleChange}
+              value={formData.difficulties[0].season} // Привязываем значение к состоянию
+              onChange={handleChange} // Обработчик изменения
               className="submit-input"
               required
-            >
-              <option value={0}>Выберите сезон</option>
+            > {/* Выпадающий список сезонов */}
+              <option value={0}>Выберите сезон</option> {/* Плейсхолдер с числом */}
               {seasons && seasons.length > 0 ? (
                 seasons.map((season) => (
                   <option key={season.id} value={season.id}>
@@ -351,17 +360,17 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
               )}
             </select>
           </div>
-          <div className="form-group">
-            <label htmlFor="difficulty">Категория сложности:</label>
+          <div className="form-group"> {/* Группа для категории сложности */}
+            <label htmlFor="difficulty">Категория сложности:</label> {/* Метка */}
             <select
               id="difficulty"
               name="difficulty"
-              value={formData.difficulties[0].difficulty}
-              onChange={handleChange}
+              value={formData.difficulties[0].difficulty} // Привязываем значение к состоянию
+              onChange={handleChange} // Обработчик изменения
               className="submit-input"
               required
-            >
-              <option value={0}>Выберите сложность</option>
+            > {/* Выпадающий список категорий */}
+              <option value={0}>Выберите сложность</option> {/* Плейсхолдер с числом */}
               {difficulties && difficulties.length > 0 ? (
                 difficulties.map((diff) => (
                   <option key={diff.id} value={diff.id}>
@@ -372,6 +381,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
                 <option value={0}>Загрузка сложностей...</option>
               )}
             </select>
+            {/* Отображение деталей выбранной сложности */}
             {selectedDifficulty && (
               <div className="difficulty-details">
                 <p><strong>Характеристики:</strong> {selectedDifficulty.characteristics}</p>
@@ -381,10 +391,10 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
           </div>
         </fieldset>
 
-        <button type="submit" className="submit-btn">Отправить</button>
+        <button type="submit" className="submit-btn">Отправить</button> {/* Кнопка отправки формы */}
       </form>
       <button onClick={toggleTheme} className="theme-btn">
-        {darkMode ? "Светлая тема" : "Тёмная тема"}
+        {darkMode ? "Светлая тема" : "Тёмная тема"} {/* Кнопка переключения темы */}
       </button>
     </div>
   );
