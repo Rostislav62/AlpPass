@@ -1,6 +1,47 @@
 // AlpPass/src/pages/Submit.tsx
 
-// ... (начало файла без изменений) ...
+// Импортируем React и хуки useState, useEffect для работы с состоянием и эффектами
+import React, { useState, useEffect } from "react";
+// Импортируем useNavigate для перенаправления после отправки формы
+import { useNavigate } from "react-router-dom";
+// Импортируем стили из файла index.css для оформления
+import "../index.css";
+
+// Определяем интерфейс пропсов компонента Submit
+interface SubmitProps {
+  darkMode: boolean; // Флаг тёмной темы
+  toggleTheme: () => void; // Функция переключения темы
+}
+
+// Определяем интерфейс данных формы для отправки на сервер
+interface FormData {
+  beautyTitle: string; // Название горного массива
+  title: string; // Официальное название перевала
+  other_titles: string; // Местное название перевала
+  connect: boolean; // Флаг связи (true/false)
+  user: { email: string; family_name: string; first_name: string; phone: string }; // Данные пользователя
+  coord: { latitude: string; longitude: string; height: string }; // Координаты перевала
+  status: number; // Статус перевала (например, 1 для "new")
+  difficulties: { season: number; difficulty: number }[]; // Сложности (ID сезона и категории)
+  route_description: string; // Описание маршрута
+  images: any[]; // Массив изображений (пока пустой)
+}
+
+// Определяем интерфейс сезона для выпадающего списка
+interface Season {
+  id: number; // ID сезона
+  code: string; // Код сезона (например, "spring")
+  name: string; // Название сезона (например, "Весна")
+}
+
+// Определяем интерфейс категории сложности для выпадающего списка
+interface Difficulty {
+  id: number; // ID категории
+  code: string; // Код категории (например, "1Б")
+  description: string; // Описание (например, "Простая")
+  characteristics: string; // Характеристики (например, "Крутые склоны...")
+  requirements: string; // Требования (например, "Навыки хождения...")
+}
 
 // Основной компонент Submit для добавления нового перевала
 const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
