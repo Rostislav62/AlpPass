@@ -392,4 +392,3 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
 
 // Экспортируем компонент Submit как default
 export default Submit;
-export default Submit;
