@@ -1,157 +1,149 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+// AlpPass/src/pages/PerevalDetail.tsx
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import "../index.css";
 
-// Интерфейс данных перевала
-interface PerevalData {
-    id: number;
-    beautyTitle: string;
-    title: string;
-    other_titles: string;
-    connect: string;
-    add_time: string;
-    user: { email: string; phone: string; family_name: string; first_name: string; father_name: string };
-    coord: { latitude: number; longitude: number; height: number };
-    status: number;
-    difficulties: { season: string; difficulty: string }[];
-    images: { data: string; title: string }[];
-    route_description: string | null; // Добавляем новое поле
-}
-
-// Интерфейс пропсов
 interface PerevalDetailProps {
-    darkMode: boolean;
-    toggleTheme: () => void;
+  darkMode: boolean;
+  toggleTheme: () => void;
 }
 
-// Базовый URL
-const BASE_URL = "https://rostislav62.pythonanywhere.com";
-const API_URL = `${BASE_URL}/api/submitData/`;
+interface PerevalData {
+  id: number;
+  beautyTitle: string;
+  title: string;
+  other_titles: string;
+  connect: boolean;
+  add_time: string;
+  user: {
+    id: number;
+    family_name: string;
+    first_name: string;
+    father_name: string;
+    phone: string;
+    email: string;
+  };
+  coord: {
+    id: number;
+    latitude: number;
+    longitude: number;
+    height: number;
+  };
+  status: number;
+  difficulties: {
+    season: { code: string; name: string };
+    difficulty: { code: string; description: string; characteristics: string; requirements: string };
+  }[];
+  images: { id: number; data: string; title: string }[];
+  route_description: string;
+}
 
 const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) => {
-    const { id } = useParams<{ id: string }>();
-    const [pereval, setPereval] = useState<PerevalData | null>(null);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { id } = useParams<{ id: string }>(); // Получаем ID перевала из URL
+  const navigate = useNavigate();
+  const [pereval, setPereval] = useState<PerevalData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        console.log("ID из useParams:", id);
-        if (!id) {
-            setErrorMessage("ID перевала не указан");
-            return;
+  const API_URL = process.env.REACT_APP_API_URL || "https://rostislav62.pythonanywhere.com";
+
+  useEffect(() => {
+    const fetchPereval = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/submitData/${id}/info/`);
+        if (!response.ok) {
+          throw new Error(`Ошибка загрузки данных: ${response.status}`);
         }
-
-        fetch(`${API_URL}${id}/info/`)
-            .then(async response => {
-                const text = await response.text();
-                console.log(`📥 Ответ от сервера для ID ${id}:`, text);
-                console.log("Статус ответа:", response.status);
-                if (!response.ok) {
-                    throw new Error(`Сервер вернул ошибку: ${response.status} - ${text}`);
-                }
-                try {
-                    return JSON.parse(text);
-                } catch (error) {
-                    throw new Error(`Сервер вернул не JSON-ответ: ${text}`);
-                }
-            })
-            .then((data: PerevalData) => {
-                setPereval(data);
-            })
-            .catch(error => {
-                console.error("Ошибка загрузки перевала:", error);
-                setErrorMessage(`Ошибка загрузки данных перевала: ${error.message}`);
-            });
-    }, [id]);
-
-    const handleImageClick = (imagePath: string) => {
-        const fullPath = `${BASE_URL}/media/${imagePath.replace("\\", "/")}`;
-        console.log("Полный путь к фото:", fullPath);
-        setSelectedImage(fullPath);
+        const data = await response.json();
+        setPereval(data);
+        setLoading(false);
+      } catch (err) {
+        setError(`Ошибка: ${(err as Error).message}`);
+        setLoading(false);
+      }
     };
 
-    const closeModal = () => {
-        setSelectedImage(null);
-    };
+    fetchPereval();
+  }, [id]);
 
-    if (!pereval) return <p className="loading-text">Загрузка...</p>;
+  if (loading) {
+    return <div className={`loading ${darkMode ? "dark-mode" : "light-mode"}`}>Загрузка...</div>;
+  }
 
-    return (
-        <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>
-            <h1 className="submit-title">{`${pereval.title} (${pereval.beautyTitle})`}</h1>
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
-            <fieldset className="submit-section">
-                <legend>Данные перевала</legend>
-                <p><strong>Горный массив:</strong> {pereval.beautyTitle}</p>
-                <p><strong>Название:</strong> {pereval.title}</p>
-                <p><strong>Другие названия:</strong> {pereval.other_titles || "Нет"}</p>
-                <p><strong>Связь:</strong> {pereval.connect || "Нет"}</p>
-                <p><strong>Статус:</strong> {pereval.status === 1 ? "New" : "Processed"}</p>
-            </fieldset>
-            <fieldset className="submit-section">
-                <legend>Пользователь</legend>
-                <p><strong>ФИО:</strong> {pereval.user.family_name} {pereval.user.first_name} {pereval.user.father_name}</p>
-                <p><strong>Email:</strong> {pereval.user.email}</p>
-                <p><strong>Телефон:</strong> {pereval.user.phone}</p>
-            </fieldset>
-            <fieldset className="submit-section">
-                <legend>Координаты</legend>
-                <p><strong>Широта:</strong> {pereval.coord.latitude}</p>
-                <p><strong>Долгота:</strong> {pereval.coord.longitude}</p>
-                <p><strong>Высота:</strong> {pereval.coord.height}</p>
-            </fieldset>
-            <fieldset className="submit-section">
-                <legend>Сложности</legend>
-                {pereval.difficulties.length > 0 ? (
-                    pereval.difficulties.map((diff, index) => (
-                        <div key={index}>
-                            <p><strong>Сезон:</strong> {diff.season}</p>
-                            <p><strong>Сложность:</strong> {diff.difficulty}</p>
-                        </div>
-                    ))
-                ) : (
-                    <p>Данные о сложностях отсутствуют</p>
-                )}
-            </fieldset>
-            <fieldset className="submit-section">
-                <legend>Описание маршрута</legend>
-                {pereval.route_description ? (
-                    <p><strong>Описание маршрута:</strong> {pereval.route_description}</p>
-                ) : (
-                    <p>Описание маршрута отсутствует</p>
-                )}
-            </fieldset>
-            <fieldset className="submit-section">
-                <legend>Фотографии</legend>
-                <div className="photos-list">
-                    {pereval.images.length > 0 ? (
-                        pereval.images.map((img, index) => (
-                            <div key={index} className="photo-item">
-                                <img
-                                    src={`${BASE_URL}/media/${img.data.replace("\\", "/")}`}
-                                    alt={img.title || "Фото перевала"}
-                                    className="photo-preview"
-                                    onClick={() => handleImageClick(img.data)}
-                                    onError={(e) => console.error(`Ошибка загрузки фото: ${img.data}`)}
-                                />
-                                <span>{img.title || "Без названия"}</span>
-                            </div>
-                        ))
-                    ) : (
-                        <p>Фотографии отсутствуют</p>
-                    )}
-                </div>
-            </fieldset>
-            {selectedImage && (
-                <div className="modal" onClick={closeModal}>
-                    <img src={selectedImage} alt="Увеличенное фото" className="modal-image" />
-                </div>
-            )}
-            <button onClick={toggleTheme} className="theme-btn">
-                {darkMode ? "Светлая тема" : "Тёмная тема"}
-            </button>
-        </div>
-    );
+  if (error) {
+    return <div className={`error ${darkMode ? "dark-mode" : "light-mode"}`}>{error}</div>;
+  }
+
+  if (!pereval) {
+    return <div className={`error ${darkMode ? "dark-mode" : "light-mode"}`}>Перевал не найден</div>;
+  }
+
+  return (
+    <div className={`pereval-detail-container ${darkMode ? "dark-mode" : "light-mode"}`}>
+      <h1 className="pereval-detail-title">{pereval.title}</h1>
+      <button onClick={() => navigate("/submit")} className="back-btn">Назад</button>
+
+      <fieldset className="pereval-section">
+        <legend>Данные перевала</legend>
+        <p><strong>Название массива:</strong> {pereval.beautyTitle}</p>
+        <p><strong>Официальное название:</strong> {pereval.title}</p>
+        <p><strong>Местное название:</strong> {pereval.other_titles || "Не указано"}</p>
+        <p><strong>Связь:</strong> {pereval.connect ? "Да" : "Нет"}</p>
+        <p><strong>Дата добавления:</strong> {new Date(pereval.add_time).toLocaleString()}</p>
+        <p><strong>Описание маршрута:</strong> {pereval.route_description || "Не указано"}</p>
+      </fieldset>
+
+      <fieldset className="pereval-section">
+        <legend>Пользователь</legend>
+        <p><strong>Фамилия:</strong> {pereval.user.family_name}</p>
+        <p><strong>Имя:</strong> {pereval.user.first_name}</p>
+        <p><strong>Отчество:</strong> {pereval.user.father_name || "Не указано"}</p>
+        <p><strong>Телефон:</strong> {pereval.user.phone}</p>
+        <p><strong>Email:</strong> {pereval.user.email}</p>
+      </fieldset>
+
+      <fieldset className="pereval-section">
+        <legend>Координаты</legend>
+        <p><strong>Широта:</strong> {pereval.coord.latitude}</p>
+        <p><strong>Долгота:</strong> {pereval.coord.longitude}</p>
+        <p><strong>Высота:</strong> {pereval.coord.height} м</p>
+      </fieldset>
+
+      <fieldset className="pereval-section">
+        <legend>Сложности</legend>
+        {pereval.difficulties.length > 0 ? (
+          pereval.difficulties.map((diff, index) => (
+            <div key={index}>
+              <p><strong>Сезон:</strong> {diff.season.name} ({diff.season.code})</p>
+              <p><strong>Сложность:</strong> {diff.difficulty.code} - {diff.difficulty.description}</p>
+              <p><strong>Характеристики:</strong> {diff.difficulty.characteristics}</p>
+              <p><strong>Требования:</strong> {diff.difficulty.requirements}</p>
+            </div>
+          ))
+        ) : (
+          <p>Данные о сложностях отсутствуют</p>
+        )}
+      </fieldset>
+
+      <fieldset className="pereval-section">
+        <legend>Изображения</legend>
+        {pereval.images.length > 0 ? (
+          pereval.images.map((img) => (
+            <div key={img.id} className="image-item">
+              <img src={img.data} alt={img.title} className="pereval-image" />
+              <p>{img.title}</p>
+            </div>
+          ))
+        ) : (
+          <p>Изображения отсутствуют</p>
+        )}
+      </fieldset>
+
+      <button onClick={toggleTheme} className="theme-btn">
+        {darkMode ? "Светлая тема" : "Тёмная тема"}
+      </button>
+    </div>
+  );
 };
 
 export default PerevalDetail;
