@@ -944,79 +944,171 @@ body {
 
 /* *************************Стили для PerevalDetail.tsx************************* */
 
-.submit-container {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
+.pereval-container {
+  padding: 10px;
+  background-color: #fff; /* Светлая тема */
 }
 
-.submit-title {
-  text-align: center; /* Центрируем заголовок */
-  margin-bottom: 20px;
-  font-size: 2em;
-  color: #333; /* Светлая тема */
+.dark-mode.pereval-container {
+  background-color: #333; /* Тёмная тема */
 }
 
-.dark-mode .submit-title {
-  color: #ddd; /* Тёмная тема */
-}
-
-.theme-btn {
-  display: block;
-  margin: 20px auto; /* Центрируем кнопку темы */
-  padding: 10px 20px;
-  font-size: 1em;
-  cursor: pointer;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-}
-
-.theme-btn:hover {
-  background-color: #0056b3;
-}
-
-.submit-section {
-  margin-bottom: 20px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.photos-list {
+.pereval-header {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: 10px;
+}
+
+.pereval-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000; /* Светлая тема */
+}
+
+.dark-mode .pereval-title {
+  color: #fff; /* Тёмная тема */
+}
+
+.pereval-dropdown {
+  font-size: 12px;
+  color: #000; /* Светлая тема */
+}
+
+.dark-mode .pereval-dropdown {
+  color: #fff; /* Тёмная тема */
+}
+
+.pereval-date {
+  font-size: 14px;
+  padding-left: 10px;
+  margin-top: 5px;
+  color: #000; /* Светлая тема */
+}
+
+.dark-mode .pereval-date {
+  color: #fff; /* Тёмная тема */
+}
+
+.pereval-divider {
+  border: none;
+  height: 1px;
+  background-color: #ccc; /* Светлая тема */
+  margin: 10px 0;
+}
+
+.dark-mode .pereval-divider {
+  background-color: #555; /* Тёмная тема */
+}
+
+.pereval-tabs {
+  display: flex;
+  justify-content: center;
   gap: 10px;
+  margin-bottom: 10px;
 }
 
-.photo-item {
-  text-align: center;
-}
-
-.photo-preview {
-  max-width: 100px;
+.pereval-tab {
+  font-size: 14px;
+  background: none;
+  border: none;
   cursor: pointer;
+  color: #000; /* Светлая тема */
 }
 
-.modal {
-  position: fixed;
+.pereval-tab.active {
+  font-weight: bold;
+}
+
+.dark-mode .pereval-tab {
+  color: #fff; /* Тёмная тема */
+}
+
+.photo-box {
+  position: relative;
+  width: calc(100% - 2px); /* Учитываем отступы 1 мм с каждой стороны */
+  margin: 0 1px;
+  height: 0;
+  padding-bottom: 75%; /* Соотношение 4:3 */
+  overflow: hidden;
+}
+
+.pereval-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.photo-overlay {
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  pointer-events: none; /* Чтобы клики проходили сквозь overlay */
 }
 
-.modal-image {
-  max-width: 90%;
-  max-height: 90%;
+.direction-icon {
+  position: absolute;
+  top: 2mm;
+  left: 2mm;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-/* Центрирование элементов в EditPhotos */
+.zoom-icon {
+  position: absolute;
+  top: 2mm;
+  right: 2mm;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.coords {
+  position: absolute;
+  bottom: 4mm;
+  left: 3mm;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pereval-description {
+  font-size: 14px;
+  padding-left: 10px;
+  margin-top: 10px;
+  color: #000; /* Светлая тема */
+}
+
+.dark-mode .pereval-description {
+  color: #fff; /* Тёмная тема */
+}
+
+.pereval-more {
+  font-size: 14px;
+  padding-left: 10px;
+  margin-top: 10px;
+  display: block;
+  color: #000; /* Светлая тема */
+}
+
+.dark-mode .pereval-more {
+  color: #fff; /* Тёмная тема */
+}
+
+/* Переопределяем .theme-btn для центрирования */
+.theme-btn {
+  margin: 20px auto;
+  display: block;
+}
+
+
+/* *************************Стили для Центрирование элементов в EditPhotos  ************************ */
 .upload-photos-container {
     text-align: center; /* Центрируем текст внутри контейнера */
     padding: 20px; /* Добавляем отступы */
