@@ -915,16 +915,29 @@ body {
   margin-right: auto; /* Автоматический отступ справа */
 }
 
-.radio-option {
-  margin: 5px 0;
+.radio-group {
+  margin-bottom: 15px;
 }
 
-.radio-option input[type="radio"] {
-  margin-right: 10px;
+.radio-container {
+  max-width: 300px; /* Ограничиваем ширину для компактности */
+  margin: 0 auto; /* Центрируем контейнер */
 }
 
-.radio-option label {
-  font-size: 14px;
+.radio-box {
+  display: flex;
+  align-items: center; /* Выравниваем радиокнопку и текст вертикально */
+  margin: 5px 0; /* Уменьшаем отступы между строками */
+}
+
+.radio-box input[type="radio"] {
+  margin-right: 10px; /* Отступ между кнопкой и текстом */
+}
+
+.radio-box label {
+  font-size: 14px; /* Уменьшаем шрифт для компактности */
+  text-align: left; /* Выравниваем текст по левому краю */
+  flex-grow: 1; /* Текст занимает доступное пространство */
 }
 
 

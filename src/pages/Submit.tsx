@@ -1,6 +1,6 @@
 // AlpPass/src/pages/Submit.tsx
 
-// Импортируем React и хуки useState, useEffect для работы с состоянием и эффектами
+// Импортируем React и хуки useState для работы с состоянием
 import React, { useState } from "react";
 // Импортируем useNavigate для перенаправления после отправки формы
 import { useNavigate } from "react-router-dom";
@@ -31,7 +31,6 @@ interface FormData {
 const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
   const navigate = useNavigate();
 
-  // Состояние для данных формы
   const [formData, setFormData] = useState<FormData>({
     beautyTitle: "",
     title: "",
@@ -54,7 +53,6 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loadingGPS, setLoadingGPS] = useState(false);
 
-  // Фиксированные списки сезонов и сложностей
   const seasons = [
     { id: 1, name: "Весна", code: "Spring" },
     { id: 2, name: "Лето", code: "Summer" },
@@ -73,7 +71,6 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
 
   const API_URL = process.env.REACT_APP_API_URL || "https://rostislav62.pythonanywhere.com";
 
-  // Обработчик изменения значений в полях формы
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     console.log(`Изменение поля ${name}: значение "${value}"`);
@@ -99,7 +96,6 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     }
   };
 
-  // Обработчик получения координат через GPS
   const handleGetGPS = () => {
     if ("geolocation" in navigator) {
       setLoadingGPS(true);
@@ -130,7 +126,6 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     }
   };
 
-  // Обработчик отправки формы
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (
@@ -284,39 +279,43 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
 
         <fieldset className="submit-section">
           <legend>Уровень сложности</legend>
-          <div className="form-group">
+          <div className="form-group radio-group">
             <label>Сезон:</label>
-            {seasons.map((season) => (
-              <div key={season.id} className="radio-option">
-                <input
-                  type="radio"
-                  id={`season-${season.id}`}
-                  name="season"
-                  value={season.id}
-                  checked={formData.difficulties[0].season === season.id}
-                  onChange={handleChange}
-                />
-                <label htmlFor={`season-${season.id}`}>{season.name} ({season.code})</label>
-              </div>
-            ))}
+            <div className="radio-container">
+              {seasons.map((season) => (
+                <div key={season.id} className="radio-box">
+                  <input
+                    type="radio"
+                    id={`season-${season.id}`}
+                    name="season"
+                    value={season.id}
+                    checked={formData.difficulties[0].season === season.id}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor={`season-${season.id}`}>{season.name} ({season.code})</label>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="form-group">
+          <div className="form-group radio-group">
             <label>Категория сложности:</label>
-            {difficulties.map((diff) => (
-              <div key={diff.id} className="radio-option">
-                <input
-                  type="radio"
-                  id={`difficulty-${diff.id}`}
-                  name="difficulty"
-                  value={diff.id}
-                  checked={formData.difficulties[0].difficulty === diff.id}
-                  onChange={handleChange}
-                />
-                <label htmlFor={`difficulty-${diff.id}`}>
-                  {diff.code} - {diff.description}
-                </label>
-              </div>
-            ))}
+            <div className="radio-container">
+              {difficulties.map((diff) => (
+                <div key={diff.id} className="radio-box">
+                  <input
+                    type="radio"
+                    id={`difficulty-${diff.id}`}
+                    name="difficulty"
+                    value={diff.id}
+                    checked={formData.difficulties[0].difficulty === diff.id}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor={`difficulty-${diff.id}`}>
+                    {diff.code} - {diff.description}
+                  </label>
+                </div>
+              ))}
+            </div>
           </div>
         </fieldset>
 
