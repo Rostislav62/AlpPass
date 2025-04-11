@@ -75,10 +75,11 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
   const [seasons, setSeasons] = useState<Season[]>([]);
   // Состояние для списка категорий сложности из базы
   const [difficulties, setDifficulties] = useState<Difficulty[]>([]);
+  // Состояние для хранения выбранной сложности (для отображения деталей)
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
 
   // Базовый URL API, берётся из переменной окружения или по умолчанию
   const API_URL = process.env.REACT_APP_API_URL || "https://rostislav62.pythonanywhere.com";
-
 
   // Эффект для загрузки сезонов и сложностей при монтировании компонента
   useEffect(() => {
@@ -120,7 +121,6 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     fetchDifficulties(); // Вызываем загрузку сложностей
   }, [API_URL]); // Добавляем API_URL в зависимости, чтобы убрать предупреждение ESLint
 
-
   // Обработчик изменения значений в полях формы
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target; // Извлекаем имя и значение поля
@@ -132,10 +132,16 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
       }));
     } else if (["season", "difficulty"].includes(name)) {
       // Если поле относится к сложности, обновляем difficulties (преобразуем в число)
+      const newValue = parseInt(value);
       setFormData((prev) => ({
         ...prev,
-        difficulties: [{ ...prev.difficulties[0], [name]: parseInt(value) }],
+        difficulties: [{ ...prev.difficulties[0], [name]: newValue }],
       }));
+      // Если выбрана сложность, обновляем selectedDifficulty
+      if (name === "difficulty") {
+        const selected = difficulties.find((diff) => diff.id === newValue) || null;
+        setSelectedDifficulty(selected);
+      }
     } else {
       // Для остальных полей обновляем напрямую
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -359,10 +365,17 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
               <option value="0">Выберите сложность</option> {/* Плейсхолдер */}
               {difficulties.map((diff) => (
                 <option key={diff.id} value={diff.id}>
-                  {diff.code} - {diff.description} ({diff.characteristics}, {diff.requirements}) {/* Отображаем все поля */}
+                  {diff.code} - {diff.description} {/* Отображаем только код и описание */}
                 </option>
               ))}
             </select>
+            {/* Отображение деталей выбранной сложности */}
+            {selectedDifficulty && (
+              <div className="difficulty-details">
+                <p><strong>Характеристики:</strong> {selectedDifficulty.characteristics}</p>
+                <p><strong>Требования:</strong> {selectedDifficulty.requirements}</p>
+              </div>
+            )}
           </div>
         </fieldset>
 
