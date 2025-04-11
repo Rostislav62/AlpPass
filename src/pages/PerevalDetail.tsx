@@ -64,7 +64,7 @@ const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) 
     };
 
     fetchPereval();
-  }, [id]);
+  }, [id, API_URL]); // Добавляем API_URL в зависимости
 
   if (loading) {
     return <div className={`loading ${darkMode ? "dark-mode" : "light-mode"}`}>Загрузка...</div>;
