@@ -1089,14 +1089,14 @@ body {
 .pereval-tabs {
   display: flex;
   justify-content: center; /* Центрирование вкладок */
-  gap: 10px; /* Расстояние между вкладками */
+  gap: 20px; /* Расстояние между вкладками */
   margin-bottom: 10px;
 }
 
 
 /* Кнопка вкладки */
 .pereval-tab {
-  font-size: 24px;
+  font-size: 34px;
   font-weight: normal;
   background: none;
   border: none;
