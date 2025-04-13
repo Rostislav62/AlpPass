@@ -1050,7 +1050,7 @@ body {
 
 /* Название перевала */
 .pereval-name {
-  font-size: 14px;
+  font-size: 24px;
   font-weight: bold;
   max-width: 60%; /* Ограничение для обрезки */
   white-space: nowrap;
@@ -1058,16 +1058,16 @@ body {
   text-overflow: ellipsis;
 }
 
-/* Код сложности */
+/* Код сложности и высота*/
 .pereval-difficulty,
 .pereval-height {
-  font-size: 14px;
+  font-size: 24px;
   font-weight: normal;
 }
 
 /* Дата */
 .pereval-date {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: normal;
   margin-left: 10px;
   margin-top: 5px;
@@ -1088,14 +1088,15 @@ body {
 /* Вкладки */
 .pereval-tabs {
   display: flex;
-  gap: 10px;
-  margin-left: 10px;
+  justify-content: center; /* Центрирование вкладок */
+  gap: 10px; /* Расстояние между вкладками */
   margin-bottom: 10px;
 }
 
+
 /* Кнопка вкладки */
 .pereval-tab {
-  font-size: 14px;
+  font-size: 24px;
   font-weight: normal;
   background: none;
   border: none;
@@ -1103,6 +1104,8 @@ body {
   cursor: pointer;
   color: #000; /* Светлая тема */
 }
+
+
 
 /* Тёмная тема для вкладок */
 .dark-mode .pereval-tab {
@@ -1164,7 +1167,7 @@ body {
   position: absolute;
   bottom: 10px;
   left: 10px;
-  font-size: 12px;
+  font-size: 16px;
   color: #fff;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Тень для читаемости */
 }
@@ -1290,7 +1293,7 @@ body {
 
 
 
-/* Центрирование элементов в EditPhotos */
+/* ***************************Центрирование элементов в EditPhotos ************************* */
 .upload-photos-container {
     text-align: center; /* Центрируем текст внутри контейнера */
     padding: 20px; /* Добавляем отступы */
