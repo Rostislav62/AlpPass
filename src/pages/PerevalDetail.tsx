@@ -1,3 +1,6 @@
+// AlpPass/src/pages/PerevalDetail.tsx
+
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "../index.css";
@@ -37,6 +40,10 @@ interface PerevalData {
   route_description: string;
 }
 
+const BASE_URL = "https://rostislav62.pythonanywhere.com";
+const API_URL = `${BASE_URL}/api/submitData/`;
+const MEDIA_URL = `${BASE_URL}/media/`;
+
 const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) => {
   const { id } = useParams<{ id: string }>();
   const [pereval, setPereval] = useState<PerevalData | null>(null);
@@ -45,13 +52,11 @@ const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) 
   const [activeTab, setActiveTab] = useState<"Подъём" | "Седловина" | "Спуск">("Седловина");
   const [modalImage, setModalImage] = useState<string | null>(null);
 
-  const API_URL = process.env.REACT_APP_API_URL || "https://rostislav62.pythonanywhere.com";
-
   // Загрузка данных перевала
   useEffect(() => {
     const fetchPereval = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/submitData/${id}/info/`);
+        const response = await fetch(`${API_URL}${id}/info/`);
         if (!response.ok) {
           throw new Error(`Ошибка загрузки данных: ${response.status}`);
         }
@@ -65,7 +70,7 @@ const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) 
     };
 
     fetchPereval();
-  }, [id, API_URL]);
+  }, [id]);
 
   // Обработчик переключения вкладок
   const handleTabClick = (tab: "Подъём" | "Седловина" | "Спуск") => {
@@ -94,9 +99,9 @@ const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) 
 
   // Определение фотографии для текущей вкладки
   const tabImages = {
-    Подъём: pereval.images[0]?.data || null,
-    Седловина: pereval.images[1]?.data || null,
-    Спуск: pereval.images[2]?.data || null,
+    Подъём: pereval.images[0]?.data ? `${MEDIA_URL}${pereval.images[0].data.replace("\\", "/")}` : null,
+    Седловина: pereval.images[1]?.data ? `${MEDIA_URL}${pereval.images[1].data.replace("\\", "/")}` : null,
+    Спуск: pereval.images[2]?.data ? `${MEDIA_URL}${pereval.images[2].data.replace("\\", "/")}` : null,
   };
   const currentImage = tabImages[activeTab];
 
