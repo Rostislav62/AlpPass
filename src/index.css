@@ -1017,6 +1017,279 @@ body {
 }
 
 
+
+/* *************************Стили для PerevalDetail.tsx************************* */
+/* Продолжение
+/* Основной контейнер страницы */
+.pereval-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fff; /* Светлый фон */
+  color: #000; /* Чёрный текст */
+}
+
+/* Тёмная тема */
+.dark-mode.pereval-container {
+  background-color: #333; /* Тёмный фон */
+  color: #fff; /* Белый текст */
+}
+
+/* Заголовок */
+.pereval-header {
+  margin-bottom: 10px;
+}
+
+/* Первая строка (название, сложность, высота) */
+.pereval-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px; /* Пробелы между элементами */
+  margin-left: 10px;
+}
+
+/* Название перевала */
+.pereval-name {
+  font-size: 14px;
+  font-weight: bold;
+  max-width: 60%; /* Ограничение для обрезки */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Код сложности */
+.pereval-difficulty,
+.pereval-height {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+/* Дата */
+.pereval-date {
+  font-size: 14px;
+  font-weight: normal;
+  margin-left: 10px;
+  margin-top: 5px;
+}
+
+/* Разделительная линия */
+.pereval-divider {
+  border: none;
+  border-top: 1px solid #ccc; /* Серый в светлой теме */
+  margin: 10px 0;
+}
+
+/* Тёмная тема для линии */
+.dark-mode .pereval-divider {
+  border-top: 1px solid #fff; /* Белый в тёмной */
+}
+
+/* Вкладки */
+.pereval-tabs {
+  display: flex;
+  gap: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+/* Кнопка вкладки */
+.pereval-tab {
+  font-size: 14px;
+  font-weight: normal;
+  background: none;
+  border: none;
+  padding: 5px 0;
+  cursor: pointer;
+  color: #000; /* Светлая тема */
+}
+
+/* Тёмная тема для вкладок */
+.dark-mode .pereval-tab {
+  color: #fff; /* Тёмная тема */
+}
+
+/* Активная вкладка */
+.pereval-tab.active {
+  font-weight: bold;
+  border-bottom: 2px solid #007bff; /* Подчёркивание в светлой */
+}
+
+/* Тёмная тема для активной вкладки */
+.dark-mode .pereval-tab.active {
+  border-bottom: 2px solid #1e90ff; /* Подчёркивание в тёмной */
+}
+
+/* Контейнер для фото */
+.pereval-photo-container {
+  position: relative;
+  margin: 0 3px; /* Отступы слева/справа */
+}
+
+/* Фото */
+.pereval-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3; /* Формат 4:3 */
+}
+
+/* Изображение */
+.pereval-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Обрезка краёв */
+}
+
+/* Пустое фото */
+.pereval-photo-empty {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-color: #ddd; /* Светлый фон */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: normal;
+  color: #000; /* Светлый текст */
+}
+
+/* Тёмная тема для пустого фото */
+.dark-mode .pereval-photo-empty {
+  background-color: #444; /* Тёмный фон */
+  color: #fff; /* Белый текст */
+}
+
+/* Координаты */
+.pereval-coordinates {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Тень для читаемости */
+}
+
+/* Иконка лупы */
+.pereval-zoom {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+/* Описание */
+.pereval-description {
+  font-size: 14px;
+  font-weight: normal;
+  margin-left: 10px;
+  margin-top: 10px;
+  max-height: 50vh; /* Ограничение высоты */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 10; /* Ограничение строк */
+  -webkit-box-orient: vertical;
+}
+
+/* Ссылка "Подробнее" */
+.pereval-more {
+  display: block;
+  font-size: 14px;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #007bff; /* Синий в светлой */
+  text-decoration: underline;
+}
+
+/* Тёмная тема для ссылки */
+.dark-mode .pereval-more {
+  color: #1e90ff; /* Голубой в тёмной */
+}
+
+/* Кнопка темы */
+.pereval-container .theme-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Тёмная тема для кнопки */
+.dark-mode .theme-btn {
+  background-color: #1e90ff;
+}
+
+/* Ховер для кнопки */
+.pereval-container .theme-btn:hover {
+  background-color: #0056b3; /* Светлая */
+}
+
+.dark-mode .pereval-container .theme-btn:hover {
+  background-color: #4682b4; /* Тёмная */
+}
+
+/* Модальное окно */
+.pereval-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Увеличенное изображение */
+.pereval-modal-image {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+  .pereval-tabs {
+    gap: 5px; /* Меньше отступы на мобильных */
+  }
+
+  .pereval-tab {
+    font-size: 12px; /* Меньший шрифт */
+  }
+
+  .pereval-title {
+    gap: 5px; /* Меньше пробелы */
+  }
+
+  .pereval-name {
+    max-width: 50%; /* Уже для мобильных */
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Центрирование элементов в EditPhotos */
 .upload-photos-container {
     text-align: center; /* Центрируем текст внутри контейнера */

@@ -1,4 +1,5 @@
 // AlpPass/src/pages/PerevalDetail.tsx
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../index.css";
@@ -39,14 +40,17 @@ interface PerevalData {
 }
 
 const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) => {
-  const { id } = useParams<{ id: string }>(); // Получаем ID перевала из URL
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [pereval, setPereval] = useState<PerevalData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"Подъём" | "Седловина" | "Спуск">("Седловина");
+  const [modalImage, setModalImage] = useState<string | null>(null);
 
   const API_URL = process.env.REACT_APP_API_URL || "https://rostislav62.pythonanywhere.com";
 
+  // Загрузка данных перевала
   useEffect(() => {
     const fetchPereval = async () => {
       try {
@@ -64,128 +68,128 @@ const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) 
     };
 
     fetchPereval();
-  }, [id, API_URL]); // Добавляем API_URL в зависимости
+  }, [id, API_URL]);
+
+  // Обработчик переключения вкладок
+  const handleTabClick = (tab: "Подъём" | "Седловина" | "Спуск") => {
+    setActiveTab(tab);
+  };
+
+  // Обработчик открытия/закрытия модального окна
+  const handleImageClick = (imageUrl: string | null) => {
+    setModalImage(imageUrl);
+  };
 
   if (loading) {
-    return <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>Загрузка...</div>;
+    return <div className={`pereval-container ${darkMode ? "dark-mode" : "light-mode"}`}>Загрузка...</div>;
   }
 
   if (error) {
-    return <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>{error}</div>;
+    return <div className={`pereval-container ${darkMode ? "dark-mode" : "light-mode"}`}>{error}</div>;
   }
 
   if (!pereval) {
-    return <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>Перевал не найден</div>;
+    return <div className={`pereval-container ${darkMode ? "dark-mode" : "light-mode"}`}>Перевал не найден</div>;
   }
 
+  // Форматирование даты в локальный формат
+  const formattedDate = new Date(pereval.add_time).toLocaleDateString();
+
+  // Определение фотографии для текущей вкладки
+  const tabImages = {
+    Подъём: pereval.images[0]?.data || null,
+    Седловина: pereval.images[1]?.data || null,
+    Спуск: pereval.images[2]?.data || null,
+  };
+  const currentImage = tabImages[activeTab];
+
   return (
-    <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>
-      <h1 className="submit-title">{pereval.title}</h1>
-      <button onClick={() => navigate("/submit")} className="theme-btn">Назад</button>
+    <div className={`pereval-container ${darkMode ? "dark-mode" : "light-mode"}`}>
+      {/* Заголовок */}
+      <div className="pereval-header">
+        <div className="pereval-title">
+          <span className="pereval-name">пер. {pereval.title}</span>
+          <span className="pereval-difficulty">{pereval.difficulties[0]?.difficulty.code || "Не указано"}</span>
+          <span className="pereval-height">{pereval.coord.height}м</span>
+        </div>
+        <p className="pereval-date">{formattedDate}</p>
+      </div>
 
-      <fieldset className="submit-section">
-        <legend>Данные перевала</legend>
-        <div className="form-group">
-          <label>Название массива:</label>
-          <p>{pereval.beautyTitle}</p>
-        </div>
-        <div className="form-group">
-          <label>Официальное название:</label>
-          <p>{pereval.title}</p>
-        </div>
-        <div className="form-group">
-          <label>Местное название:</label>
-          <p>{pereval.other_titles || "Не указано"}</p>
-        </div>
-        <div className="form-group">
-          <label>Связь:</label>
-          <p>{pereval.connect ? "Да" : "Нет"}</p>
-        </div>
-        <div className="form-group">
-          <label>Дата добавления:</label>
-          <p>{new Date(pereval.add_time).toLocaleString()}</p>
-        </div>
-        <div className="form-group">
-          <label>Описание маршрута:</label>
-          <p>{pereval.route_description || "Не указано"}</p>
-        </div>
-      </fieldset>
+      {/* Разделительная линия */}
+      <hr className="pereval-divider" />
 
-      <fieldset className="submit-section">
-        <legend>Пользователь</legend>
-        <div className="form-group">
-          <label>Фамилия:</label>
-          <p>{pereval.user.family_name}</p>
-        </div>
-        <div className="form-group">
-          <label>Имя:</label>
-          <p>{pereval.user.first_name}</p>
-        </div>
-        <div className="form-group">
-          <label>Отчество:</label>
-          <p>{pereval.user.father_name || "Не указано"}</p>
-        </div>
-        <div className="form-group">
-          <label>Телефон:</label>
-          <p>{pereval.user.phone}</p>
-        </div>
-        <div className="form-group">
-          <label>Email:</label>
-          <p>{pereval.user.email}</p>
-        </div>
-      </fieldset>
+      {/* Вкладки */}
+      <div className="pereval-tabs">
+        <button
+          className={`pereval-tab ${activeTab === "Подъём" ? "active" : ""}`}
+          onClick={() => handleTabClick("Подъём")}
+        >
+          Подъём
+        </button>
+        <button
+          className={`pereval-tab ${activeTab === "Седловина" ? "active" : ""}`}
+          onClick={() => handleTabClick("Седловина")}
+        >
+          Седловина
+        </button>
+        <button
+          className={`pereval-tab ${activeTab === "Спуск" ? "active" : ""}`}
+          onClick={() => handleTabClick("Спуск")}
+        >
+          Спуск
+        </button>
+      </div>
 
-      <fieldset className="submit-section">
-        <legend>Координаты</legend>
-        <div className="form-group">
-          <label>Широта:</label>
-          <p>{pereval.coord.latitude}</p>
-        </div>
-        <div className="form-group">
-          <label>Долгота:</label>
-          <p>{pereval.coord.longitude}</p>
-        </div>
-        <div className="form-group">
-          <label>Высота:</label>
-          <p>{pereval.coord.height} м</p>
-        </div>
-      </fieldset>
-
-      <fieldset className="submit-section">
-        <legend>Сложности</legend>
-        {pereval.difficulties.length > 0 ? (
-          pereval.difficulties.map((diff, index) => (
-            <div key={index} className="form-group">
-              <p><strong>Сезон:</strong> {diff.season.name} ({diff.season.code})</p>
-              <p><strong>Сложность:</strong> {diff.difficulty.code} - {diff.difficulty.description}</p>
-              <p><strong>Характеристики:</strong> {diff.difficulty.characteristics}</p>
-              <p><strong>Требования:</strong> {diff.difficulty.requirements}</p>
+      {/* Фото */}
+      <div className="pereval-photo-container">
+        {currentImage ? (
+          <div className="pereval-photo">
+            <img src={currentImage} alt={activeTab} className="pereval-image" />
+            <span className="pereval-coordinates">
+              {pereval.coord.latitude}, {pereval.coord.longitude}
+            </span>
+            <div className="pereval-zoom" onClick={() => handleImageClick(currentImage)}>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="10" cy="10" r="6" stroke="#fff" strokeWidth="2" />
+                <path d="M10 7v6m-3 3h6" stroke="#fff" strokeWidth="2" />
+                <path d="M14.5 14.5L20 20" stroke="#fff" strokeWidth="2" />
+              </svg>
             </div>
-          ))
+          </div>
         ) : (
-          <p>Данные о сложностях отсутствуют</p>
+          <div className="pereval-photo-empty">
+            <span>Нет фото</span>
+          </div>
         )}
-      </fieldset>
+      </div>
 
-      <fieldset className="submit-section">
-        <legend>Изображения</legend>
-        <div className="photos-list">
-          {pereval.images.length > 0 ? (
-            pereval.images.map((img) => (
-              <div key={img.id} className="photo-item">
-                <img src={img.data} alt={img.title} className="photo-preview" />
-                <p>{img.title}</p>
-              </div>
-            ))
-          ) : (
-            <p>Изображения отсутствуют</p>
-          )}
-        </div>
-      </fieldset>
+      {/* Описание */}
+      <p className="pereval-description">
+        {pereval.route_description || "Описание отсутствует"}
+      </p>
 
+      {/* Подробнее */}
+      <a href="#" className="pereval-more" onClick={(e) => e.preventDefault()}>
+        Подробнее
+      </a>
+
+      {/* Кнопка темы */}
       <button onClick={toggleTheme} className="theme-btn">
         {darkMode ? "Светлая тема" : "Тёмная тема"}
       </button>
+
+      {/* Модальное окно */}
+      {modalImage && (
+        <div className="pereval-modal" onClick={() => handleImageClick(null)}>
+          <img src={modalImage} alt="Увеличенное фото" className="pereval-modal-image" />
+        </div>
+      )}
     </div>
   );
 };
