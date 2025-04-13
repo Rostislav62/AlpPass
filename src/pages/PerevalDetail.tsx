@@ -1,7 +1,5 @@
-// AlpPass/src/pages/PerevalDetail.tsx
-
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "../index.css";
 
 interface PerevalDetailProps {
@@ -41,7 +39,6 @@ interface PerevalData {
 
 const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [pereval, setPereval] = useState<PerevalData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -175,9 +172,7 @@ const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) 
       </p>
 
       {/* Подробнее */}
-      <a href="#" className="pereval-more" onClick={(e) => e.preventDefault()}>
-        Подробнее
-      </a>
+      <button className="pereval-more">Подробнее</button>
 
       {/* Кнопка темы */}
       <button onClick={toggleTheme} className="theme-btn">
