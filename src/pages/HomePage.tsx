@@ -1,3 +1,5 @@
+// AlpPass/src/pages/HomePage.tsx
+
 import React from "react"; /* Импорт React для создания компонента */
 import { Link } from "react-router-dom"; /* Импорт компонента Link из react-router-dom для навигации */
 import "../index.css"; /* Импорт глобальных стилей из файла index.css, находящегося на уровень выше */
@@ -26,8 +28,8 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, toggleTheme }) => {
                 <Link to="/register"> {/* Ссылка на страницу регистрации с использованием компонента Link */}
                     <button className="register-btn">Зарегистрироваться</button> {/* Кнопка "Зарегистрироваться" с классом register-btn для стилизации */}
                 </Link> {/* Закрывающий тег для ссылки на регистрацию */}
-                <Link to="/login" className="login-link"> {/* Ссылка на страницу логина с классом login-link для стилизации */}
-                    Войти {/* Текст ссылки "Войти" */}
+                <Link to="/login"> {/* Ссылка на страницу логина с использованием компонента Link */}
+                    <button className="login-btn">Войти</button> {/* Кнопка "Войти" с классом login-btn для стилизации, унифицирована с register-btn */}
                 </Link> {/* Закрывающий тег для ссылки на логин */}
                 <button onClick={toggleTheme} className="theme-btn"> {/* Кнопка переключения темы с обработчиком onClick и классом theme-btn */}
                     {darkMode ? "Светлая тема" : "Тёмная тема"} {/* Условный текст кнопки: "Светлая тема" если darkMode true, иначе "Тёмная тема" */}
