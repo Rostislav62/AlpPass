@@ -1,222 +1,547 @@
+/* AlpPass/src/index.css */
+
 /* *************************Общие стили************************* */
+
+/* Базовые стили для всего приложения */
 body {
   margin: 0; /* Убираем внешние отступы */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; /* Установка шрифта с приоритетом системных шрифтов */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; /* Системные шрифты для единообразия */
   -webkit-font-smoothing: antialiased; /* Сглаживание шрифтов для WebKit-браузеров */
   -moz-osx-font-smoothing: grayscale; /* Сглаживание шрифтов для Firefox на macOS */
 }
 
+/* Тёмная тема для фона и текста (используется на всех страницах) */
 .dark-mode {
-  background-color: #1f2937; /* Установка тёмно-серого фона */
-  color: white; /* Установка белого цвета текста */
+  background-color: #1f2937; /* Тёмно-серый фон */
+  color: white; /* Белый текст */
 }
 
+/* Светлая тема для фона и текста (используется на всех страницах) */
 .light-mode {
-  background-color: white; /* Установка белого фона */
-  color: #1f2937; /* Установка тёмно-серого цвета текста */
+  background-color: white; /* Белый фон */
+  color: #1f2937; /* Тёмно-серый текст */
 }
 
+/* Главный контейнер приложения */
 .App {
-  min-height: 100vh; /* Установка минимальной высоты на всю высоту экрана */
+  min-height: 100vh; /* Минимальная высота на весь экран */
 }
 
+/* Заголовок приложения с информацией о пользователе */
 .App-header {
-  position: relative; /* Установка относительного позиционирования для дочерних элементов */
-  width: 100%; /* Установка ширины на 100% */
-  padding: 0.5rem; /* Установка внутреннего отступа 0.5rem для компактности */
-  display: flex; /* Установка flex-контейнера */
-  flex-direction: column; /* Установка направления flex-элементов в колонку */
-  align-items: center; /* Выравнивание элементов по центру горизонтально */
-  min-height: 4rem; /* Установка минимальной высоты 4rem, чтобы вместить имя, email и кнопку */
+  position: relative; /* Относительное позиционирование для кнопок */
+  width: 100%; /* Полная ширина */
+  padding: 0.5rem; /* Внутренний отступ для компактности */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование по горизонтали */
+  min-height: 4rem; /* Минимальная высота для имени, email и кнопки */
 }
 
+/* Информация о пользователе (имя и email) */
 .user-info {
-  text-align: center; /* Выравнивание текста по центру */
-  padding: 0.5rem; /* Установка внутреннего отступа 0.5rem для компактности */
-  width: 100%; /* Установка ширины на 100% */
+  text-align: center; /* Центрирование текста */
+  padding: 0.5rem; /* Внутренний отступ */
+  width: 100%; /* Полная ширина */
 }
 
+/* Текст имени и email пользователя */
 .user-info span {
-  display: block; /* Установка блочного отображения для переноса на новую строку */
-  font-size: 0.875rem; /* Установка размера шрифта 0.875rem (14px) для компактности */
+  display: block; /* Перенос на новую строку */
+  font-size: 0.875rem; /* Размер шрифта 14px */
 }
 
+/* Цвет текста в тёмной теме */
 .dark-mode .user-info span {
-  color: #e5e7eb; /* Установка светло-серого цвета текста для тёмной темы */
+  color: #e5e7eb; /* Светло-серый текст */
 }
 
+/* Цвет текста в светлой теме */
 .light-mode .user-info span {
-  color: #1f2937; /* Установка тёмно-серого цвета текста для светлой темы */
+  color: #1f2937; /* Тёмно-серый текст */
 }
 
+/* Кнопка меню в заголовке */
 .menu-btn {
-  position: absolute; /* Установка абсолютного позиционирования относительно .App-header */
-  bottom: 0.5rem; /* Установка отступа снизу 0.5rem для размещения в нижней части заголовка */
-  right: 1rem; /* Установка отступа справа 1rem для размещения в правом углу */
-  padding: 0.5rem 1rem; /* Установка внутренних отступов 0.5rem сверху/снизу и 1rem слева/справа */
-  background: linear-gradient(to right, #60a5fa, #2563eb); /* Установка градиентного фона от светло-синего к тёмно-синему */
-  color: white; /* Установка белого цвета текста */
-  font-size: 0.875rem; /* Установка размера шрифта 0.875rem (14px) */
-  font-weight: 600; /* Установка полужирного начертания шрифта */
-  border-radius: 9999px; /* Установка полного скругления углов */
-  text-decoration: none; /* Убираем подчёркивание ссылки */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Установка тени для эффекта поднятия */
-  transition: background 0.3s; /* Установка плавного перехода фона за 0.3 секунды */
+  position: absolute; /* Абсолютное позиционирование в заголовке */
+  bottom: 0.5rem; /* Отступ снизу */
+  right: 1rem; /* Отступ справа */
+  padding: 0.5rem 1rem; /* Внутренние отступы */
+  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+  color: white; /* Белый текст */
+  font-size: 0.875rem; /* Размер шрифта 14px */
+  font-weight: 600; /* Полужирный шрифт */
+  border-radius: 9999px; /* Полное скругление */
+  text-decoration: none; /* Без подчёркивания */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Тень */
+  transition: background 0.3s; /* Плавный переход фона */
 }
 
+/* Эффект наведения для кнопки меню */
 .menu-btn:hover {
-  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Установка градиентного фона при наведении */
+  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении */
 }
 
+/* Кнопка меню в тёмной теме */
 .dark-mode .menu-btn {
-  background: linear-gradient(to right, #4b5563, #1f2937); /* Установка градиентного фона для тёмной темы */
+  background: linear-gradient(to right, #4b5563, #1f2937); /* Градиент для тёмной темы */
 }
 
+/* Эффект наведения в тёмной теме */
 .dark-mode .menu-btn:hover {
-  background: linear-gradient(to right, #6b7280, #374151); /* Установка градиентного фона при наведении в тёмной теме */
+  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
 }
 
+/* Группа полей формы (используется в Submit.tsx, UserRegister.tsx, LoginPage.tsx, EditPereval.tsx, EditPhotos.tsx) */
 .form-group {
-  display: flex; /* Установка flex-контейнера */
-  flex-direction: column; /* Установка направления flex-элементов в колонку */
-  gap: 0.25rem; /* Установка расстояния между меткой и полем 0.25rem */
-  margin-bottom: 1rem; /* Установка нижнего отступа 1rem между группами */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  gap: 0.25rem; /* Расстояние между меткой и полем */
+  margin-bottom: 1rem; /* Нижний отступ */
 }
 
+/* Метка поля формы */
 .form-group label {
-  font-size: 0.875rem; /* Установка размера шрифта 0.875rem (14px) */
-  font-weight: 500; /* Установка среднего начертания шрифта */
+  font-size: 0.875rem; /* Размер шрифта 14px */
+  font-weight: 500; /* Средний вес шрифта */
 }
 
+/* Сообщение об ошибке (используется в Submit.tsx, UserRegister.tsx, LoginPage.tsx, AllPass.tsx) */
 .error-message {
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  color: #ef4444; /* Установка красного цвета текста для ошибки */
-  margin-bottom: 1rem; /* Установка нижнего отступа 1rem */
-  text-align: center; /* Выравнивание текста по центру */
+  font-size: 1rem; /* Размер шрифта 16px */
+  color: #ef4444; /* Красный цвет */
+  margin-bottom: 1rem; /* Нижний отступ */
+  text-align: center; /* Центрирование */
 }
 
+/* Кнопка переключения темы (используется на всех страницах) */
 .theme-btn {
-  margin-top: 1.5rem; /* Установка верхнего отступа 1.5rem для пространства после контента */
-  padding: 0.5rem 1rem; /* Установка внутренних отступов 0.5rem сверху/снизу и 1rem слева/справа */
-  background: #4b5563; /* Установка серого фона */
-  color: white; /* Установка белого цвета текста */
-  font-size: 0.875rem; /* Установка размера шрифта 0.875rem (14px) */
-  font-weight: 600; /* Установка полужирного начертания шрифта */
-  border-radius: 9999px; /* Установка полного скругления углов */
-  border: none; /* Убираем границу */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Установка тени */
-  cursor: pointer; /* Установка курсора в виде указателя */
-  transition: background 0.3s; /* Установка плавного перехода фона */
+  margin-top: 1.5rem; /* Верхний отступ */
+  padding: 0.5rem 1rem; /* Внутренние отступы */
+  background: linear-gradient(to right, #9ca3af, #4b5563); /* Градиентный фон */
+  color: white; /* Белый текст */
+  font-size: 0.875rem; /* Размер шрифта 14px */
+  font-weight: 600; /* Полужирный шрифт */
+  border-radius: 9999px; /* Полное скругление */
+  border: none; /* Без границы */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Тень */
+  cursor: pointer; /* Курсор указателя */
+  transition: background 0.3s; /* Плавный переход фона */
 }
 
+/* Эффект наведения для кнопки темы */
 .theme-btn:hover {
-  background: #6b7280; /* Установка более светлого серого фона при наведении */
+  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
 }
 
+/* Тёмная тема для кнопки темы */
 .dark-mode .theme-btn {
-  background: #6b7280; /* Установка более светлого серого фона для тёмной темы */
+  background: linear-gradient(to right, #6b7280, #374151); /* Градиент для тёмной темы */
 }
 
+/* Эффект наведения в тёмной теме */
 .dark-mode .theme-btn:hover {
-  background: #9ca3af; /* Установка ещё более светлого серого фона при наведении */
+  background: linear-gradient(to right, #9ca3af, #4b5563); /* Градиент при наведении */
+}
+
+/* *************************Стили для AllPass.tsx************************* */
+
+/* Контейнер страницы со списком всех перевалов */
+.allpass-container {
+  height: calc(100vh - 4rem); /* Высота с учётом заголовка */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование по горизонтали */
+  justify-content: center; /* Центрирование по вертикали */
+  padding: 1rem; /* Внутренний отступ */
+  overflow: hidden; /* Без прокрутки страницы */
+}
+
+/* Заголовок страницы */
+.allpass-title {
+  font-size: 1.5rem; /* Размер шрифта 24px */
+  font-weight: bold; /* Жирный шрифт */
+  margin-bottom: 1rem; /* Нижний отступ */
+  text-align: center; /* Центрирование */
+}
+
+/* Обёртка таблицы */
+.table-wrapper {
+  width: 100%; /* Полная ширина */
+  max-width: 50rem; /* Максимальная ширина */
+  background: #ffffff; /* Белый фон */
+  border-radius: 0.5rem; /* Скругление углов */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
+  overflow: hidden; /* Без лишней прокрутки */
+}
+
+/* Тёмная тема для обёртки таблицы */
+.dark-mode .table-wrapper {
+  background: #1f2937; /* Тёмный фон */
+}
+
+/* Таблица перевалов */
+.pereval-table {
+  width: 100%; /* Полная ширина */
+  border-collapse: collapse; /* Без двойных границ */
+}
+
+/* Заголовки таблицы */
+.pereval-table thead th {
+  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+  color: white; /* Белый текст */
+  font-size: 1rem; /* Размер шрифта 16px */
+  font-weight: 600; /* Полужирный шрифт */
+  padding: 0.75rem; /* Внутренний отступ */
+  text-align: center; /* Центрирование */
+  position: sticky; /* Фиксация при прокрутке */
+  top: 0; /* Привязка к верху */
+  z-index: 1; /* Поверх тела таблицы */
+}
+
+/* Тёмная тема для заголовков */
+.dark-mode .pereval-table thead th {
+  background: linear-gradient(to right, #4b5563, #1f2937); /* Градиент для тёмной темы */
+}
+
+/* Тело таблицы */
+.pereval-table tbody {
+  display: block; /* Блочный для прокрутки */
+  max-height: 50vh; /* Максимальная высота */
+  overflow-y: auto; /* Вертикальная прокрутка */
+}
+
+/* Заголовок и строки таблицы */
+.pereval-table thead,
+.pereval-table tbody tr {
+  display: table; /* Табличная структура */
+  width: 100%; /* Полная ширина */
+  table-layout: fixed; /* Фиксированная ширина столбцов */
+}
+
+/* Ячейки таблицы */
+.pereval-table td {
+  padding: 0.75rem; /* Внутренний отступ */
+  font-size: 0.875rem; /* Размер шрифта 14px */
+  border-bottom: 1px solid #d1d5db; /* Светлая граница */
+  text-align: center; /* Центрирование */
+}
+
+/* Чётные строки */
+.pereval-row:nth-child(even) {
+  background: #f9fafb; /* Светло-серый фон */
+}
+
+/* Нечётные строки */
+.pereval-row:nth-child(odd) {
+  background: #ffffff; /* Белый фон */
+}
+
+/* Тёмная тема для чётных строк */
+.dark-mode .pereval-row:nth-child(even) {
+  background: #374151; /* Тёмно-серый фон */
+}
+
+/* Тёмная тема для нечётных строк */
+.dark-mode .pereval-row:nth-child(odd) {
+  background: #1f2937; /* Ещё более тёмный фон */
+}
+
+/* Эффект наведения на строку */
+.pereval-row:hover {
+  background: #e5e7eb; /* Светло-серый фон */
+  transition: background 0.2s; /* Плавный переход */
+}
+
+/* Тёмная тема для наведения */
+.dark-mode .pereval-row:hover {
+  background: #4b5563; /* Серый фон */
+}
+
+/* *************************Стили для EditPereval.tsx************************* */
+
+/* Контейнер страницы редактирования перевала */
+.editpereval-container {
+  height: calc(100vh - 4rem); /* Высота с учётом заголовка */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование по горизонтали */
+  padding: 1rem; /* Внутренний отступ */
+  overflow-y: auto; /* Вертикальная прокрутка */
+}
+
+/* Заголовок страницы */
+.editpereval-title {
+  font-size: 1.5rem; /* Размер шрифта 24px */
+  font-weight: bold; /* Жирный шрифт */
+  margin-bottom: 1.5rem; /* Нижний отступ */
+  text-align: center; /* Центрирование */
+}
+
+/* Форма редактирования */
+.editpereval-form {
+  width: 100%; /* Полная ширина */
+  max-width: 24rem; /* Максимальная ширина */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  gap: 1.5rem; /* Расстояние между секциями */
+}
+
+/* Секция формы */
+.editpereval-section {
+  border: 1px solid #d1d5db; /* Светлая рамка */
+  border-radius: 0.5rem; /* Скругление углов */
+  padding: 1rem; /* Внутренний отступ */
+  background-color: #f9fafb; /* Светлый фон */
+}
+
+/* Тёмная тема для секции */
+.dark-mode .editpereval-section {
+  border-color: #4b5563; /* Серая рамка */
+  background-color: #374151; /* Тёмный фон */
+}
+
+/* Заголовок секции */
+.editpereval-section legend {
+  font-size: 1.125rem; /* Размер шрифта 18px */
+  font-weight: 600; /* Полужирный шрифт */
+  padding: 0 0.5rem; /* Горизонтальный отступ */
+}
+
+/* Поле ввода */
+.editpereval-input {
+  padding: 0.75rem; /* Внутренний отступ */
+  font-size: 1rem; /* Размер шрифта 16px */
+  border: 2px solid #d1d5db; /* Светлая граница */
+  border-radius: 0.5rem; /* Скругление углов */
+  outline: none; /* Без outline */
+  transition: border-color 0.3s; /* Плавный переход границы */
+}
+
+/* Фокус поля ввода */
+.editpereval-input:focus {
+  border-color: #2563eb; /* Синяя граница */
+}
+
+/* Тёмная тема для поля ввода */
+.dark-mode .editpereval-input {
+  border-color: #4b5563; /* Серая граница */
+  background-color: #4b5563; /* Тёмный фон */
+  color: white; /* Белый текст */
+}
+
+/* Фокус в тёмной теме */
+.dark-mode .editpereval-input:focus {
+  border-color: #60a5fa; /* Светло-синяя граница */
+}
+
+/* Отключённое поле */
+.editpereval-input.disabled {
+  background-color: #e5e7eb; /* Светло-серый фон */
+  color: #6b7280; /* Серый текст */
+  cursor: not-allowed; /* Курсор "запрещено" */
+}
+
+/* Отключённое поле в тёмной теме */
+.dark-mode .editpereval-input.disabled {
+  background-color: #6b7280; /* Тёмный фон */
+  color: #d1d5db; /* Светло-серый текст */
+}
+
+/* Кнопка отправки */
+.editpereval-btn {
+  padding: 0.75rem 1.5rem; /* Внутренние отступы */
+  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+  color: white; /* Белый текст */
+  font-size: 1rem; /* Размер шрифта 16px */
+  font-weight: 600; /* Полужирный шрифт */
+  border: none; /* Без границы */
+  border-radius: 9999px; /* Полное скругление */
+  cursor: pointer; /* Курсор указателя */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Тень */
+  transition: background 0.3s; /* Плавный переход фона */
+}
+
+/* Эффект наведения для кнопки */
+.editpereval-btn:hover {
+  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении */
+}
+
+/* Тёмная тема для кнопки */
+.dark-mode .editpereval-btn {
+  background: linear-gradient(to right, #4b5563, #1f2937); /* Градиент для тёмной темы */
+}
+
+/* Эффект наведения в тёмной теме */
+.dark-mode .editpereval-btn:hover {
+  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
+}
+
+/* Текст загрузки */
+.loading-text {
+  font-size: 1.25rem; /* Размер шрифта 20px */
+  font-weight: 500; /* Средний вес */
+  text-align: center; /* Центрирование */
+}
+
+/* *************************Стили для EditPhotos.tsx************************* */
+
+/* Контейнер страницы загрузки фото */
+.upload-photos-container {
+  text-align: center; /* Центрирование текста */
+  padding: 20px; /* Внутренние отступы */
+}
+
+/* Заголовок страницы */
+.upload-photos-title {
+  text-align: center; /* Центрирование */
+  margin-bottom: 20px; /* Нижний отступ */
+}
+
+/* Список текущих фото */
+.current-photos-list,
+.image-list {
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование по горизонтали */
+  gap: 20px; /* Расстояние между элементами */
+}
+
+/* Элемент списка фото */
+.photo-item,
+.image-item {
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование */
+  width: 200px; /* Фиксированная ширина */
+}
+
+/* Поле ввода для загрузки */
+.upload-photos-input {
+  width: 100%; /* Полная ширина */
+  max-width: 180px; /* Максимальная ширина */
+  margin: 0 auto; /* Центрирование */
+}
+
+/* Контейнер для кнопок действий */
+.image-actions {
+  display: flex; /* Flex-контейнер */
+  justify-content: center; /* Центрирование */
+  gap: 10px; /* Расстояние между кнопками */
+  margin-top: 10px; /* Верхний отступ */
+}
+
+/* Кнопка загрузки и удаления */
+.upload-btn,
+.delete-btn {
+  padding: 5px 10px; /* Внутренние отступы */
+}
+
+/* Уменьшение размера превью изображений */
+.photo-preview,
+.image-preview {
+  max-width: 180px; /* Ограничение ширины превью */
+  max-height: 180px; /* Ограничение высоты превью */
+  object-fit: cover; /* Сохранение пропорций с обрезкой */
+  cursor: pointer; /* Курсор указателя */
 }
 
 /* *************************Стили для HomePage.tsx************************* */
 
 /* Главный контейнер страницы */
 .container {
-  height: 100vh; /* Установка высоты на 100% экрана для заполнения всей области */
-  display: flex; /* Использование flex-контейнера для гибкой компоновки */
-  flex-direction: column; /* Расположение элементов в колонку */
-  align-items: center; /* Центрирование элементов по горизонтали */
-  padding: 0.25rem; /* Внутренний отступ 0.25rem для компактности */
-  overflow: hidden; /* Скрытие содержимого, выходящего за пределы контейнера */
-}
-
-/* Заголовок страницы */
-.header {
-  position: relative; /* Относительное позиционирование для дочерних элементов */
-  width: 100%; /* Полная ширина контейнера */
-  height: 40vh; /* Высота 40% экрана для размещения баннера */
-  display: flex; /* Flex-контейнер для управления содержимым */
-  flex-direction: column; /* Расположение элементов в колонку */
+  height: 100vh; /* Полная высота экрана */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
   align-items: center; /* Центрирование по горизонтали */
-  justify-content: flex-end; /* Выравнивание содержимого к нижней части */
-  flex-shrink: 0; /* Запрет сжатия для сохранения высоты баннера */
+  padding: 0.25rem; /* Внутренний отступ */
+  overflow: hidden; /* Без прокрутки */
 }
 
-/* Изображение в заголовке */
+/* Заголовок с баннером */
+.header {
+  position: relative; /* Относительное позиционирование */
+  width: 100%; /* Полная ширина */
+  height: 40vh; /* Высота 40% экрана */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование */
+  justify-content: flex-end; /* Выравнивание к низу */
+  flex-shrink: 0; /* Без сжатия */
+}
+
+/* Изображение баннера */
 .header img {
-  width: 100%; /* Полная ширина контейнера */
-  height: 100%; /* Полная высота заголовка */
-  object-fit: cover; /* Обрезка изображения с сохранением пропорций */
-  border: 2px solid; /* Сплошная рамка толщиной 2px */
+  width: 100%; /* Полная ширина */
+  height: 100%; /* Полная высота */
+  object-fit: cover; /* Обрезка с сохранением пропорций */
+  border: 2px solid; /* Рамка */
 }
 
 /* Рамка изображения в тёмной теме */
 .dark-mode .header img {
-  border-color: #4b5563; /* Серый цвет рамки для тёмной темы */
-  filter: brightness(85%); /* Уменьшение яркости изображения до 85% */
+  border-color: #4b5563; /* Серая рамка */
+  filter: brightness(85%); /* Уменьшение яркости */
 }
 
 /* Рамка изображения в светлой теме */
 .light-mode .header img {
-  border-color: #d1d5db; /* Светло-серый цвет рамки для светлой темы */
-  filter: brightness(100%); /* Полная яркость изображения */
+  border-color: #d1d5db; /* Светло-серая рамка */
+  filter: brightness(100%); /* Полная яркость */
 }
 
-/* Основной контент страницы */
+/* Основной контент */
 .main {
   text-align: center; /* Центрирование текста */
-  display: flex; /* Flex-контейнер для содержимого */
-  flex-direction: column; /* Расположение элементов в колонку */
-  align-items: center; /* Центрирование по горизонтали */
-  gap: 0.5rem; /* Расстояние 0.5rem между элементами */
-  margin-top: 0.25rem; /* Верхний отступ 0.25rem */
-  margin-bottom: 1rem; /* Нижний отступ 1rem для пространства перед футером */
-  flex-shrink: 1; /* Разрешение сжатия для адаптации */
-  flex-grow: 0; /* Запрет роста для контроля размера */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование */
+  gap: 0.5rem; /* Расстояние между элементами */
+  margin-top: 0.25rem; /* Верхний отступ */
+  margin-bottom: 1rem; /* Нижний отступ */
+  flex-shrink: 1; /* Разрешение сжатия */
+  flex-grow: 0; /* Без роста */
 }
 
-/* Заголовок в основном контенте */
+/* Заголовок контента */
 .main h1 {
-  font-size: 1.25rem; /* Размер шрифта 1.25rem (20px) для компактности */
-  font-weight: bold; /* Жирное начертание для акцента */
-  margin: 0; /* Удаление отступов для экономии пространства */
+  font-size: 1.25rem; /* Размер шрифта 20px */
+  font-weight: bold; /* Жирный шрифт */
+  margin: 0; /* Без отступов */
 }
 
-/* Текст в основном контенте */
+/* Текст контента */
 .main p {
-  font-size: 0.875rem; /* Размер шрифта 0.875rem (14px) для читаемости */
-  line-height: 1.1; /* Высота строки 1.1 для плотного текста */
-  margin: 0; /* Удаление отступов для компактности */
+  font-size: 0.875rem; /* Размер шрифта 14px */
+  line-height: 1.1; /* Высота строки */
+  margin: 0; /* Без отступов */
 }
 
 /* Нижняя часть страницы */
 .footer {
-  width: 100%; /* Полная ширина контейнера */
-  display: flex; /* Flex-контейнер для кнопок */
-  flex-direction: column; /* Расположение кнопок в колонку */
-  align-items: center; /* Центрирование по горизонтали */
+  width: 100%; /* Полная ширина */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование */
   justify-content: center; /* Центрирование по вертикали */
-  flex-shrink: 1; /* Разрешение сжатия для адаптации */
-  flex-grow: 0; /* Запрет роста для контроля размера */
-  padding-bottom: 0.25rem; /* Нижний отступ 0.25rem */
+  flex-shrink: 1; /* Разрешение сжатия */
+  flex-grow: 0; /* Без роста */
+  padding-bottom: 0.25rem; /* Нижний отступ */
 }
 
 /* Кнопка регистрации */
 .register-btn {
-  margin-top: 1.5rem; /* Верхний отступ 1.5rem для отделения от контента */
-  width: 18rem; /* Фиксированная ширина для одинакового размера с login-btn */
-  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиент от светло-синего к тёмно-синему */
-  color: white; /* Белый цвет текста */
-  font-size: 0.875rem; /* Размер шрифта 0.875rem (14px) */
-  font-weight: 600; /* Полужирное начертание для акцента */
-  padding: 0.5rem 1rem; /* Отступы 0.5rem сверху/снизу, 1rem слева/справа */
-  border-radius: 9999px; /* Полное скругление углов */
-  transition: background 0.3s; /* Плавный переход фона за 0.3 секунды */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Лёгкая тень для объёма */
-  border: none; /* Удаление границы */
+  margin-top: 1.5rem; /* Верхний отступ */
+  width: 18rem; /* Фиксированная ширина */
+  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+  color: white; /* Белый текст */
+  font-size: 0.875rem; /* Размер шрифта 14px */
+  font-weight: 600; /* Полужирный шрифт */
+  padding: 0.5rem 1rem; /* Внутренние отступы */
+  border-radius: 9999px; /* Полное скругление */
+  transition: background 0.3s; /* Плавный переход фона */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Тень */
+  border: none; /* Без границы */
   cursor: pointer; /* Курсор указателя */
 }
 
@@ -225,983 +550,459 @@ body {
   background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении */
 }
 
-/* Кнопка логина */
+/* Кнопка входа */
 .login-btn {
-  margin-top: 0.5rem; /* Верхний отступ 0.5rem для компактности */
-  width: 18rem; /* Фиксированная ширина для одинакового размера с register-btn */
-  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиент от светло-синего к тёмно-синему, как у register-btn */
-  color: white; /* Белый цвет текста */
-  font-size: 0.875rem; /* Размер шрифта 0.875rem (14px) */
-  font-weight: 600; /* Полужирное начертание для акцента */
-  padding: 0.5rem 1rem; /* Отступы 0.5rem сверху/снизу, 1rem слева/справа */
-  border-radius: 9999px; /* Полное скругление углов */
-  transition: background 0.3s; /* Плавный переход фона за 0.3 секунды */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Лёгкая тень для объёма */
-  border: none; /* Удаление границы */
+  margin-top: 0.5rem; /* Верхний отступ */
+  width: 18rem; /* Фиксированная ширина */
+  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+  color: white; /* Белый текст */
+  font-size: 0.875rem; /* Размер шрифта 14px */
+  font-weight: 600; /* Полужирный шрифт */
+  padding: 0.5rem 1rem; /* Внутренние отступы */
+  border-radius: 9999px; /* Полное скругление */
+  transition: background 0.3s; /* Плавный переход фона */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Тень */
+  border: none; /* Без границы */
   cursor: pointer; /* Курсор указателя */
 }
 
-/* Эффект наведения для кнопки логина */
+/* Эффект наведения для кнопки входа */
 .login-btn:hover {
-  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении, как у register-btn */
+  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении */
 }
 
-/* Кнопка переключения темы */
-.theme-btn {
-  margin-top: 0.5rem; /* Верхний отступ 0.5rem для компактности */
-  max-width: 18rem; /* Максимальная ширина для согласованности с другими кнопками */
-  background: linear-gradient(to right, #9ca3af, #4b5563); /* Градиент для отличия от кнопок входа/регистрации */
-  color: white; /* Белый цвет текста */
-  font-size: 0.875rem; /* Размер шрифта 0.875rem (14px) */
-  font-weight: 600; /* Полужирное начертание */
-  padding: 0.5rem 1rem; /* Отступы 0.5rem сверху/снизу, 1rem слева/справа */
-  border-radius: 9999px; /* Полное скругление углов */
-  transition: background 0.3s; /* Плавный переход фона за 0.3 секунды */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Лёгкая тень для объёма */
-  border: none; /* Удаление границы */
-  cursor: pointer; /* Курсор указателя */
-}
+/* *************************Стили для LoginPage.tsx************************* */
 
-/* Эффект наведения для кнопки темы */
-.theme-btn:hover {
-  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
-}
-
-
-/* *************************Стили для MenuPage.tsx************************* */
-.menu-container {
-  height: calc(100vh - 4rem); /* Высота с учётом .App-header */
+/* Контейнер страницы логина */
+.welcome-container {
+  height: calc(100vh - 4rem); /* Высота с учётом заголовка */
   display: flex; /* Flex-контейнер */
-  flex-direction: column; /* Элементы в колонке */
+  flex-direction: column; /* Элементы в колонку */
   align-items: center; /* Центрирование по горизонтали */
   justify-content: center; /* Центрирование по вертикали */
   padding: 1rem; /* Внутренний отступ */
 }
 
-.menu-title {
+/* Заголовок страницы */
+.welcome-title {
   font-size: 1.5rem; /* Размер шрифта 24px */
   font-weight: bold; /* Жирный шрифт */
-  margin-bottom: 1.5rem; /* Отступ снизу */
-  text-align: center; /* Центрирование текста */
+  margin-bottom: 0.5rem; /* Нижний отступ */
+  text-align: center; /* Центрирование */
 }
 
-.menu-list {
-  list-style: none; /* Убираем стандартные точки списка */
-  padding: 0; /* Убираем внутренние отступы */
-  width: 100%; /* Ширина 100% */
-  max-width: 20rem; /* Максимальная ширина для компактности */
-  display: flex; /* Flex-контейнер */
-  flex-direction: column; /* Элементы в колонке */
-  gap: 1rem; /* Расстояние между пунктами */
+/* Текст приветствия */
+.welcome-text {
+  font-size: 1rem; /* Размер шрифта 16px */
+  margin-bottom: 1.5rem; /* Нижний отступ */
+  text-align: center; /* Центрирование */
 }
 
-.menu-link {
-  display: block; /* Блочный элемент для заполнения контейнера */
-  padding: 0.75rem 1.5rem; /* Внутренние отступы как у кнопки */
-  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+/* Тёмная тема для текста */
+.dark-mode .welcome-text {
+  color: #e5e7eb; /* Светло-серый текст */
+}
+
+/* Поле ввода */
+.welcome-input {
+  padding: 0.75rem; /* Внутренний отступ */
+  font-size: 1rem; /* Размер шрифта 16px */
+  border: 2px solid #d1d5db; /* Светлая граница */
+  border-radius: 0.5rem; /* Скругление углов */
+  outline: none; /* Без outline */
+  width: 100%; /* Полная ширина */
+  max-width: 20rem; /* Максимальная ширина */
+  transition: border-color 0.3s; /* Плавный переход границы */
+}
+
+/* Фокус поля ввода */
+.welcome-input:focus {
+  border-color: #2563eb; /* Синяя граница */
+}
+
+/* Тёмная тема для поля ввода */
+.dark-mode .welcome-input {
+  border-color: #4b5563; /* Серая граница */
+  background-color: #4b5563; /* Тёмный фон */
   color: white; /* Белый текст */
+}
+
+/* Фокус в тёмной теме */
+.dark-mode .welcome-input:focus {
+  border-color: #60a5fa; /* Светло-синяя граница */
+}
+
+/* Контейнер кнопок */
+.welcome-buttons {
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  gap: 1rem; /* Расстояние между кнопками */
+  margin-bottom: 1.5rem; /* Нижний отступ */
+}
+
+/* Кнопки логина и регистрации */
+.welcome-btn {
+  padding: 0.75rem 1.5rem; /* Внутренние отступы */
   font-size: 1rem; /* Размер шрифта 16px */
   font-weight: 600; /* Полужирный шрифт */
-  text-align: center; /* Центрирование текста */
-  text-decoration: none; /* Убираем подчёркивание */
-  border-radius: 9999px; /* Полное скругление углов */
+  border: none; /* Без границы */
+  border-radius: 9999px; /* Полное скругление */
+  cursor: pointer; /* Курсор указателя */
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Тень */
   transition: background 0.3s; /* Плавный переход фона */
 }
 
+/* Кнопка "Продолжить" */
+.welcome-btn.continue {
+  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+  color: white; /* Белый текст */
+}
+
+/* Эффект наведения для кнопки "Продолжить" */
+.welcome-btn.continue:hover:not(:disabled) {
+  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении */
+}
+
+/* Отключённая кнопка "Продолжить" */
+.welcome-btn.continue:disabled {
+  background: #d1d5db; /* Серый фон */
+  color: #6b7280; /* Серый текст */
+  cursor: not-allowed; /* Курсор "запрещено" */
+}
+
+/* Тёмная тема для кнопки "Продолжить" */
+.dark-mode .welcome-btn.continue {
+  background: linear-gradient(to right, #4b5563, #1f2937); /* Градиент для тёмной темы */
+}
+
+/* Эффект наведения в тёмной теме */
+.dark-mode .welcome-btn.continue:hover:not(:disabled) {
+  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
+}
+
+/* Отключённая кнопка в тёмной теме */
+.dark-mode .welcome-btn.continue:disabled {
+  background: #4b5563; /* Тёмный фон */
+  color: #d1d5db; /* Светло-серый текст */
+}
+
+/* Кнопка "Зарегистрироваться" */
+.welcome-btn.register {
+  background: linear-gradient(to right, #34d399, #059669); /* Зелёный градиент */
+  color: white; /* Белый текст */
+}
+
+/* Эффект наведения для кнопки "Зарегистрироваться" */
+.welcome-btn.register:hover {
+  background: linear-gradient(to right, #10b981, #047857); /* Тёмный зелёный градиент */
+}
+
+/* Тёмная тема для кнопки "Зарегистрироваться" */
+.dark-mode .welcome-btn.register {
+  background: linear-gradient(to right, #6b7280, #374151); /* Серый градиент */
+}
+
+/* Эффект наведения в тёмной теме */
+.dark-mode .welcome-btn.register:hover {
+  background: linear-gradient(to right, #9ca3af, #4b5563); /* Светлый серый градиент */
+}
+
+/* *************************Стили для MenuPage.tsx************************* */
+
+/* Контейнер страницы меню */
+.menu-container {
+  height: calc(100vh - 4rem); /* Высота с учётом заголовка */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование по горизонтали */
+  justify-content: center; /* Центрирование по вертикали */
+  padding: 1rem; /* Внутренний отступ */
+}
+
+/* Заголовок меню */
+.menu-title {
+  font-size: 1.5rem; /* Размер шрифта 24px */
+  font-weight: bold; /* Жирный шрифт */
+  margin-bottom: 1.5rem; /* Нижний отступ */
+  text-align: center; /* Центрирование */
+}
+
+/* Список пунктов меню */
+.menu-list {
+  list-style: none; /* Без маркеров */
+  padding: 0; /* Без отступов */
+  width: 100%; /* Полная ширина */
+  max-width: 20rem; /* Максимальная ширина */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  gap: 1rem; /* Расстояние между пунктами */
+}
+
+/* Ссылка меню */
+.menu-link {
+  display: block; /* Блочный элемент */
+  padding: 0.75rem 1.5rem; /* Внутренние отступы */
+  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+  color: white; /* Белый текст */
+  font-size: 1rem; /* Размер шрифта 16px */
+  font-weight: 600; /* Полужирный шрифт */
+  text-align: center; /* Центрирование */
+  text-decoration: none; /* Без подчёркивания */
+  border-radius: 9999px; /* Полное скругление */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Тень */
+  transition: background 0.3s; /* Плавный переход фона */
+}
+
+/* Эффект наведения для ссылки */
 .menu-link:hover {
   background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении */
 }
 
+/* Тёмная тема для ссылки */
 .dark-mode .menu-link {
   background: linear-gradient(to right, #4b5563, #1f2937); /* Градиент для тёмной темы */
 }
 
+/* Эффект наведения в тёмной теме */
 .dark-mode .menu-link:hover {
-  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении в тёмной теме */
+  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
 }
-
-/* *************************Стили для Profile.tsx************************* */
-.profile-container {
-  height: calc(100vh - 4rem); /* Установка высоты с учётом высоты .App-header (4rem) */
-  display: flex; /* Установка flex-контейнера */
-  flex-direction: column; /* Установка направления flex-элементов в колонку */
-  align-items: center; /* Выравнивание элементов по центру горизонтально */
-  justify-content: center; /* Центрирование элементов по вертикали */
-  padding: 1rem; /* Установка внутреннего отступа 1rem */
-}
-
-.profile-title {
-  font-size: 1.5rem; /* Установка размера шрифта 1.5rem (24px) */
-  font-weight: bold; /* Установка жирного начертания шрифта */
-  margin-bottom: 1.5rem; /* Установка нижнего отступа 1.5rem для пространства перед информацией */
-  text-align: center; /* Выравнивание текста по центру */
-}
-
-.profile-info {
-  width: 100%; /* Установка ширины на 100% */
-  max-width: 24rem; /* Ограничение максимальной ширины до 24rem для компактности */
-  background-color: #f9fafb; /* Установка светлого фона для светлой темы */
-  border: 1px solid #d1d5db; /* Установка светло-серой рамки */
-  border-radius: 0.5rem; /* Установка скругления углов 0.5rem */
-  padding: 1rem; /* Установка внутреннего отступа 1rem */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Установка тени для эффекта поднятия */
-}
-
-.dark-mode .profile-info {
-  background-color: #374151; /* Установка тёмного фона для тёмной темы */
-  border-color: #4b5563; /* Установка серой рамки в тёмной теме */
-}
-
-.profile-item {
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  margin-bottom: 0.75rem; /* Установка нижнего отступа 0.75rem между пунктами */
-}
-
-.profile-label {
-  font-weight: 600; /* Установка полужирного начертания шрифта для меток */
-  margin-right: 0.5rem; /* Установка правого отступа 0.5rem для разделения метки и значения */
-}
-
-.edit-btn {
-  padding: 0.75rem 1.5rem; /* Установка внутренних отступов 0.75rem сверху/снизу и 1.5rem слева/справа */
-  background: #d1d5db; /* Установка серого фона для отключённой кнопки */
-  color: #6b7280; /* Установка серого цвета текста */
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  font-weight: 600; /* Установка полужирного начертания шрифта */
-  border: none; /* Убираем границу */
-  border-radius: 9999px; /* Установка полного скругления углов */
-  cursor: not-allowed; /* Установка курсора "запрещено" для отключённой кнопки */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Установка тени */
-  margin-top: 1.5rem; /* Установка верхнего отступа 1.5rem для пространства после информации */
-}
-
-.dark-mode .edit-btn {
-  background: #4b5563; /* Установка тёмно-серого фона для тёмной темы */
-  color: #d1d5db; /* Установка светло-серого цвета текста */
-}
-
-/* *************************Стили для EditPereval.tsx************************* */
-.editpereval-container {
-  height: calc(100vh - 4rem); /* Установка высоты с учётом высоты .App-header (4rem) */
-  display: flex; /* Установка flex-контейнера */
-  flex-direction: column; /* Установка направления flex-элементов в колонку */
-  align-items: center; /* Выравнивание элементов по центру горизонтально */
-  padding: 1rem; /* Установка внутреннего отступа 1rem */
-  overflow-y: auto; /* Включение вертикальной прокрутки при переполнении */
-}
-
-.editpereval-title {
-  font-size: 1.5rem; /* Установка размера шрифта 1.5rem (24px) */
-  font-weight: bold; /* Установка жирного начертания шрифта */
-  margin-bottom: 1.5rem; /* Установка нижнего отступа 1.5rem для пространства перед формой */
-  text-align: center; /* Выравнивание текста по центру */
-}
-
-.editpereval-form {
-  width: 100%; /* Установка ширины на 100% */
-  max-width: 24rem; /* Ограничение максимальной ширины до 24rem для компактности */
-  display: flex; /* Установка flex-контейнера */
-  flex-direction: column; /* Установка направления flex-элементов в колонку */
-  gap: 1.5rem; /* Установка расстояния между секциями формы 1.5rem */
-}
-
-.editpereval-section {
-  border: 1px solid #d1d5db; /* Установка светло-серой рамки */
-  border-radius: 0.5rem; /* Установка скругления углов 0.5rem */
-  padding: 1rem; /* Установка внутреннего отступа 1rem */
-  background-color: #f9fafb; /* Установка светлого фона для светлой темы */
-}
-
-.dark-mode .editpereval-section {
-  border-color: #4b5563; /* Установка серой рамки в тёмной теме */
-  background-color: #374151; /* Установка тёмного фона в тёмной теме */
-}
-
-.editpereval-section legend {
-  font-size: 1.125rem; /* Установка размера шрифта 1.125rem (18px) */
-  font-weight: 600; /* Установка полужирного начертания шрифта */
-  padding: 0 0.5rem; /* Установка горизонтального отступа для красоты */
-}
-
-.editpereval-input {
-  padding: 0.75rem; /* Установка внутренних отступов 0.75rem */
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  border: 2px solid #d1d5db; /* Установка светло-серой границы */
-  border-radius: 0.5rem; /* Установка скругления углов 0.5rem */
-  outline: none; /* Убираем стандартный outline при фокусе */
-  transition: border-color 0.3s; /* Установка плавного перехода цвета границы */
-}
-
-.editpereval-input:focus {
-  border-color: #2563eb; /* Установка синего цвета границы при фокусе */
-}
-
-.dark-mode .editpereval-input {
-  border-color: #4b5563; /* Установка серой границы в тёмной теме */
-  background-color: #4b5563; /* Установка тёмного фона */
-  color: white; /* Установка белого цвета текста */
-}
-
-.dark-mode .editpereval-input:focus {
-  border-color: #60a5fa; /* Установка светло-синего цвета границы при фокусе */
-}
-
-.editpereval-input.disabled {
-  background-color: #e5e7eb; /* Установка светло-серого фона для отключённых полей */
-  color: #6b7280; /* Установка серого цвета текста */
-  cursor: not-allowed; /* Установка курсора "запрещено" */
-}
-
-.dark-mode .editpereval-input.disabled {
-  background-color: #6b7280; /* Установка более тёмного фона для тёмной темы */
-  color: #d1d5db; /* Установка светло-серого цвета текста */
-}
-
-.editpereval-btn {
-  padding: 0.75rem 1.5rem; /* Установка внутренних отступов 0.75rem сверху/снизу и 1.5rem слева/справа */
-  background: linear-gradient(to right, #60a5fa, #2563eb); /* Установка градиентного фона */
-  color: white; /* Установка белого цвета текста */
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  font-weight: 600; /* Установка полужирного начертания шрифта */
-  border: none; /* Убираем границу */
-  border-radius: 9999px; /* Установка полного скругления углов */
-  cursor: pointer; /* Установка курсора в виде указателя */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Установка тени */
-  transition: background 0.3s; /* Установка плавного перехода фона */
-}
-
-.editpereval-btn:hover {
-  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Установка градиентного фона при наведении */
-}
-
-.dark-mode .editpereval-btn {
-  background: linear-gradient(to right, #4b5563, #1f2937); /* Установка градиентного фона для тёмной темы */
-}
-
-.dark-mode .editpereval-btn:hover {
-  background: linear-gradient(to right, #6b7280, #374151); /* Установка градиентного фона при наведении в тёмной теме */
-}
-
-.loading-text {
-  font-size: 1.25rem; /* Установка размера шрифта 1.25rem (20px) */
-  font-weight: 500; /* Установка среднего начертания шрифта */
-  text-align: center; /* Выравнивание текста по центру */
-}
-
-/* *************************Стили для EditPereval.tsx и EditPhotos.tsx************************* */
-.photos-list, .current-photos-list {
-  margin: 1rem 0;
-}
-
-.photo-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  background-color: #f3f4f6;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-}
-
-.dark-mode .photo-item {
-  background-color: #374151;
-  color: #e5e7eb;
-}
-
-.photo-item span {
-  flex-grow: 1;
-  margin-right: 1rem;
-}
-
-.photo-preview {
-  width: 50px; /* Устанавливаем фиксированную ширину для миниатюр */
-  height: 50px; /* Устанавливаем фиксированную высоту */
-  object-fit: cover; /* Обрезаем изображение, сохраняя пропорции */
-  margin-right: 0.5rem; /* Отступ справа от изображения */
-  cursor: pointer; /* Указатель при наведении */
-  border-radius: 0.25rem; /* Скругление углов */
-}
-
-.confirm-modal {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  padding: 1rem;
-  border-radius: 0.375rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  text-align: center;
-}
-
-.dark-mode .confirm-modal {
-  background-color: #1f2937;
-  color: #e5e7eb;
-}
-
-.confirm-modal p {
-  margin-bottom: 1rem;
-}
-
-.confirm-modal button {
-  margin: 0 0.5rem;
-}
-
-/* *************************Стили для UserRegister.tsx************************* */
-.register-container {
-  height: calc(100vh - 4rem); /* Установка высоты с учётом высоты .App-header (4rem) */
-  display: flex; /* Установка flex-контейнера */
-  flex-direction: column; /* Установка направления flex-элементов в колонку */
-  align-items: center; /* Выравнивание элементов по центру горизонтально */
-  padding: 1rem; /* Установка внутреннего отступа 1rem */
-  overflow-y: auto; /* Включение вертикальной прокрутки при переполнении */
-}
-
-.register-nav {
-  width: 100%; /* Установка ширины на 100% */
-  max-width: 24rem; /* Ограничение максимальной ширины до 24rem */
-  margin-bottom: 1rem; /* Установка нижнего отступа 1rem */
-}
-
-.register-link {
-  font-size: 0.875rem; /* Установка размера шрифта 0.875rem (14px) */
-  color: #3b82f6; /* Установка синего цвета текста */
-  text-decoration: underline; /* Подчёркивание текста */
-}
-
-.dark-mode .register-link {
-  color: #60a5fa; /* Установка светло-синего цвета для тёмной темы */
-}
-
-.register-title {
-  font-size: 1.5rem; /* Установка размера шрифта 1.5rem (24px) */
-  font-weight: bold; /* Установка жирного начертания шрифта */
-  margin-bottom: 1.5rem; /* Установка нижнего отступа 1.5rem для пространства перед формой */
-  text-align: center; /* Выравнивание текста по центру */
-}
-
-.success-message {
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  color: #10b981; /* Установка зелёного цвета текста для успеха */
-  margin-bottom: 1rem; /* Установка нижнего отступа 1rem */
-  text-align: center; /* Выравнивание текста по центру */
-}
-
-.register-form {
-  width: 100%; /* Установка ширины на 100% */
-  max-width: 24rem; /* Ограничение максимальной ширины до 24rem для компактности */
-  display: flex; /* Установка flex-контейнера */
-  flex-direction: column; /* Установка направления flex-элементов в колонку */
-  gap: 1rem; /* Установка расстояния между элементами формы 1rem */
-}
-
-.register-input {
-  padding: 0.75rem; /* Установка внутренних отступов 0.75rem */
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  border: 2px solid #d1d5db; /* Установка светло-серой границы */
-  border-radius: 0.5rem; /* Установка скругления углов 0.5rem */
-  outline: none; /* Убираем стандартный outline при фокусе */
-  transition: border-color 0.3s; /* Установка плавного перехода цвета границы */
-}
-
-.register-input:focus {
-  border-color: #2563eb; /* Установка синего цвета границы при фокусе */
-}
-
-.dark-mode .register-input {
-  border-color: #4b5563; /* Установка серой границы в тёмной теме */
-  background-color: #4b5563; /* Установка тёмного фона */
-  color: white; /* Установка белого цвета текста */
-}
-
-.dark-mode .register-input:focus {
-  border-color: #60a5fa; /* Установка светло-синего цвета границы при фокусе */
-}
-
-.register-btn {
-  padding: 0.75rem 1.5rem; /* Установка внутренних отступов 0.75rem сверху/снизу и 1.5rem слева/справа */
-  background: linear-gradient(to right, #60a5fa, #2563eb); /* Установка градиентного фона */
-  color: white; /* Установка белого цвета текста */
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  font-weight: 600; /* Установка полужирного начертания шрифта */
-  border: none; /* Убираем границу */
-  border-radius: 9999px; /* Установка полного скругления углов */
-  cursor: pointer; /* Установка курсора в виде указателя */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Установка тени */
-  transition: background 0.3s; /* Установка плавного перехода фона */
-}
-
-.register-btn:hover:not(:disabled) {
-  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Установка градиентного фона при наведении, если не отключена */
-}
-
-.register-btn:disabled {
-  background: #d1d5db; /* Установка серого фона */
-  color: #6b7280; /* Установка серого цвета текста */
-  cursor: not-allowed; /* Установка курсора "запрещено" */
-}
-
-.dark-mode .register-btn {
-  background: linear-gradient(to right, #4b5563, #1f2937); /* Установка градиентного фона для тёмной темы */
-}
-
-.dark-mode .register-btn:hover:not(:disabled) {
-  background: linear-gradient(to right, #6b7280, #374151); /* Установка градиентного фона при наведении в тёмной теме */
-}
-
-.dark-mode .register-btn:disabled {
-  background: #4b5563; /* Установка тёмно-серого фона */
-  color: #d1d5db; /* Установка светло-серого цвета текста */
-}
-
-/* *************************Стили для LoginPage.tsx************************* */
-.welcome-container {
-  height: calc(100vh - 4rem); /* Установка высоты с учётом высоты .App-header (4rem) */
-  display: flex; /* Установка flex-контейнера */
-  flex-direction: column; /* Установка направления flex-элементов в колонку */
-  align-items: center; /* Выравнивание элементов по центру горизонтально */
-  justify-content: center; /* Центрирование элементов по вертикали */
-  padding: 1rem; /* Установка внутреннего отступа 1rem */
-}
-
-.welcome-title {
-  font-size: 1.5rem; /* Установка размера шрифта 1.5rem (24px) */
-  font-weight: bold; /* Установка жирного начертания шрифта */
-  margin-bottom: 0.5rem; /* Установка нижнего отступа 0.5rem для компактности */
-  text-align: center; /* Выравнивание текста по центру */
-}
-
-.welcome-text {
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  margin-bottom: 1.5rem; /* Установка нижнего отступа 1.5rem для пространства перед полем */
-  text-align: center; /* Выравнивание текста по центру */
-}
-
-.dark-mode .welcome-text {
-  color: #e5e7eb; /* Установка светло-серого цвета текста для тёмной темы */
-}
-
-.welcome-input {
-  padding: 0.75rem; /* Установка внутренних отступов 0.75rem */
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  border: 2px solid #d1d5db; /* Установка светло-серой границы */
-  border-radius: 0.5rem; /* Установка скругления углов 0.5rem */
-  outline: none; /* Убираем стандартный outline при фокусе */
-  width: 100%; /* Установка ширины на 100% */
-  max-width: 20rem; /* Ограничение максимальной ширины до 20rem */
-  transition: border-color 0.3s; /* Установка плавного перехода цвета границы */
-}
-
-.welcome-input:focus {
-  border-color: #2563eb; /* Установка синего цвета границы при фокусе */
-}
-
-.dark-mode .welcome-input {
-  border-color: #4b5563; /* Установка серой границы в тёмной теме */
-  background-color: #4b5563; /* Установка тёмного фона */
-  color: white; /* Установка белого цвета текста */
-}
-
-.dark-mode .welcome-input:focus {
-  border-color: #60a5fa; /* Установка светло-синего цвета границы при фокусе */
-}
-
-.welcome-buttons {
-  display: flex; /* Установка flex-контейнера */
-  flex-direction: column; /* Установка направления flex-элементов в колонку */
-  gap: 1rem; /* Установка расстояния между кнопками 1rem */
-  margin-bottom: 1.5rem; /* Установка нижнего отступа 1.5rem для пространства перед кнопкой темы */
-}
-
-.welcome-btn {
-  padding: 0.75rem 1.5rem; /* Установка внутренних отступов 0.75rem сверху/снизу и 1.5rem слева/справа */
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  font-weight: 600; /* Установка полужирного начертания шрифта */
-  border: none; /* Убираем границу */
-  border-radius: 9999px; /* Установка полного скругления углов */
-  cursor: pointer; /* Установка курсора в виде указателя */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Установка тени */
-  transition: background 0.3s; /* Установка плавного перехода фона */
-}
-
-.welcome-btn.continue {
-  background: linear-gradient(to right, #60a5fa, #2563eb); /* Установка градиентного фона */
-  color: white; /* Установка белого цвета текста */
-}
-
-.welcome-btn.continue:hover:not(:disabled) {
-  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Установка градиентного фона при наведении */
-}
-
-.welcome-btn.continue:disabled {
-  background: #d1d5db; /* Установка серого фона */
-  color: #6b7280; /* Установка серого цвета текста */
-  cursor: not-allowed; /* Установка курсора "запрещено" */
-}
-
-.dark-mode .welcome-btn.continue {
-  background: linear-gradient(to right, #4b5563, #1f2937); /* Установка градиентного фона для тёмной темы */
-}
-
-.dark-mode .welcome-btn.continue:hover:not(:disabled) {
-  background: linear-gradient(to right, #6b7280, #374151); /* Установка градиентного фона при наведении */
-}
-
-.dark-mode .welcome-btn.continue:disabled {
-  background: #4b5563; /* Установка тёмно-серого фона */
-  color: #d1d5db; /* Установка светло-серого цвета текста */
-}
-
-.welcome-btn.register {
-  background: linear-gradient(to right, #34d399, #059669); /* Установка зелёного градиентного фона */
-  color: white; /* Установка белого цвета текста */
-}
-
-.welcome-btn.register:hover {
-  background: linear-gradient(to right, #10b981, #047857); /* Установка более тёмного зелёного фона при наведении */
-}
-
-.dark-mode .welcome-btn.register {
-  background: linear-gradient(to right, #6b7280, #374151); /* Установка серого градиентного фона для тёмной темы */
-}
-
-.dark-mode .welcome-btn.register:hover {
-  background: linear-gradient(to right, #9ca3af, #4b5563); /* Установка более светлого серого фона при наведении */
-}
-
-/* *************************Стили для AllPass.tsx************************* */
-.allpass-container {
-  height: calc(100vh - 4rem); /* Установка высоты с учётом .App-header (4rem) */
-  display: flex; /* Установка flex-контейнера */
-  flex-direction: column; /* Установка направления flex-элементов в колонку */
-  align-items: center; /* Выравнивание элементов по центру горизонтально */
-  justify-content: center; /* Центрирование элементов по вертикали */
-  padding: 1rem; /* Установка внутреннего отступа 1rem */
-  overflow: hidden; /* Убираем прокрутку всей страницы */
-}
-
-.allpass-title {
-  font-size: 1.5rem; /* Установка размера шрифта 1.5rem (24px) */
-  font-weight: bold; /* Установка жирного начертания шрифта */
-  margin-bottom: 1rem; /* Установка нижнего отступа 1rem для пространства перед таблицей */
-  text-align: center; /* Выравнивание текста по центру */
-}
-
-.error-message {
-  color: #ef4444; /* Установка красного цвета для ошибки */
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  margin-bottom: 1rem; /* Установка нижнего отступа 1rem */
-  text-align: center; /* Выравнивание текста по центру */
-}
-
-.table-wrapper {
-  width: 100%; /* Установка ширины на 100% контейнера */
-  max-width: 50rem; /* Ограничение максимальной ширины таблицы для читаемости */
-  background: #ffffff; /* Установка белого фона для светлой темы */
-  border-radius: 0.5rem; /* Установка скругления углов 0.5rem */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Добавление тени для глубины */
-  overflow: hidden; /* Убираем лишнюю прокрутку обёртки */
-}
-
-.dark-mode .table-wrapper {
-  background: #1f2937; /* Установка тёмно-серого фона для тёмной темы */
-}
-
-.pereval-table {
-  width: 100%; /* Установка ширины таблицы на 100% обёртки */
-  border-collapse: collapse; /* Убираем двойные границы */
-}
-
-.pereval-table thead th {
-  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон для заголовков */
-  color: white; /* Белый цвет текста */
-  font-size: 1rem; /* Установка размера шрифта 1rem (16px) */
-  font-weight: 600; /* Установка полужирного начертания шрифта */
-  padding: 0.75rem; /* Установка внутренних отступов 0.75rem */
-  text-align: center; /* Выравнивание текста по центру */
-  position: sticky; /* Фиксация заголовков при прокрутке */
-  top: 0; /* Привязка к верху таблицы */
-  z-index: 1; /* Установка слоя поверх tbody */
-}
-
-.dark-mode .pereval-table thead th {
-  background: linear-gradient(to right, #4b5563, #1f2937); /* Градиент для тёмной темы */
-}
-
-.pereval-table tbody {
-  display: block; /* Делаем tbody блочным для прокрутки */
-  max-height: 50vh; /* Установка максимальной высоты для прокрутки (половина экрана) */
-  overflow-y: auto; /* Включаем вертикальную прокрутку только для данных */
-}
-
-.pereval-table thead,
-.pereval-table tbody tr {
-  display: table; /* Сохраняем табличную структуру для thead и строк */
-  width: 100%; /* Установка ширины на 100% */
-  table-layout: fixed; /* Фиксируем ширину столбцов */
-}
-
-.pereval-table td {
-  padding: 0.75rem; /* Установка внутренних отступов 0.75rem */
-  font-size: 0.875rem; /* Установка размера шрифта 0.875rem (14px) */
-  border-bottom: 1px solid #d1d5db; /* Установка светло-серой границы снизу */
-  text-align: center; /* Выравнивание текста по центру */
-}
-
-.pereval-row:nth-child(even) {
-  background: #f9fafb; /* Светло-серый фон для чётных строк (полосатый эффект) */
-}
-
-.pereval-row:nth-child(odd) {
-  background: #ffffff; /* Белый фон для нечётных строк */
-}
-
-.dark-mode .pereval-row:nth-child(even) {
-  background: #374151; /* Тёмно-серый фон для чётных строк в тёмной теме */
-}
-
-.dark-mode .pereval-row:nth-child(odd) {
-  background: #1f2937; /* Ещё более тёмный фон для нечётных строк */
-}
-
-.pereval-row:hover {
-  background: #e5e7eb; /* Светло-серый фон при наведении */
-  transition: background 0.2s; /* Плавный переход фона */
-}
-
-.dark-mode .pereval-row:hover {
-  background: #4b5563; /* Серый фон при наведении в тёмной теме */
-}
-
 
 /* *************************Стили для MySubmits.tsx************************* */
+
+/* Обёртка таблицы */
 .table-wrapper {
-  overflow-x: auto; /* Горизонтальная прокрутка для маленьких экранов */
-  margin: 1rem 0; /* Отступ сверху и снизу */
+  overflow-x: auto; /* Горизонтальная прокрутка */
+  margin: 1rem 0; /* Отступы сверху и снизу */
   width: 100%; /* Полная ширина */
 }
 
+/* Таблица пользовательских перевалов */
 .mysubmits-table {
-  width: 100%; /* Полная ширина таблицы */
-  border-collapse: collapse; /* Убираем двойные границы */
-  font-size: 1rem; /* Размер шрифта */
+  width: 100%; /* Полная ширина */
+  border-collapse: collapse; /* Без двойных границ */
+  font-size: 1rem; /* Размер шрифта 16px */
 }
 
+/* Заголовки таблицы */
 .mysubmits-th {
-  padding: 0.75rem; /* Внутренний отступ заголовков */
-  background-color: #e5e7eb; /* Светлый фон заголовков */
+  padding: 0.75rem; /* Внутренний отступ */
+  background-color: #e5e7eb; /* Светлый фон */
   font-weight: 600; /* Полужирный шрифт */
-  text-align: left; /* Выравнивание текста влево */
+  text-align: left; /* Выравнивание влево */
   border-bottom: 2px solid #d1d5db; /* Граница снизу */
 }
 
+/* Тёмная тема для заголовков */
 .dark-mode .mysubmits-th {
-  background-color: #4b5563; /* Тёмный фон заголовков */
+  background-color: #4b5563; /* Тёмный фон */
   color: #e5e7eb; /* Светлый текст */
-  border-bottom: 2px solid #6b7280; /* Граница в тёмной теме */
+  border-bottom: 2px solid #6b7280; /* Граница */
 }
 
+/* Строки таблицы */
 .mysubmits-row {
   transition: background-color 0.3s; /* Плавный переход фона */
 }
 
+/* Эффект наведения на строку */
 .mysubmits-row:hover {
-  background-color: #f3f4f6; /* Цвет при наведении в светлой теме */
+  background-color: #f3f4f6; /* Светлый фон */
 }
 
+/* Тёмная тема для наведения */
 .dark-mode .mysubmits-row:hover {
-  background-color: #374151; /* Цвет при наведении в тёмной теме */
+  background-color: #374151; /* Тёмный фон */
 }
 
+/* Ячейки таблицы */
 .mysubmits-td {
-  padding: 0.75rem; /* Внутренний отступ ячеек */
-  border-bottom: 1px solid #d1d5db; /* Граница снизу */
+  padding: 0.75rem; /* Внутренний отступ */
+  border-bottom: 1px solid #d1d5db; /* Светлая граница */
   color: #1f2937; /* Тёмный текст */
 }
 
+/* Тёмная тема для ячеек */
 .dark-mode .mysubmits-td {
-  border-bottom: 1px solid #6b7280; /* Граница в тёмной теме */
+  border-bottom: 1px solid #6b7280; /* Граница */
   color: #e5e7eb; /* Светлый текст */
 }
 
+/* Ссылка для редактирования */
 .edit-link {
-  display: inline-block; /* Блочный элемент для стилизации */
+  display: inline-block; /* Блочный элемент */
   padding: 0.25rem 0.75rem; /* Внутренний отступ */
   background: linear-gradient(to right, #fbbf24, #f59e0b); /* Жёлтый градиент */
   color: #1f2937; /* Тёмный текст */
-  font-size: 0.875rem; /* Размер шрифта */
+  font-size: 0.875rem; /* Размер шрифта 14px */
   font-weight: 600; /* Полужирный шрифт */
-  text-decoration: none; /* Убираем подчёркивание */
+  text-decoration: none; /* Без подчёркивания */
   border-radius: 9999px; /* Полное скругление */
   transition: background 0.3s; /* Плавный переход фона */
 }
 
+/* Эффект наведения для ссылки */
 .edit-link:hover {
   background: linear-gradient(to right, #f59e0b, #d97706); /* Градиент при наведении */
 }
 
+/* Тёмная тема для ссылки */
 .dark-mode .edit-link {
-  background: linear-gradient(to right, #facc15, #eab308); /* Жёлтый градиент в тёмной теме */
+  background: linear-gradient(to right, #facc15, #eab308); /* Жёлтый градиент */
   color: #1f2937; /* Тёмный текст */
 }
 
+/* Эффект наведения в тёмной теме */
 .dark-mode .edit-link:hover {
-  background: linear-gradient(to right, #eab308, #ca8a04); /* Градиент при наведении в тёмной теме */
+  background: linear-gradient(to right, #eab308, #ca8a04); /* Градиент при наведении */
 }
 
+/* Центрированный заголовок */
 .centered-title {
-  text-align: center; /* Центрирование текста заголовка */
-  width: 100%; /* Полная ширина для корректного центрирования */
+  text-align: center; /* Центрирование */
+  width: 100%; /* Полная ширина */
 }
 
+/* Центрированная кнопка */
 .centered-btn {
-  display: block; /* Делаем кнопку блочной для центрирования */
-  margin-left: auto; /* Автоматический отступ слева */
-  margin-right: auto; /* Автоматический отступ справа */
+  display: block; /* Блочный элемент */
+  margin-left: auto; /* Центрирование */
+  margin-right: auto; /* Центрирование */
 }
-
-.radio-group {
-  margin-bottom: 15px;
-}
-
-.radio-container {
-  max-width: 300px; /* Ограничиваем ширину для компактности */
-  margin: 0 auto; /* Центрируем контейнер */
-}
-
-.radio-box {
-  display: flex;
-  align-items: center; /* Выравниваем радиокнопку и текст вертикально */
-  margin: 5px 0; /* Уменьшаем отступы между строками */
-}
-
-.radio-box input[type="radio"] {
-  margin-right: 10px; /* Отступ между кнопкой и текстом */
-}
-
-.radio-box label {
-  font-size: 14px; /* Уменьшаем шрифт для компактности */
-  text-align: left; /* Выравниваем текст по левому краю */
-  flex-grow: 1; /* Текст занимает доступное пространство */
-}
-
-
 
 /* *************************Стили для PerevalDetail.tsx************************* */
 
-.submit-container {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.submit-title {
-  text-align: center; /* Центрируем заголовок */
-  margin-bottom: 20px;
-  font-size: 2em;
-  color: #333; /* Светлая тема */
-}
-
-.dark-mode .submit-title {
-  color: #ddd; /* Тёмная тема */
-}
-
-.theme-btn {
-  display: block;
-  margin: 20px auto; /* Центрируем кнопку темы */
-  padding: 10px 20px;
-  font-size: 1em;
-  cursor: pointer;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-}
-
-.theme-btn:hover {
-  background-color: #0056b3;
-}
-
-.submit-section {
-  margin-bottom: 20px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.photos-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.photo-item {
-  text-align: center;
-}
-
-.photo-preview {
-  max-width: 100px;
-  cursor: pointer;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-image {
-  max-width: 90%;
-  max-height: 90%;
-}
-
-
-
-/* *************************Стили для PerevalDetail.tsx************************* */
-/* Продолжение
 /* Основной контейнер страницы */
 .pereval-container {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-  background-color: #fff; /* Светлый фон */
+  padding: 20px; /* Внутренний отступ */
+  max-width: 800px; /* Максимальная ширина */
+  margin: 0 auto; /* Центрирование */
+  background-color: #fff; /* Белый фон */
   color: #000; /* Чёрный текст */
 }
 
-/* Тёмная тема */
+/* Тёмная тема для контейнера */
 .dark-mode.pereval-container {
   background-color: #333; /* Тёмный фон */
   color: #fff; /* Белый текст */
 }
 
-/* Заголовок */
+/* Заголовок страницы */
 .pereval-header {
-  margin-bottom: 10px;
+  margin-bottom: 10px; /* Нижний отступ */
 }
 
 /* Первая строка (название, сложность, высота) */
 .pereval-title {
-  display: flex;
-  align-items: baseline;
-  gap: 8px; /* Пробелы между элементами */
-  margin-left: 10px;
+  display: flex; /* Flex-контейнер */
+  align-items: baseline; /* Выравнивание по базовой линии */
+  gap: 8px; /* Расстояние между элементами */
+  margin-left: 10px; /* Отступ слева */
 }
 
 /* Название перевала */
 .pereval-name {
-  font-size: 24px;
-  font-weight: bold;
-  max-width: 60%; /* Ограничение для обрезки */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 24px; /* Размер шрифта */
+  font-weight: bold; /* Жирный шрифт */
+  max-width: 60%; /* Ограничение ширины */
+  white-space: nowrap; /* Без переноса */
+  overflow: hidden; /* Скрытие лишнего */
+  text-overflow: ellipsis; /* Многоточие */
 }
 
-/* Код сложности и высота*/
+/* Сложность и высота */
 .pereval-difficulty,
 .pereval-height {
-  font-size: 24px;
-  font-weight: normal;
+  font-size: 24px; /* Размер шрифта */
+  font-weight: normal; /* Обычный шрифт */
 }
 
 /* Дата */
 .pereval-date {
-  font-size: 20px;
-  font-weight: normal;
-  margin-left: 10px;
-  margin-top: 5px;
+  font-size: 20px; /* Размер шрифта */
+  font-weight: normal; /* Обычный шрифт */
+  margin-left: 10px; /* Отступ слева */
+  margin-top: 5px; /* Верхний отступ */
 }
 
 /* Разделительная линия */
 .pereval-divider {
-  border: none;
-  border-top: 1px solid #ccc; /* Серый в светлой теме */
-  margin: 10px 0;
+  border: none; /* Без границы */
+  border-top: 1px solid #ccc; /* Серая линия */
+  margin: 10px 0; /* Отступы */
 }
 
 /* Тёмная тема для линии */
 .dark-mode .pereval-divider {
-  border-top: 1px solid #fff; /* Белый в тёмной */
+  border-top: 1px solid #fff; /* Белая линия */
 }
 
 /* Вкладки */
 .pereval-tabs {
-  display: flex;
-  justify-content: center; /* Центрирование вкладок */
+  display: flex; /* Flex-контейнер */
+  justify-content: center; /* Центрирование */
   gap: 20px; /* Расстояние между вкладками */
-  margin-bottom: 10px;
+  margin-bottom: 10px; /* Нижний отступ */
 }
-
 
 /* Кнопка вкладки */
 .pereval-tab {
-  font-size: 34px;
-  font-weight: normal;
-  background: none;
-  border: none;
-  padding: 5px 0;
-  cursor: pointer;
-  color: #000; /* Светлая тема */
+  font-size: 34px; /* Размер шрифта */
+  font-weight: normal; /* Обычный шрифт */
+  background: none; /* Без фона */
+  border: none; /* Без границы */
+  padding: 5px 0; /* Внутренние отступы */
+  cursor: pointer; /* Курсор указателя */
+  color: #000; /* Чёрный текст */
 }
-
-
 
 /* Тёмная тема для вкладок */
 .dark-mode .pereval-tab {
-  color: #fff; /* Тёмная тема */
+  color: #fff; /* Белый текст */
 }
 
 /* Активная вкладка */
 .pereval-tab.active {
-  font-weight: bold;
-  border-bottom: 2px solid #007bff; /* Подчёркивание в светлой */
+  font-weight: bold; /* Жирный шрифт */
+  border-bottom: 2px solid #007bff; /* Синяя подчёркивание */
 }
 
 /* Тёмная тема для активной вкладки */
 .dark-mode .pereval-tab.active {
-  border-bottom: 2px solid #1e90ff; /* Подчёркивание в тёмной */
+  border-bottom: 2px solid #1e90ff; /* Голубая подчёркивание */
 }
 
 /* Контейнер для фото */
 .pereval-photo-container {
-  position: relative;
-  margin: 0 3px; /* Отступы слева/справа */
+  position: relative; /* Относительное позиционирование */
+  margin: 0 3px; /* Отступы */
 }
 
 /* Фото */
 .pereval-photo {
-  position: relative;
-  width: 100%;
+  position: relative; /* Относительное позиционирование */
+  width: 100%; /* Полная ширина */
   aspect-ratio: 4 / 3; /* Формат 4:3 */
 }
 
 /* Изображение */
 .pereval-image {
-  width: 100%;
-  height: 100%;
+  width: 100%; /* Полная ширина */
+  height: 100%; /* Полная высота */
   object-fit: cover; /* Обрезка краёв */
 }
 
 /* Пустое фото */
 .pereval-photo-empty {
-  width: 100%;
-  aspect-ratio: 4 / 3;
+  width: 100%; /* Полная ширина */
+  aspect-ratio: 4 / 3; /* Формат 4:3 */
   background-color: #ddd; /* Светлый фон */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-  font-weight: normal;
-  color: #000; /* Светлый текст */
+  display: flex; /* Flex-контейнер */
+  justify-content: center; /* Центрирование */
+  align-items: center; /* Центрирование */
+  font-size: 14px; /* Размер шрифта */
+  font-weight: normal; /* Обычный шрифт */
+  color: #000; /* Чёрный текст */
 }
 
 /* Тёмная тема для пустого фото */
@@ -1212,103 +1013,76 @@ body {
 
 /* Координаты */
 .pereval-coordinates {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  font-size: 16px;
-  color: #fff;
+  position: absolute; /* Абсолютное позиционирование */
+  bottom: 10px; /* Отступ снизу */
+  left: 10px; /* Отступ слева */
+  font-size: 16px; /* Размер шрифта */
+  color: #fff; /* Белый текст */
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Тень для читаемости */
 }
 
 /* Иконка лупы */
 .pereval-zoom {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
+  position: absolute; /* Абсолютное позиционирование */
+  top: 10px; /* Отступ сверху */
+  right: 10px; /* Отступ справа */
+  cursor: pointer; /* Курсор указателя */
 }
 
 /* Описание */
 .pereval-description {
-  font-size: 14px;
-  font-weight: normal;
-  margin-left: 10px;
-  margin-top: 10px;
+  font-size: 14px; /* Размер шрифта */
+  font-weight: normal; /* Обычный шрифт */
+  margin-left: 10px; /* Отступ слева */
+  margin-top: 10px; /* Верхний отступ */
   max-height: 50vh; /* Ограничение высоты */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 10; /* Ограничение строк */
-  -webkit-box-orient: vertical;
+  overflow: hidden; /* Скрытие лишнего */
+  text-overflow: ellipsis; /* Многоточие */
+  display: -webkit-box; /* Ограничение строк */
+  -webkit-line-clamp: 10; /* Максимум 10 строк */
+  -webkit-box-orient: vertical; /* Вертикальная ориентация */
 }
 
 /* Ссылка "Подробнее" */
 .pereval-more {
-  display: block;
-  font-size: 14px;
-  margin-left: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  color: #007bff; /* Синий в светлой */
-  text-decoration: underline;
+  display: block; /* Блочный элемент */
+  font-size: 14px; /* Размер шрифта */
+  margin-left: 10px; /* Отступ слева */
+  margin-top: 10px; /* Верхний отступ */
+  margin-bottom: 10px; /* Нижний отступ */
+  color: #007bff; /* Синий текст */
+  text-decoration: underline; /* Подчёркивание */
 }
 
 /* Тёмная тема для ссылки */
 .dark-mode .pereval-more {
-  color: #1e90ff; /* Голубой в тёмной */
+  color: #1e90ff; /* Голубой текст */
 }
 
-/* Кнопка темы */
-.pereval-container .theme-btn {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
-  font-size: 14px;
-  cursor: pointer;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-}
-
-/* Тёмная тема для кнопки */
-.dark-mode .theme-btn {
-  background-color: #1e90ff;
-}
-
-/* Ховер для кнопки */
-.pereval-container .theme-btn:hover {
-  background-color: #0056b3; /* Светлая */
-}
-
-.dark-mode .pereval-container .theme-btn:hover {
-  background-color: #4682b4; /* Тёмная */
-}
-
-/* Модальное окно */
+/* Модальное окно для фото */
 .pereval-modal {
-  position: fixed;
-  top: 0;
+  position: fixed; /* Фиксированное положение */
+  top: 0; /* На весь экран */
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  width: 100%; /* Полная ширина */
+  height: 100%; /* Полная высота */
+  background: rgba(0, 0, 0, 0.8); /* Полупрозрачный фон */
+  display: flex; /* Flex-контейнер */
+  justify-content: center; /* Центрирование */
+  align-items: center; /* Центрирование */
+  z-index: 1000; /* Поверх всего */
 }
 
 /* Увеличенное изображение */
 .pereval-modal-image {
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 90%; /* Максимальная ширина */
+  max-height: 90%; /* Максимальная высота */
 }
 
-/* Адаптивность */
+/* Адаптивность для мобильных */
 @media (max-width: 600px) {
   .pereval-tabs {
-    gap: 5px; /* Меньше отступы на мобильных */
+    gap: 5px; /* Меньше расстояние */
   }
 
   .pereval-tab {
@@ -1316,7 +1090,7 @@ body {
   }
 
   .pereval-title {
-    gap: 5px; /* Меньше пробелы */
+    gap: 5px; /* Меньше расстояние */
   }
 
   .pereval-name {
@@ -1324,104 +1098,476 @@ body {
   }
 }
 
+/* *************************Стили для Profile.tsx************************* */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ***************************Центрирование элементов в EditPhotos ************************* */
-.upload-photos-container {
-    text-align: center; /* Центрируем текст внутри контейнера */
-    padding: 20px; /* Добавляем отступы */
+/* Контейнер страницы профиля */
+.profile-container {
+  height: calc(100vh - 4rem); /* Высота с учётом заголовка */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование по горизонтали */
+  justify-content: center; /* Центрирование по вертикали */
+  padding: 1rem; /* Внутренний отступ */
 }
 
-.upload-photos-title {
-    text-align: center; /* Центрируем заголовок */
-    margin-bottom: 20px; /* Отступ снизу */
+/* Заголовок профиля */
+.profile-title {
+  font-size: 1.5rem; /* Размер шрифта 24px */
+  font-weight: bold; /* Жирный шрифт */
+  margin-bottom: 1.5rem; /* Нижний отступ */
+  text-align: center; /* Центрирование */
 }
 
+/* Информация о пользователе */
+.profile-info {
+  width: 100%; /* Полная ширина */
+  max-width: 24rem; /* Максимальная ширина */
+  background-color: #f9fafb; /* Светлый фон */
+  border: 1px solid #d1d5db; /* Светлая рамка */
+  border-radius: 0.5rem; /* Скругление углов */
+  padding: 1rem; /* Внутренний отступ */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Тень */
+}
+
+/* Тёмная тема для информации */
+.dark-mode .profile-info {
+  background-color: #374151; /* Тёмный фон */
+  border-color: #4b5563; /* Серая рамка */
+}
+
+/* Элемент информации */
+.profile-item {
+  font-size: 1rem; /* Размер шрифта 16px */
+  margin-bottom: 0.75rem; /* Нижний отступ */
+}
+
+/* Метка информации */
+.profile-label {
+  font-weight: 600; /* Полужирный шрифт */
+  margin-right: 0.5rem; /* Отступ справа */
+}
+
+/* Кнопка редактирования (отключена) */
+.edit-btn {
+  padding: 0.75rem 1.5rem; /* Внутренние отступы */
+  background: #d1d5db; /* Серый фон */
+  color: #6b7280; /* Серый текст */
+  font-size: 1rem; /* Размер шрифта 16px */
+  font-weight: 600; /* Полужирный шрифт */
+  border: none; /* Без границы */
+  border-radius: 9999px; /* Полное скругление */
+  cursor: not-allowed; /* Курсор "запрещено" */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Тень */
+  margin-top: 1.5rem; /* Верхний отступ */
+}
+
+/* Тёмная тема для кнопки */
+.dark-mode .edit-btn {
+  background: #4b5563; /* Тёмный фон */
+  color: #d1d5db; /* Светло-серый текст */
+}
+
+/* *************************Стили для Submit.tsx************************* */
+
+/* Контейнер формы добавления перевала */
+.submit-container {
+  padding: 20px; /* Внутренний отступ */
+  max-width: 800px; /* Максимальная ширина */
+  margin: 0 auto; /* Центрирование */
+  background-color: #fff; /* Белый фон */
+  color: #000; /* Чёрный текст */
+}
+
+/* Тёмная тема для контейнера */
+.dark-mode .submit-container {
+  background-color: #333; /* Тёмный фон */
+  color: #fff; /* Белый текст */
+}
+
+/* Заголовок формы */
+.submit-title {
+  text-align: center; /* Центрирование */
+  margin-bottom: 20px; /* Нижний отступ */
+  font-size: 1.5rem; /* Размер шрифта 24px */
+}
+
+/* Форма добавления перевала */
+.submit-form {
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  gap: 20px; /* Расстояние между секциями */
+}
+
+/* Секция формы */
 .submit-section {
-    margin: 20px auto; /* Центрируем секцию */
-    max-width: 800px; /* Ограничиваем ширину */
+  margin-bottom: 20px; /* Нижний отступ */
+  padding: 15px; /* Внутренний отступ */
+  border: 1px solid #ddd; /* Светлая рамка */
+  border-radius: 5px; /* Скругление углов */
 }
 
-.current-photos-list, .image-list {
-    display: flex; /* Используем flex для выравнивания */
-    flex-direction: column; /* Располагаем элементы вертикально */
-    align-items: center; /* Центрируем элементы по горизонтали */
-    gap: 20px; /* Расстояние между элементами */
+/* Тёмная тема для секции */
+.dark-mode .submit-section {
+  border-color: #666; /* Тёмно-серая рамка */
 }
 
-.photo-item, .image-item {
-    display: flex; /* Используем flex для внутренней структуры */
-    flex-direction: column; /* Вертикальное расположение внутри элемента */
-    align-items: center; /* Центрируем содержимое */
-    width: 200px; /* Фиксированная ширина элемента */
+/* Поле ввода */
+.submit-input {
+  padding: 8px; /* Внутренний отступ */
+  border: 1px solid #ccc; /* Серая рамка */
+  border-radius: 4px; /* Скругление углов */
+  font-size: 1rem; /* Размер шрифта 16px */
+  background: linear-gradient(to right, #f9fafb, #e5e7eb); /* Градиентный фон */
+  transition: border-color 0.3s; /* Плавный переход рамки */
 }
 
-.form-group {
-    margin: 10px 0; /* Отступы сверху и снизу */
-    text-align: center; /* Центрируем текст внутри формы */
+/* Тёмная тема для поля ввода */
+.dark-mode .submit-input {
+  border-color: #666; /* Тёмно-серая рамка */
+  background: linear-gradient(to right, #4b5563, #374151); /* Тёмный градиент */
+  color: #fff; /* Белый текст */
 }
 
-.form-group label {
-    display: block; /* Подпись на новой строке */
-    margin-bottom: 5px; /* Отступ снизу */
+/* Фокус поля ввода */
+.submit-input:focus {
+  outline: none; /* Без outline */
+  border-color: #2563eb; /* Синяя рамка */
 }
 
-.upload-photos-input {
-    width: 100%; /* Полная ширина поля ввода */
-    max-width: 180px; /* Ограничение ширины */
-    margin: 0 auto; /* Центрируем поле */
+/* Поле выбора (сезон или сложность) */
+.submit-choice {
+  padding: 8px; /* Внутренний отступ */
+  border: 1px solid #ccc; /* Серая рамка */
+  border-radius: 4px; /* Скругление углов */
+  font-size: 1rem; /* Размер шрифта 16px */
+  cursor: pointer; /* Курсор указателя */
 }
 
-.image-actions {
-    display: flex; /* Кнопки в ряд */
-    justify-content: center; /* Центрируем кнопки */
-    gap: 10px; /* Расстояние между кнопками */
-    margin-top: 10px; /* Отступ сверху */
+/* Тёмная тема для поля выбора */
+.dark-mode .submit-choice {
+  border-color: #666; /* Тёмно-серая рамка */
+  background: linear-gradient(to right, #4b5563, #374151); /* Тёмный градиент */
+  color: #fff; /* Белый текст */
 }
 
-.upload-btn, .delete-btn {
-    padding: 5px 10px; /* Отступы внутри кнопок */
+/* Кнопка отправки формы */
+.submit-btn {
+  padding: 10px 20px; /* Внутренние отступы */
+  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+  color: white; /* Белый текст */
+  border: none; /* Без границы */
+  border-radius: 5px; /* Скругление углов */
+  font-size: 1rem; /* Размер шрифта 16px */
+  cursor: pointer; /* Курсор указателя */
+  transition: background 0.3s; /* Плавный переход фона */
 }
 
-/* Уменьшение размера превью изображений */
-.photo-preview, .image-preview {
-    max-width: 180px; /* Ограничение ширины превью */
-    max-height: 180px; /* Ограничение высоты превью */
-    object-fit: cover; /* Сохранение пропорций с обрезкой */
-    cursor: pointer; /* Курсор указателя при наведении */
+/* Эффект наведения для кнопки */
+.submit-btn:hover {
+  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении */
 }
 
-/* Стили для модального окна */
+/* Тёмная тема для кнопки */
+.dark-mode .submit-btn {
+  background: linear-gradient(to right, #4b5563, #1f2937); /* Градиент для тёмной темы */
+}
+
+/* Эффект наведения в тёмной теме */
+.dark-mode .submit-btn:hover {
+  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
+}
+
+/* Модальное окно для выбора */
 .modal {
-    position: fixed; /* Фиксированное положение */
-    top: 0;
-    left: 0;
-    width: 100%; /* Полная ширина */
-    height: 100%; /* Полная высота */
-    background: rgba(0, 0, 0, 0.8); /* Полупрозрачный фон */
-    display: flex; /* Центрирование содержимого */
-    justify-content: center; /* По горизонтали */
-    align-items: center; /* По вертикали */
-    z-index: 1000; /* Поверх всего */
+  position: fixed; /* Фиксированное положение */
+  top: 0; /* На весь экран */
+  left: 0;
+  width: 100%; /* Полная ширина */
+  height: 100%; /* Полная высота */
+  background: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+  display: flex; /* Flex-контейнер */
+  align-items: center; /* Центрирование по вертикали */
+  justify-content: center; /* Центрирование по горизонтали */
+  z-index: 1000; /* Поверх всего */
 }
 
-.modal-image {
-    max-width: 90%; /* Ограничение ширины в модальном окне */
-    max-height: 90vh; /* Ограничение высоты относительно экрана */
-    object-fit: contain; /* Сохранение пропорций без обрезки */
+/* Содержимое модального окна */
+.modal-content {
+  background: #fff; /* Белый фон */
+  padding: 20px; /* Внутренний отступ */
+  border-radius: 8px; /* Скругление углов */
+  max-width: 400px; /* Максимальная ширина */
+  width: 90%; /* Ширина 90% для мобильных */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень */
+  text-align: center; /* Центрирование текста */
+}
+
+/* Тёмная тема для модального окна */
+.dark-mode .modal-content {
+  background: #333; /* Тёмный фон */
+  color: #fff; /* Белый текст */
+}
+
+/* Заголовок модального окна */
+.modal-content h2 {
+  margin-bottom: 15px; /* Нижний отступ */
+  font-size: 1.25rem; /* Размер шрифта 20px */
+}
+
+/* Контейнер радиокнопок */
+.radio-container {
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  gap: 10px; /* Расстояние между кнопками */
+  margin-bottom: 20px; /* Нижний отступ */
+}
+
+/* Группа радиокнопки */
+.radio-box {
+  display: flex; /* Flex-контейнер */
+  align-items: center; /* Выравнивание по центру */
+  gap: 8px; /* Расстояние */
+}
+
+/* Радиокнопка */
+.radio-box input[type="radio"] {
+  margin-right: 10px; /* Отступ справа */
+}
+
+/* Метка радиокнопки */
+.radio-box label {
+  font-size: 14px; /* Размер шрифта 14px */
+  text-align: left; /* Выравнивание влево */
+  flex-grow: 1; /* Занимает доступное пространство */
+}
+
+/* Кнопка в модальном окне */
+.modal-btn {
+  padding: 8px 16px; /* Внутренние отступы */
+  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+  color: white; /* Белый текст */
+  border: none; /* Без границы */
+  border-radius: 5px; /* Скругление углов */
+  font-size: 1rem; /* Размер шрифта 16px */
+  cursor: pointer; /* Курсор указателя */
+  transition: background 0.3s; /* Плавный переход фона */
+}
+
+/* Эффект наведения для кнопки модалки */
+.modal-btn:hover {
+  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении */
+}
+
+/* Тёмная тема для кнопки модалки */
+.dark-mode .modal-btn {
+  background: linear-gradient(to right, #4b5563, #1f2937); /* Градиент для тёмной темы */
+}
+
+/* Эффект наведения в тёмной теме */
+.dark-mode .modal-btn:hover {
+  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 600px) {
+  .submit-container {
+    padding: 10px; /* Меньший отступ */
+  }
+
+  .submit-title {
+    font-size: 1.25rem; /* Меньший шрифт */
+  }
+
+  .modal-content {
+    width: 95%; /* Ширина для мобильных */
+  }
+}
+
+/* *************************Стили для UserRegister.tsx************************* */
+
+/* Контейнер страницы регистрации */
+.register-container {
+  height: calc(100vh - 4rem); /* Высота с учётом заголовка */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование по горизонтали */
+  padding: 1rem; /* Внутренний отступ */
+  overflow-y: auto; /* Вертикальная прокрутка */
+}
+
+/* Навигационная ссылка */
+.register-nav {
+  width: 100%; /* Полная ширина */
+  max-width: 24rem; /* Максимальная ширина */
+  margin-bottom: 1rem; /* Нижний отступ */
+}
+
+/* Ссылка для перехода */
+.register-link {
+  font-size: 0.875rem; /* Размер шрифта 14px */
+  color: #3b82f6; /* Синий текст */
+  text-decoration: underline; /* Подчёркивание */
+}
+
+/* Тёмная тема для ссылки */
+.dark-mode .register-link {
+  color: #60a5fa; /* Светло-синий текст */
+}
+
+/* Заголовок регистрации */
+.register-title {
+  font-size: 1.5rem; /* Размер шрифта 24px */
+  font-weight: bold; /* Жирный шрифт */
+  margin-bottom: 1.5rem; /* Нижний отступ */
+  text-align: center; /* Центрирование */
+}
+
+/* Сообщение об успехе */
+.success-message {
+  font-size: 1rem; /* Размер шрифта 16px */
+  color: #10b981; /* Зелёный текст */
+  margin-bottom: 1rem; /* Нижний отступ */
+  text-align: center; /* Центрирование */
+}
+
+/* Форма регистрации */
+.register-form {
+  width: 100%; /* Полная ширина */
+  max-width: 24rem; /* Максимальная ширина */
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  gap: 1rem; /* Расстояние между элементами */
+}
+
+/* Поле ввода */
+.register-input {
+  padding: 0.75rem; /* Внутренний отступ */
+  font-size: 1rem; /* Размер шрифта 16px */
+  border: 2px solid #d1d5db; /* Светлая граница */
+  border-radius: 0.5rem; /* Скругление углов */
+  outline: none; /* Без outline */
+  transition: border-color 0.3s; /* Плавный переход границы */
+}
+
+/* Фокус поля ввода */
+.register-input:focus {
+  border-color: #2563eb; /* Синяя граница */
+}
+
+/* Тёмная тема для поля ввода */
+.dark-mode .register-input {
+  border-color: #4b5563; /* Серая граница */
+  background-color: #4b5563; /* Тёмный фон */
+  color: white; /* Белый текст */
+}
+
+/* Фокус в тёмной теме */
+.dark-mode .register-input:focus {
+  border-color: #60a5fa; /* Светло-синяя граница */
+}
+
+/* Кнопка регистрации */
+.register-btn {
+  padding: 0.75rem 1.5rem; /* Внутренние отступы */
+  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+  color: white; /* Белый текст */
+  font-size: 1rem; /* Размер шрифта 16px */
+  font-weight: 600; /* Полужирный шрифт */
+  border: none; /* Без границы */
+  border-radius: 9999px; /* Полное скругление */
+  cursor: pointer; /* Курсор указателя */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Тень */
+  transition: background 0.3s; /* Плавный переход фона */
+}
+
+/* Эффект наведения для кнопки */
+.register-btn:hover:not(:disabled) {
+  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении */
+}
+
+/* Отключённая кнопка */
+.register-btn:disabled {
+  background: #d1d5db; /* Серый фон */
+  color: #6b7280; /* Серый текст */
+  cursor: not-allowed; /* Курсор "запрещено" */
+}
+
+/* Тёмная тема для кнопки */
+.dark-mode .register-btn {
+  background: linear-gradient(to right, #4b5563, #1f2937); /* Градиент для тёмной темы */
+}
+
+/* Эффект наведения в тёмной теме */
+.dark-mode .register-btn:hover:not(:disabled) {
+  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
+}
+
+/* Отключённая кнопка в тёмной теме */
+.dark-mode .register-btn:disabled {
+  background: #4b5563; /* Тёмный фон */
+  color: #d1d5db; /* Светло-серый текст */
+}
+
+/* *************************Стили для общих модальных окон************************* */
+
+/* Модальное окно для подтверждения (используется в EditPereval.tsx, EditPhotos.tsx) */
+.confirm-modal {
+  position: absolute; /* Абсолютное позиционирование */
+  top: 50%; /* Центрирование по вертикали */
+  left: 50%; /* Центрирование по горизонтали */
+  transform: translate(-50%, -50%); /* Смещение */
+  background-color: #fff; /* Белый фон */
+  padding: 1rem; /* Внутренний отступ */
+  border-radius: 0.375rem; /* Скругление углов */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
+  z-index: 1000; /* Поверх всего */
+  text-align: center; /* Центрирование текста */
+}
+
+/* Тёмная тема для модального окна */
+.dark-mode .confirm-modal {
+  background-color: #1f2937; /* Тёмный фон */
+  color: #e5e7eb; /* Светлый текст */
+}
+
+/* Текст в модальном окне */
+.confirm-modal p {
+  margin-bottom: 1rem; /* Нижний отступ */
+}
+
+/* Кнопки в модальном окне */
+.confirm-modal button {
+  margin: 0 0.5rem; /* Отступы */
+}
+
+/* Список фотографий (используется в EditPereval.tsx, EditPhotos.tsx) */
+.photos-list {
+  margin: 1rem 0; /* Отступы */
+  display: flex; /* Flex-контейнер */
+  flex-wrap: wrap; /* Перенос элементов */
+  gap: 10px; /* Расстояние между фото */
+}
+
+/* Элемент списка фотографий */
+.photo-item {
+  display: flex; /* Flex-контейнер */
+  align-items: center; /* Выравнивание */
+  justify-content: space-between; /* Разделение */
+  padding: 0.5rem; /* Внутренний отступ */
+  margin-bottom: 0.5rem; /* Нижний отступ */
+  background-color: #f3f4f6; /* Светлый фон */
+  border-radius: 0.375rem; /* Скругление углов */
+  font-size: 0.875rem; /* Размер шрифта 14px */
+}
+
+/* Тёмная тема для элемента фото */
+.dark-mode .photo-item {
+  background-color: #374151; /* Тёмный фон */
+  color: #e5e7eb; /* Светлый текст */
+}
+
+/* Текст в элементе фото */
+.photo-item span {
+  flex-grow: 1; /* Занимает доступное пространство */
+  margin-right: 1rem; /* Отступ справа */
 }
