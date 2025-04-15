@@ -1,5 +1,3 @@
-// AlpPass/src/pages/Submit.tsx
-
 import React, { useState } from "react"; /* Импорт React и хука useState для управления состоянием */
 import { useNavigate } from "react-router-dom"; /* Импорт useNavigate для навигации после отправки */
 import "../index.css"; /* Импорт глобальных стилей из index.css */
@@ -51,35 +49,35 @@ const difficulties = [
 const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
   const navigate = useNavigate(); /* Хук для навигации */
 
-  /* Инициализация состояния формы (взято из старой версии с добавлением father_name) */
+  /* Инициализация состояния формы */
   const [formData, setFormData] = useState<FormData>({
     beautyTitle: "",
     title: "",
     other_titles: "",
-    connect: true, /* Фиксированное значение из требований */
+    connect: true,
     user: {
       email: localStorage.getItem("user_email") || "",
       family_name: localStorage.getItem("user_family_name") || "",
       first_name: localStorage.getItem("user_first_name") || "",
-      father_name: "", /* Пустое, как указано в JSON */
+      father_name: "",
       phone: localStorage.getItem("user_phone") || "",
     },
-    coord: { latitude: "", longitude: "", height: "" }, /* Строки, как указано */
-    status: 1, /* Фиксированное значение из требований */
+    coord: { latitude: "", longitude: "", height: "" },
+    status: 1,
     difficulties: [{ season: 0, difficulty: 0 }],
     route_description: "",
-    images: [], /* Пустой массив, как в старой версии */
+    images: [],
   });
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null); /* Состояние для ошибок */
   const [submitStatus, setSubmitStatus] = useState<string | null>(null); /* Состояние для статуса отправки */
   const [loadingGPS, setLoadingGPS] = useState(false); /* Состояние для GPS */
-  const [showSeasonModal, setShowSeasonModal] = useState(false); /* Состояние для модалки сезона (из новой версии) */
-  const [showDifficultyModal, setShowDifficultyModal] = useState(false); /* Состояние для модалки сложности (из новой версии) */
+  const [showSeasonModal, setShowSeasonModal] = useState(false); /* Состояние для модалки сезона */
+  const [showDifficultyModal, setShowDifficultyModal] = useState(false); /* Состояние для модалки сложности */
 
   const API_URL = "https://rostislav62.pythonanywhere.com/api/submitData/"; /* URL для отправки данных перевала */
 
-  /* Обработчик изменения текстовых полей (взято из новой версии) */
+  /* Обработчик изменения текстовых полей */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -88,7 +86,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     }));
   };
 
-  /* Обработчик изменения координат (адаптировано из старой версии для строк) */
+  /* Обработчик изменения координат */
   const handleCoordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -100,7 +98,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     }));
   };
 
-  /* Обработчик GPS (взято из старой версии) */
+  /* Обработчик GPS */
   const handleGetGPS = () => {
     if ("geolocation" in navigator) {
       setLoadingGPS(true);
@@ -131,7 +129,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     }
   };
 
-  /* Обработчик изменения сезона и сложности в модалке (взято из новой версии) */
+  /* Обработчик изменения сезона и сложности в модалке */
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const newValue = parseInt(value, 10);
@@ -145,31 +143,31 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     }));
   };
 
-  /* Закрытие модалки сезона (взято из новой версии) */
+  /* Закрытие модалки сезона */
   const confirmSeasonModal = () => {
     setShowSeasonModal(false);
   };
 
-  /* Закрытие модалки сложности (взято из новой версии) */
+  /* Закрытие модалки сложности */
   const confirmDifficultyModal = () => {
     setShowDifficultyModal(false);
   };
 
-  /* Получение текста для выбранного сезона (взято из новой версии) */
+  /* Получение текста для выбранного сезона */
   const getSeasonText = () => {
     const seasonId = formData.difficulties[0].season;
     const season = seasons.find((s) => s.id === seasonId);
     return season ? `${season.name} (${season.code})` : "Выберите сезон";
   };
 
-  /* Получение текста для выбранной сложности (взято из новой версии) */
+  /* Получение текста для выбранной сложности */
   const getDifficultyText = () => {
     const difficultyId = formData.difficulties[0].difficulty;
     const difficulty = difficulties.find((d) => d.id === difficultyId);
     return difficulty ? `${difficulty.code} - ${difficulty.description}` : "Выберите категорию";
   };
 
-  /* Валидация формы (взято из старой версии с дополнениями) */
+  /* Валидация формы */
   const validateForm = () => {
     if (!formData.beautyTitle) return "Название горного массива обязательно";
     if (!formData.title) return "Название перевала обязательно";
@@ -185,7 +183,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     return null;
   };
 
-  /* Обработчик отправки формы (комбинация старой и новой версии) */
+  /* Обработчик отправки формы */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationError = validateForm();
@@ -198,7 +196,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     setSubmitStatus("Сохранение перевала...");
     setErrorMessage(null);
 
-    /* Формирование данных для отправки согласно JSON (взято из требований) */
+    /* Формирование данных для отправки */
     const submitData = {
       beautyTitle: formData.beautyTitle,
       title: formData.title,
@@ -233,7 +231,8 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
       const data = await response.json();
       console.log("✅ Ответ от сервера (перевал):", data);
 
-      if (response.status === 201 && data.state === 1 && data.id) {
+      /* Обновлённая проверка успешного ответа */
+      if (response.ok && data.id) { /* Проверяем статус 200/201 и наличие id */
         setSubmitStatus("✅ Перевал успешно добавлен! Перенаправление...");
         localStorage.setItem("last_pereval_id", data.id);
         setTimeout(() => navigate(`/add-images/${data.id}`), 1000);
@@ -248,12 +247,12 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
   };
 
   return (
-    <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}> {/* Контейнер формы с темой (из новой версии) */}
-      <h1 className="submit-title">Добавить новый перевал</h1> {/* Заголовок (из обеих версий) */}
-      {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Ошибки (из обеих версий) */}
-      {submitStatus && <p className="submit-status">{submitStatus}</p>} {/* Статус отправки (из старой версии) */}
-      <form onSubmit={handleSubmit} className="submit-form"> {/* Форма (из новой версии) */}
-        <fieldset className="submit-section"> {/* Секция данных перевала (из новой версии) */}
+    <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>
+      <h1 className="submit-title">Добавить новый перевал</h1>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {submitStatus && <p className="submit-status">{submitStatus}</p>}
+      <form onSubmit={handleSubmit} className="submit-form">
+        <fieldset className="submit-section">
           <legend>Данные перевала</legend>
           <div className="form-group">
             <label htmlFor="beautyTitle">Название горного массива:</label>
@@ -303,7 +302,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
           </div>
         </fieldset>
 
-        <fieldset className="submit-section"> {/* Секция координат (из новой версии с GPS из старой) */}
+        <fieldset className="submit-section">
           <legend>Координаты</legend>
           <div className="form-group">
             <label htmlFor="latitude">Широта:</label>
@@ -346,7 +345,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
           </button>
         </fieldset>
 
-        <fieldset className="submit-section"> {/* Секция сложности с модалками (из новой версии) */}
+        <fieldset className="submit-section">
           <legend>Уровень сложности</legend>
           <div className="form-group">
             <label htmlFor="season">Сезон:</label>
@@ -368,10 +367,10 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
           </div>
         </fieldset>
 
-        <button type="submit" className="submit-btn">Отправить</button> {/* Кнопка отправки (из обеих версий) */}
+        <button type="submit" className="submit-btn">Отправить</button>
       </form>
 
-      {/* Модальное окно для выбора сезона (из новой версии) */}
+      {/* Модальное окно для выбора сезона */}
       {showSeasonModal && (
         <div className="modal" onClick={() => setShowSeasonModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -400,7 +399,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
         </div>
       )}
 
-      {/* Модальное окно для выбора сложности (из новой версии) */}
+      {/* Модальное окно для выбора сложности */}
       {showDifficultyModal && (
         <div className="modal" onClick={() => setShowDifficultyModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -430,7 +429,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
       )}
 
       <button onClick={toggleTheme} className="theme-btn">
-        {darkMode ? "Светлая тема" : "Тёмная тема"} {/* Кнопка темы (из обеих версий) */}
+        {darkMode ? "Светлая тема" : "Тёмная тема"}
       </button>
     </div>
   );
