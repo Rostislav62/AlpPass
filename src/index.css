@@ -437,6 +437,39 @@ body {
   padding: 5px 10px; /* Внутренние отступы */
 }
 
+/* Кастомная кнопка для поля выбора файлов */
+.custom-file-upload {
+  display: inline-block; /* Блочный элемент */
+  padding: 8px 16px; /* Внутренние отступы */
+  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
+  color: white; /* Белый текст */
+  font-size: 1rem; /* Размер шрифта 16px */
+  font-weight: 600; /* Полужирный шрифт */
+  border-radius: 5px; /* Скругление углов */
+  cursor: pointer; /* Курсор указателя */
+  transition: background 0.3s; /* Плавный переход фона */
+}
+
+/* Эффект наведения для кастомной кнопки */
+.custom-file-upload:hover {
+  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении */
+}
+
+/* Тёмная тема для кастомной кнопки */
+.dark-mode .custom-file-upload {
+  background: linear-gradient(to right, #4b5563, #1f2937); /* Градиент для тёмной темы */
+}
+
+/* Эффект наведения в тёмной теме */
+.dark-mode .custom-file-upload:hover {
+  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
+}
+
+/* Скрытие стандартного input */
+.custom-file-upload input[type="file"] {
+  display: none; /* Полное скрытие */
+}
+
 /* Уменьшение размера превью изображений */
 .photo-preview,
 .image-preview {

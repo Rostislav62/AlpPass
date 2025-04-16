@@ -36,6 +36,11 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) =>
         "Спуск, до 255 символов"
     ];
 
+    /* Текст метки для поля выбора файлов, зависит от количества загруженных фото */
+    const uploadLabel = images.length === 0
+        ? "Выберите фотографии (до 3):"
+        : `Выберите фотографии (ещё ${3 - images.length}):`;
+
     /* Обработчик выбора файлов */
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files; /* Получение выбранных файлов */
@@ -135,19 +140,6 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) =>
         <div className={`upload-photos-container ${darkMode ? "dark-mode" : "light-mode"}`}> {/* Главный контейнер с динамическим классом темы */}
             <h1 className="upload-photos-title">Загрузка фотографий для перевала #{perevalId}</h1> {/* Заголовок с ID перевала */}
             {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Сообщение об ошибке, если есть */}
-            <div className="form-group"> {/* Группа поля ввода */}
-                <label htmlFor="images">Выберите фотографии (до 3):</label> {/* Метка для поля */}
-                <input
-                    type="file"
-                    id="images"
-                    name="images"
-                    accept="image/*" /* Только изображения */
-                    multiple /* Возможность выбора нескольких файлов */
-                    onChange={handleImageChange}
-                    className="upload-photos-input"
-                    disabled={images.length >= 3} /* Блокировка, если уже 3 фото */
-                /> {/* Поле выбора файлов */}
-            </div>
             <div className="image-list"> {/* Контейнер для списка фото */}
                 {images.map((img, index) => (
                     <div key={index} className="image-item"> {/* Элемент списка фото */}
@@ -188,6 +180,24 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) =>
                     </div>
                 ))}
             </div>
+            {images.length < 3 && ( /* Условный рендеринг поля выбора файлов, скрывается при 3 загруженных фото */
+                <div className="form-group"> {/* Группа поля ввода */}
+                    <label htmlFor="images">{uploadLabel}</label> {/* Метка с динамическим текстом */}
+                    <label className="custom-file-upload"> {/* Кастомная кнопка для выбора файлов, заменяет стандартный input */}
+                        <input
+                            type="file"
+                            id="images"
+                            name="images"
+                            accept="image/*" /* Только изображения */
+                            multiple /* Возможность выбора нескольких файлов */
+                            onChange={handleImageChange}
+                            className="upload-photos-input"
+                            disabled={images.length >= 3} /* Блокировка, если уже 3 фото */
+                        />
+                        Выбрать
+                    </label>
+                </div>
+            )}
             <button
                 onClick={handleNavigateToDetails}
                 className="submit-btn"
