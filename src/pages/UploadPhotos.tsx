@@ -182,7 +182,6 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) =>
             </div>
             {images.length < 3 && ( /* Условный рендеринг поля выбора файлов, скрывается при 3 загруженных фото */
                 <div className="form-group"> {/* Группа поля ввода */}
-                    <label htmlFor="images">{uploadLabel}</label> {/* Метка с динамическим текстом */}
                     <label className="custom-file-upload"> {/* Кастомная кнопка для выбора файлов, заменяет стандартный input */}
                         <input
                             type="file"
@@ -194,7 +193,7 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) =>
                             className="upload-photos-input"
                             disabled={images.length >= 3} /* Блокировка, если уже 3 фото */
                         />
-                        Выбрать
+                        {uploadLabel}
                     </label>
                 </div>
             )}
