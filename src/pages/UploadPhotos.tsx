@@ -1,3 +1,5 @@
+// AlpPass/src/pages/UploadPhotos.tsx
+
 import React, { useState } from "react"; /* Импорт React и хука useState для управления состоянием */
 import { useParams, useNavigate } from "react-router-dom"; /* Импорт хуков для параметров URL и навигации */
 import "../index.css"; /* Импорт глобальных стилей из файла index.css */
@@ -17,7 +19,7 @@ interface ImageData {
 }
 
 /* Константа с URL API для загрузки изображений */
-const IMAGE_API_URL = "https://rostislav62.pythonanywhere.com/api/uploadImage/"; //"http://127.0.0.1:8000/api/uploadImage/";
+const IMAGE_API_URL = "https://rostislav62.pythonanywhere.com/api/uploadImage/"; /* URL для отправки изображений */
 
 /* Определение компонента UploadPhotos как функционального компонента */
 const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) => {
@@ -26,6 +28,13 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) =>
     const [images, setImages] = useState<ImageData[]>([]); /* Состояние для хранения изображений */
     const [errorMessage, setErrorMessage] = useState<string | null>(null); /* Состояние для сообщения об ошибке */
     const [selectedImage, setSelectedImage] = useState<string | null>(null); /* Состояние для увеличенного фото */
+
+    /* Массив текстов для меток под полями ввода описания */
+    const titleLabels = [
+        "Подъём, до 255 символов",
+        "Седловина, до 255 символов",
+        "Спуск, до 255 символов"
+    ];
 
     /* Обработчик выбора файлов */
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +50,7 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) =>
             const newImages = newFiles.map(file => ({
                 file,
                 preview: URL.createObjectURL(file), /* Создание URL для предпросмотра */
-                title: "", /* Изначально пустое описание */
+                title: "", /* Изначально пустое описание, сервер задаёт имя */
                 uploaded: false /* Изначально не отправлено */
             }));
             setImages(prev => [...prev, ...newImages]); /* Добавление новых фото */
@@ -101,16 +110,15 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) =>
                 updated[index].uploaded = true; /* Установка флага отправки */
                 return updated;
             });
-
-            // Проверка, все ли фото отправлены
-            const allUploaded = images.every(img => img.uploaded);
-            if (allUploaded && images.length > 0) {
-                setTimeout(() => navigate("/menu"), 1000); /* Перенаправление в меню после отправки всех фото */
-            }
         } catch (error) {
             console.error("❌ Ошибка отправки изображения:", error); /* Логирование ошибки */
             setErrorMessage(`❌ Ошибка: ${(error as Error).message}`); /* Уведомление пользователя */
         }
+    };
+
+    /* Обработчик перехода к странице деталей перевала */
+    const handleNavigateToDetails = () => {
+        navigate(`/pereval/${perevalId}`); /* Перенаправление на страницу деталей */
     };
 
     /* Обработчик увеличения фото */
@@ -150,7 +158,7 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) =>
                             onClick={() => handleImageClick(img.preview)} /* Увеличение по клику */
                         /> {/* Предпросмотр фото */}
                         <div className="form-group"> {/* Группа поля ввода описания */}
-                            <label htmlFor={`title-${index}`}>Описание (до 255 символов):</label> {/* Метка для поля */}
+                            <label htmlFor={`title-${index}`}>{titleLabels[index]}</label> {/* Метка с индивидуальным текстом */}
                             <input
                                 type="text"
                                 id={`title-${index}`}
@@ -180,6 +188,12 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) =>
                     </div>
                 ))}
             </div>
+            <button
+                onClick={handleNavigateToDetails}
+                className="submit-btn"
+            >
+                Перейти к деталям
+            </button> {/* Кнопка для перехода к странице деталей перевала */}
             {selectedImage && ( /* Модальное окно для увеличенного фото */
                 <div className="modal" onClick={closeModal}> {/* Контейнер модального окна */}
                     <img src={selectedImage} alt="Увеличенное фото" className="modal-image" /> {/* Увеличенное фото */}
