@@ -60,7 +60,8 @@ const UploadPhotos: React.FC<UploadPhotosProps> = ({ darkMode, toggleTheme }) =>
             }));
             setImages(prev => [...prev, ...newImages]); /* Добавление новых фото */
             setErrorMessage(null); /* Сброс ошибки */
-            e.target.value = null; /* Сброс значения input для повторного выбора файлов */
+            e.target.value = ""; /* Сброс значения input для повторного выбора файлов */
+            /* Сброс значения input для повторного выбора файлов */
         }
     };
 
