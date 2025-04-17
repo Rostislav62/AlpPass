@@ -64,7 +64,7 @@ const PhotosManager: React.FC<PhotosManagerProps> = ({ darkMode, toggleTheme }) 
                 console.log("📥 Ответ от сервера (фото):", data); /* Логируем для отладки */
                 if (!response.ok) throw new Error(data.message || "Ошибка загрузки фото"); /* Ошибка, если не 200 */
                 if (data.state === 1 && Array.isArray(data.photos)) { /* Проверяем валидность данных */
-                    const newSlots = [null, null, null]; /* Инициализируем пустые слоты */
+                    const newSlots = [null, null, null] as Array<ImageData | Photo | null>; /* Инициализируем пустые слоты */
                     data.photos.forEach((photo: Photo) => {
                         /* Распределяем фото по слотам на основе префикса */
                         const fileName = photo.file_name.toLowerCase();
@@ -253,7 +253,7 @@ const PhotosManager: React.FC<PhotosManagerProps> = ({ darkMode, toggleTheme }) 
     };
 
     return ( /* JSX для рендеринга */
-        <div className={`upload-photos-container ${darkMode ? "dark-mode" : "light-mode"}`}> {/* Контейнер с темой */}
+        <div className={`upload-photos-container ${darkMode ? "dark-mode" : "light-mode"}`}> {/* Контейнер с темой */
             <h1 className="upload-photos-title">
                 {slots.every(slot => slot === null) ? "Добавление фотографий" : "Редактирование фотографий"} для перевала #{perevalId}
             </h1> {/* Динамический заголовок */}
