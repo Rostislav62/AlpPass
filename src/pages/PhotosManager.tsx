@@ -108,7 +108,7 @@ const PhotosManager: React.FC<PhotosManagerProps> = ({ darkMode, toggleTheme }) 
     };
 
     /* Обработчик Drag-and-Drop */
-    const handleDrop = (index: number, e: React.DragEvent<HTMLDivElement>) => {
+    const handleDrop = (index: number, e: React.DragEvent<HTMLLabelElement>) => {
         e.preventDefault(); /* Предотвращаем открытие файла */
         const files = e.dataTransfer.files; /* Получаем файлы */
         if (files && files.length > 0) { /* Если файл перетащен */
@@ -132,7 +132,7 @@ const PhotosManager: React.FC<PhotosManagerProps> = ({ darkMode, toggleTheme }) 
     };
 
     /* Обработчик для предотвращения стандартного поведения dragover */
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
         e.preventDefault(); /* Разрешаем drop */
     };
 
