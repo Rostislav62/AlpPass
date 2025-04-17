@@ -20,28 +20,18 @@ interface PerevalData {
   difficulties: { season: number; difficulty: number }[];
 }
 
-interface Photo {
-  id: number;
-  file_name: string;
-  title: string;
-}
-
 const BASE_URL = "https://rostislav62.pythonanywhere.com";
 const API_URL = `${BASE_URL}/api/submitData/`;
-const PHOTOS_API_URL = `${BASE_URL}/api/uploadImage/photos/`;
-const MEDIA_URL = `${BASE_URL}/media/`;
 
 const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<PerevalData | null>(null);
-  const [photos, setPhotos] = useState<Photo[]>([]);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const userEmail = localStorage.getItem("user_email") || "";
   const userPhone = localStorage.getItem("user_phone") || "";
 
-  // Списки сезонов и сложностей, как в Submit.tsx
+  // Списки сезонов и сложностей
   const seasons = [
     { id: 1, name: "Весна", code: "Spring" },
     { id: 2, name: "Лето", code: "Summer" },
@@ -93,23 +83,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         }
       })
       .catch(error => console.error("Ошибка загрузки перевала:", error));
-
-    // Загрузка фотографий
-    fetch(`${PHOTOS_API_URL}${id}/`)
-      .then(async response => {
-        const data = await response.json();
-        console.log("📥 Ответ от сервера (фото):", data);
-        if (!response.ok) throw new Error(data.message || "Ошибка загрузки фото");
-        if (data.state === 1 && Array.isArray(data.photos)) {
-          setPhotos(data.photos);
-        } else {
-          setPhotos([]);
-        }
-      })
-      .catch(error => {
-        console.error("Ошибка загрузки фотографий:", error);
-        setPhotos([]);
-      });
   }, [id, userEmail, userPhone]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -197,14 +170,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       console.error("❌ Ошибка при редактировании:", error);
       setErrorMessage("❌ Ошибка при редактировании перевала");
     }
-  };
-
-  const handleImageClick = (preview: string) => {
-    setSelectedImage(preview);
-  };
-
-  const closeModal = () => {
-    setSelectedImage(null);
   };
 
   if (!formData) return <p className="loading-text">Загрузка...</p>;
@@ -335,41 +300,16 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
           </div>
         </fieldset>
 
-        <fieldset className="submit-section">
-          <legend>Фотографии перевала</legend>
-          <div className="photos-list">
-            {photos.length > 0 ? (
-              photos.map(photo => (
-                <div key={photo.id} className="photo-item">
-                  <img
-                    src={`${MEDIA_URL}${photo.file_name.replace("\\", "/")}`}
-                    alt={photo.title || photo.file_name}
-                    className="photo-preview"
-                    onClick={() => handleImageClick(`${MEDIA_URL}${photo.file_name.replace("\\", "/")}`)}
-                  />
-                  <span>{photo.title || photo.file_name}</span>
-                </div>
-              ))
-            ) : (
-              <p>Фотографии отсутствуют</p>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate(`/edit-photos/${id}`)}
-            className="submit-btn"
-          >
-            Заменить фотографии
-          </button>
-        </fieldset>
+        <button
+          type="button"
+          onClick={() => navigate(`/edit-photos/${id}`)}
+          className="submit-btn"
+        >
+          Редактировать фотографии
+        </button>
 
         <button type="submit" className="submit-btn">Сохранить изменения</button>
       </form>
-      {selectedImage && (
-        <div className="modal" onClick={closeModal}>
-          <img src={selectedImage} alt="Увеличенное фото" className="modal-image" />
-        </div>
-      )}
       <button onClick={toggleTheme} className="theme-btn">
         {darkMode ? "Светлая тема" : "Тёмная тема"}
       </button>

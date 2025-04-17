@@ -1,3 +1,5 @@
+// AlpPass/src/pages/Submit.tsx
+
 import React, { useState } from "react"; /* Импорт React и хука useState для управления состоянием */
 import { useNavigate } from "react-router-dom"; /* Импорт useNavigate для навигации после отправки */
 import "../index.css"; /* Импорт глобальных стилей из index.css */
@@ -25,7 +27,6 @@ interface FormData {
   status: number; /* Статус перевала */
   difficulties: { season: number; difficulty: number }[]; /* Сложность (сезон и категория) */
   route_description: string; /* Описание маршрута */
-  images: any[]; /* Изображения */
 }
 
 /* Статичные списки сезонов и сложностей */
@@ -66,7 +67,6 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
     status: 1,
     difficulties: [{ season: 0, difficulty: 0 }],
     route_description: "",
-    images: [],
   });
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null); /* Состояние для ошибок */
@@ -216,7 +216,6 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
       },
       status: formData.status,
       difficulties: formData.difficulties,
-      images: formData.images,
       route_description: formData.route_description,
     };
 
@@ -231,11 +230,11 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
       const data = await response.json();
       console.log("✅ Ответ от сервера (перевал):", data);
 
-      /* Обновлённая проверка успешного ответа */
+      /* Проверка успешного ответа */
       if (response.ok && data.id) { /* Проверяем статус 200/201 и наличие id */
         setSubmitStatus("✅ Перевал успешно добавлен! Перенаправление...");
         localStorage.setItem("last_pereval_id", data.id);
-        setTimeout(() => navigate(`/add-images/${data.id}`), 1000);
+        setTimeout(() => navigate(`/edit-photos/${data.id}`), 1000);
       } else {
         throw new Error(`Ошибка сервера: ${JSON.stringify(data)}`);
       }
