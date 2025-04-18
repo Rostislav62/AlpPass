@@ -1,3 +1,5 @@
+// AlpPass/src/pages/MenuPage.tsx
+
 import React from "react"; /* Импорт React для создания компонента */
 import { Link } from "react-router-dom"; /* Импорт компонента Link из react-router-dom для навигации */
 import "../index.css"; /* Импорт глобальных стилей из файла index.css */
@@ -18,6 +20,13 @@ const MenuPage: React.FC<MenuPageProps> = ({ darkMode, toggleTheme }) => {
                 <li><Link to="/my-submits" className="menu-link">Мои перевалы</Link></li> {/* Ссылка на страницу перевалов пользователя */}
                 <li><Link to="/all-passes" className="menu-link">Список всех перевалов</Link></li> {/* Ссылка на страницу всех перевалов */}
                 <li><Link to="/profile" className="menu-link">Личный кабинет</Link></li> {/* Ссылка на страницу личного кабинета */}
+
+                {/* Новый код ниже */}
+
+                {/* Новая ссылка на новую форму добавления перевала */}
+                <li><Link to="/pereval/new" className="menu-link">Новый перевал (новая форма)</Link></li>
+
+                {/* Конец нового кода */}
             </ul> {/* Закрывающий тег списка */}
             <button onClick={toggleTheme} className="theme-btn"> {/* Кнопка переключения темы с обработчиком onClick */}
                 {darkMode ? "Светлая тема" : "Тёмная тема"} {/* Условный текст кнопки в зависимости от darkMode */}

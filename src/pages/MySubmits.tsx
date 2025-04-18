@@ -1,3 +1,5 @@
+// AlpPass/src/pages/MySubmits.tsx
+
 import React, { useEffect, useState } from "react"; // Импорт React и хуков
 import { Link, useNavigate } from "react-router-dom"; // Импорт Link и useNavigate
 import "../index.css"; // Импорт стилей
@@ -99,13 +101,28 @@ const MySubmits: React.FC<MySubmitsProps> = ({ darkMode, toggleTheme }) => {
                                 <td className="mysubmits-td">{p.add_time}</td> {/* Дата */}
                                 <td className="mysubmits-td"> {/* Действия */}
                                     {p.status === 1 && ( // Если статус "new"
-                                        <Link
-                                            to={`/edit/${p.id}`} // Ссылка на редактирование
-                                            className="edit-link" // Класс для стилей
-                                            onClick={(e) => e.stopPropagation()} // Предотвращаем срабатывание handleRowClick
-                                        >
-                                            Редактировать
-                                        </Link>
+                                        <>
+                                            <Link
+                                                to={`/edit/${p.id}`} // Ссылка на редактирование (старая логика)
+                                                className="edit-link" // Класс для стилей
+                                                onClick={(e) => e.stopPropagation()} // Предотвращаем срабатывание handleRowClick
+                                            >
+                                                Редактировать
+                                            </Link>
+
+                                            {/* Новый код ниже */}
+
+                                            {/* Новая ссылка на редактирование через PerevalForm */}
+                                            <Link
+                                                to={`/pereval/edit/${p.id}`} // Ссылка на новую форму редактирования
+                                                className="edit-link" // Класс для стилей
+                                                onClick={(e) => e.stopPropagation()} // Предотвращаем срабатывание handleRowClick
+                                            >
+                                                Редактировать (новая форма)
+                                            </Link>
+
+                                            {/* Конец нового кода */}
+                                        </>
                                     )}
                                 </td>
                             </tr>

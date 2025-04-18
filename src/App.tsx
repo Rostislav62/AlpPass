@@ -1,3 +1,6 @@
+// AlpPass/src/pages/App.tsx
+
+
 import React, { useState, useEffect } from "react"; // Импорт React и хуков
 import { BrowserRouter as Router, Route, Routes, Link, useLocation, Navigate } from "react-router-dom"; // Импорт маршрутизации
 import MySubmits from "./pages/MySubmits"; // Импорт MySubmits
@@ -12,7 +15,13 @@ import LoginPage from "./pages/LoginPage"; // Импорт LoginPage
 import UploadPhotos from "./pages/UploadPhotos"; // Импорт UploadPhotos
 import PerevalDetail from "./pages/PerevalDetail"; // Импорт PerevalDetail
 import EditPhotos from "./pages/EditPhotos"; // Импорт EditPhotos
-import "./index.css"; // Импорт стилей
+import "../index.css"; // Импорт стилей
+
+// Новый код ниже
+
+import PerevalForm from "./pages/PerevalForm"; // Импорт новой формы PerevalForm
+
+// Конец нового кода
 
 // Компонент MenuButton
 function MenuButton() {
@@ -84,6 +93,15 @@ function App() {
                     <Route path="/add-images/:perevalId" element={<UploadPhotos darkMode={darkMode} toggleTheme={toggleTheme} />} />
                     <Route path="/edit-photos/:id" element={<EditPhotos darkMode={darkMode} toggleTheme={toggleTheme} />} />
                     <Route path="/pereval/:id" element={<PerevalDetail darkMode={darkMode} toggleTheme={toggleTheme} />} />
+
+                    {/* Новый код ниже */}
+
+                    {/* Новый маршрут для создания перевала */}
+                    <Route path="/pereval/new" element={<PerevalForm darkMode={darkMode} toggleTheme={toggleTheme} />} />
+                    {/* Новый маршрут для редактирования перевала */}
+                    <Route path="/pereval/edit/:id" element={<PerevalForm darkMode={darkMode} toggleTheme={toggleTheme} />} />
+
+                    {/* Конец нового кода */}
                 </Routes>
             </div>
         </Router>
