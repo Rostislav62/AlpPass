@@ -15,7 +15,7 @@ import LoginPage from "./pages/LoginPage"; // Импорт LoginPage
 import UploadPhotos from "./pages/UploadPhotos"; // Импорт UploadPhotos
 import PerevalDetail from "./pages/PerevalDetail"; // Импорт PerevalDetail
 import EditPhotos from "./pages/EditPhotos"; // Импорт EditPhotos
-import "../index.css"; // Импорт стилей
+import "./index.css"; // Импорт стилей
 
 // Новый код ниже
 
