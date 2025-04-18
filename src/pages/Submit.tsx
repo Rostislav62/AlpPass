@@ -216,6 +216,7 @@ const Submit: React.FC<SubmitProps> = ({ darkMode, toggleTheme }) => {
       },
       status: formData.status,
       difficulties: formData.difficulties,
+      images: [], /* Добавлено поле images как пустой массив для соответствия серверу */
       route_description: formData.route_description,
     };
 
