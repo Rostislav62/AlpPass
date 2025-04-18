@@ -1,3 +1,5 @@
+// AlpPass/src/pages/AllPass.tsx
+
 import React, { useEffect, useState } from "react"; // Импорт React и хуков
 import { useNavigate } from "react-router-dom"; // Импорт useNavigate
 import "../index.css"; // Импорт стилей

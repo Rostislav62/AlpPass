@@ -1,3 +1,5 @@
+// AlpPass/src/pages/EditPhotos.tsx
+
 import React, { useState, useEffect } from "react"; // Импорт React и хуков
 import { useParams, useNavigate } from "react-router-dom"; // Импорт хуков для параметров и навигации
 import "../index.css"; // Импорт глобальных стилей

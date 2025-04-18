@@ -29,7 +29,7 @@ const HomePage: React.FC<HomePageProps> = ({ darkMode, toggleTheme }) => {
                     <button className="register-btn">Зарегистрироваться</button> {/* Кнопка "Зарегистрироваться" с классом register-btn для стилизации */}
                 </Link> {/* Закрывающий тег для ссылки на регистрацию */}
                 <Link to="/login"> {/* Ссылка на страницу логина с использованием компонента Link */}
-                    <button className="login-btn">Войти</button> {/* Кнопка "Войти" с классом login-btn для стилизации, унифицирована с register-btn */}
+                    <button className="login-btn">Войти</button> {/* Кнопка "Войти" с классом login-btn для стилизации, аналогичной register-btn */}
                 </Link> {/* Закрывающий тег для ссылки на логин */}
                 <button onClick={toggleTheme} className="theme-btn"> {/* Кнопка переключения темы с обработчиком onClick и классом theme-btn */}
                     {darkMode ? "Светлая тема" : "Тёмная тема"} {/* Условный текст кнопки: "Светлая тема" если darkMode true, иначе "Тёмная тема" */}
