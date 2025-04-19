@@ -90,7 +90,7 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
   // Состояние для модального окна сложности
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
   // Состояние для ID перевала
-  const [_perevalId, setPerevalId] = useState<string | null>(id || null);
+  const [, setPerevalId] = useState<string | null>(id || null);
   // Состояние для увеличенного фото
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   // Состояние для подтверждения удаления серверного фото
