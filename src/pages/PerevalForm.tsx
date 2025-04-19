@@ -28,7 +28,13 @@ interface PerevalFormData {
   status: number; // Статус перевала
   difficulties: { season: number; difficulty: number }[]; // Сезон и сложность
   route_description: string; // Описание маршрута
-  images: any[]; // Пустой массив для POST-запроса (обязателен)
+  images: { data: string; title: string }[]; // Массив изображений для POST-запроса
+}
+
+// Интерфейс локального изображения для нового перевала
+interface LocalImage {
+  file: File; // Файл изображения
+  preview: string; // URL превью для отображения
 }
 
 // Списки сезонов и сложностей (как в Submit.tsx и EditPereval.tsx)
@@ -47,6 +53,9 @@ const difficulties = [
   { id: 5, code: "3А", description: "Сложная", characteristics: "Ледовые участки, отвесные скалы, высота 4500–5000 м", requirements: "Полный комплект альпинистского снаряжения, опыт" },
   { id: 6, code: "3Б", description: "Очень сложная", characteristics: "Экстремальные условия, высота свыше 5000 м", requirements: "Высокий уровень подготовки, командная работа" },
 ];
+
+// Названия слотов для фотографий
+const slotLabels = ["Подъём", "Седловина", "Спуск"];
 
 // Базовый URL API
 const BASE_URL = "https://rostislav62.pythonanywhere.com";
@@ -71,8 +80,21 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
   const [showSeasonModal, setShowSeasonModal] = useState(false);
   // Состояние для модального окна сложности
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
-  // Состояние для ID перевала (используется для PhotosManager)
-  const [perevalId, setPerevalId] = useState<string | null>(id || null);
+  // Состояние для локальных изображений (только для нового перевала)
+  const [localImages, setLocalImages] = useState<Array<LocalImage | null>>([null, null, null]);
+  // Состояние для увеличенного фото
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // Очистка URL.createObjectURL для локальных превью при размонтировании
+  useEffect(() => {
+    return () => {
+      localImages.forEach(image => {
+        if (image && image.preview) {
+          URL.revokeObjectURL(image.preview); // Освобождаем память
+        }
+      });
+    };
+  }, [localImages]);
 
   // Загрузка данных перевала при редактировании
   useEffect(() => {
@@ -150,7 +172,6 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
       [name]: value,
     }));
   };
-
 
   // Обработчик изменения координат
   const handleCoordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -252,6 +273,107 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
     return null;
   };
 
+  // Обработчик выбора файла для фотографии (только для нового перевала)
+  const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!formData || id) return;
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      const preview = URL.createObjectURL(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Data = reader.result as string;
+        setFormData(prev => ({
+          ...prev!,
+          images: [
+            ...prev!.images.filter((_, i) => i !== index), // Удаляем старую картинку из этого слота
+            { data: base64Data.split(',')[1], title: `${index + 1}_${file.name}` } // Добавляем новую
+          ].sort((a, b) => a.title.localeCompare(b.title)) // Сортируем по title
+        }));
+        setLocalImages(prev => {
+          const updated = [...prev];
+          if (updated[index]) {
+            URL.revokeObjectURL(updated[index]!.preview); // Освобождаем память старого превью
+          }
+          updated[index] = { file, preview };
+          return updated;
+        });
+        setErrorMessage(null);
+      };
+      reader.readAsDataURL(file);
+      e.target.value = ""; // Сбрасываем input
+    }
+  };
+
+  // Обработчик Drag-and-Drop для фотографий (только для нового перевала)
+  const handleDrop = (index: number, e: React.DragEvent<HTMLLabelElement>) => {
+    if (!formData || id) return;
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (!file.type.startsWith("image/")) {
+        setErrorMessage("❌ Пожалуйста, перетащите изображение!");
+        return;
+      }
+      const preview = URL.createObjectURL(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Data = reader.result as string;
+        setFormData(prev => ({
+          ...prev!,
+          images: [
+            ...prev!.images.filter((_, i) => i !== index), // Удаляем старую картинку из этого слота
+            { data: base64Data.split(',')[1], title: `${index + 1}_${file.name}` } // Добавляем новую
+          ].sort((a, b) => a.title.localeCompare(b.title)) // Сортируем по title
+        }));
+        setLocalImages(prev => {
+          const updated = [...prev];
+          if (updated[index]) {
+            URL.revokeObjectURL(updated[index]!.preview); // Освобождаем память старого превью
+          }
+          updated[index] = { file, preview };
+          return updated;
+        });
+        setErrorMessage(null);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Обработчик для предотвращения стандартного поведения dragover
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+  };
+
+  // Обработчик локального удаления фотографии (только для нового перевала)
+  const handleDeleteLocal = (index: number) => {
+    if (!formData || id) return;
+    setFormData(prev => ({
+      ...prev!,
+      images: prev!.images.filter((_, i) => i !== index) // Удаляем изображение из этого слота
+    }));
+    setLocalImages(prev => {
+      const updated = [...prev];
+      if (updated[index]) {
+        URL.revokeObjectURL(updated[index]!.preview); // Освобождаем память
+      }
+      updated[index] = null;
+      return updated;
+    });
+    setErrorMessage(null);
+  };
+
+  // Обработчик клика по фото для увеличения (только для нового перевала)
+  const handleImageClick = (preview: string) => {
+    setSelectedImage(preview);
+  };
+
+  // Обработчик закрытия модального окна увеличенного фото
+  const closeImageModal = () => {
+    setSelectedImage(null);
+  };
+
   // Обработчик отправки формы
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -307,14 +429,14 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
             phone: formData.user.phone,
           },
           coord: {
-            latitude: formData.coord.latitude,
-            longitude: formData.coord.longitude,
-            height: formData.coord.height,
+            latitude: Number(formData.coord.latitude),
+            longitude: Number(formData.coord.longitude),
+            height: Number(formData.coord.height),
           },
           status: formData.status,
           difficulties: formData.difficulties,
           route_description: formData.route_description,
-          images: formData.images, // Пустой массив
+          images: formData.images, // Массив изображений в формате {data, title}
         };
 
         console.log("📤 Отправка нового перевала:", submitData);
@@ -336,7 +458,6 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
         // Успешное создание
         setSubmitStatus("✅ Перевал успешно добавлен!");
         localStorage.setItem("last_pereval_id", data.id); // Сохранение ID в localStorage
-        setPerevalId(data.id); // Установка ID для PhotosManager
         setTimeout(() => navigate(`/pereval/${data.id}`), 1000); // Редирект на страницу деталей
       } else {
         // Обработка ошибок
@@ -422,7 +543,7 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
             />
           </div>
         </fieldset>
-        
+
         {/* Секция: Координаты */}
         <fieldset className="submit-section">
           <legend>Координаты</legend>
@@ -494,10 +615,56 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
         </fieldset>
 
         {/* Секция: Фотографии */}
-        {perevalId && (
+        {id ? (
           <fieldset className="submit-section">
             <legend>Фотографии</legend>
             <PhotosManager darkMode={darkMode} toggleTheme={toggleTheme} />
+          </fieldset>
+        ) : (
+          <fieldset className="submit-section">
+            <legend>Фотографии</legend>
+            <div className="photo-slots">
+              {localImages.map((image, index) => (
+                <div key={index} className="photo-slot">
+                  {image === null ? (
+                    // Пустой слот для загрузки фотографии
+                    <label
+                      className="photo-placeholder"
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(index, e)}
+                    >
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageChange(index, e)}
+                        className="hidden-input"
+                      />
+                      <span className="slot-label">Выберите фото, нажав здесь</span>
+                      <span className="slot-label slot-title">{slotLabels[index]}</span>
+                    </label>
+                  ) : (
+                    // Локальное изображение с превью
+                    <div className="image-item">
+                      <img
+                        src={image.preview}
+                        alt={slotLabels[index]}
+                        className="image-preview"
+                        onClick={() => handleImageClick(image.preview)}
+                      />
+                      <span className="slot-label slot-title">{slotLabels[index]}</span>
+                      <div className="image-actions">
+                        <button
+                          onClick={() => handleDeleteLocal(index)}
+                          className="delete-btn"
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </fieldset>
         )}
 
@@ -560,6 +727,13 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
               Выбрать
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Модальное окно для увеличенного фото (только для нового перевала) */}
+      {selectedImage && (
+        <div className="modal" onClick={closeImageModal}>
+          <img src={selectedImage} alt="Увеличенное фото" className="modal-image" />
         </div>
       )}
 
