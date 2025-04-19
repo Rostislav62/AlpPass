@@ -151,18 +151,6 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
     }));
   };
 
-  // Обработчик изменения пользовательских данных
-  const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!formData) return;
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev!,
-      user: {
-        ...prev!.user,
-        [name]: value,
-      },
-    }));
-  };
 
   // Обработчик изменения координат
   const handleCoordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -256,11 +244,6 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
     if (!formData.beautyTitle) return "Название горного массива обязательно";
     if (!formData.title) return "Название перевала обязательно";
     if (!formData.user.email) return "Email пользователя не найден. Пожалуйста, войдите.";
-    if (!id) { // Дополнительная валидация для новых перевалов
-      if (!formData.user.family_name) return "Фамилия обязательна";
-      if (!formData.user.first_name) return "Имя обязательно";
-      if (!formData.user.phone) return "Телефон обязателен";
-    }
     if (!formData.coord.latitude) return "Широта обязательна";
     if (!formData.coord.longitude) return "Долгота обязательна";
     if (!formData.coord.height) return "Высота обязательна";
@@ -439,74 +422,7 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
             />
           </div>
         </fieldset>
-
-        {/* Секция: Данные пользователя (только для новых перевалов) */}
-        {!id && (
-          <fieldset className="submit-section">
-            <legend>Данные пользователя</legend>
-            <div className="form-group">
-              <label htmlFor="email">Email:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.user.email}
-                onChange={handleUserChange}
-                className="submit-input"
-                required
-                disabled // Email берётся из localStorage
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="family_name">Фамилия:</label>
-              <input
-                type="text"
-                id="family_name"
-                name="family_name"
-                value={formData.user.family_name}
-                onChange={handleUserChange}
-                className="submit-input"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="first_name">Имя:</label>
-              <input
-                type="text"
-                id="first_name"
-                name="first_name"
-                value={formData.user.first_name}
-                onChange={handleUserChange}
-                className="submit-input"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="father_name">Отчество:</label>
-              <input
-                type="text"
-                id="father_name"
-                name="father_name"
-                value={formData.user.father_name}
-                onChange={handleUserChange}
-                className="submit-input"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="phone">Телефон:</label>
-              <input
-                type="text"
-                id="phone"
-                name="phone"
-                value={formData.user.phone}
-                onChange={handleUserChange}
-                className="submit-input"
-                required
-              />
-            </div>
-          </fieldset>
-        )}
-
+        
         {/* Секция: Координаты */}
         <fieldset className="submit-section">
           <legend>Координаты</legend>
