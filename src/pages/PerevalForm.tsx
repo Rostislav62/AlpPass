@@ -359,12 +359,12 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
         formData.append("title", `${prefix}${image.file.name}`);
 
         try {
-          const response = await fetch(IMAGE_API_URL, {
+          await fetch(IMAGE_API_URL, {
             method: "POST",
             body: formData,
             mode: "no-cors", // Обход CORS
           });
-          console.log(`📤 Отправка изображения ${index + 1}:`, response);
+          console.log(`📤 Отправка изображения ${index + 1} завершена`);
         } catch (error) {
           console.error(`❌ Ошибка отправки изображения ${index + 1}:`, error);
           setErrorMessage(`❌ Ошибка отправки изображения ${slotLabels[index]}`);
