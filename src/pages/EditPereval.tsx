@@ -16,6 +16,7 @@ interface ImageData {
   preview: string; // URL превью
   title: string; // Название изображения
   id?: number; // ID изображения на сервере (для существующих)
+  data?: string; // Путь к изображению на сервере
 }
 
 // Интерфейс данных формы
@@ -58,6 +59,8 @@ const difficulties = [
 // Базовый URL API
 const BASE_URL = "https://rostislav62.pythonanywhere.com";
 const API_URL = `${BASE_URL}/api/submitData/`;
+const IMAGE_API_URL = `${BASE_URL}/api/uploadImage/`;
+const IMAGE_DELETE_URL = `${BASE_URL}/api/uploadImage/delete/`;
 const MEDIA_URL = `${BASE_URL}/media/`;
 
 // Названия слотов для фотографий
@@ -112,6 +115,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
             id: img.id,
             preview: `${MEDIA_URL}${img.data.replace("\\", "/")}`,
             title: img.title || `${index + 1}_image`,
+            data: img.data,
           }));
 
           // Инициализация массива images
@@ -297,22 +301,56 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     e.preventDefault();
   };
 
-  // Обработчик локального удаления изображения
-  const handleDeleteLocal = (index: number) => {
+  // Обработчик удаления изображения
+  const handleDeleteImage = async (index: number) => {
     if (!formData) return;
-    console.log(`🗑️ Удаление изображения из слота ${index}`);
-    setFormData(prev => {
-      const updatedImages = [...prev!.images];
-      if (updatedImages[index] && updatedImages[index]!.preview && !updatedImages[index]!.id) {
-        URL.revokeObjectURL(updatedImages[index]!.preview);
+    const image = formData.images[index];
+    if (!image || !image.id) {
+      // Локальное удаление
+      console.log(`🗑️ Локальное удаление изображения из слота ${index}`);
+      setFormData(prev => {
+        const updatedImages = [...prev!.images];
+        if (updatedImages[index] && updatedImages[index]!.preview && !updatedImages[index]!.id) {
+          URL.revokeObjectURL(updatedImages[index]!.preview);
+        }
+        updatedImages[index] = null;
+        return {
+          ...prev!,
+          images: updatedImages,
+        };
+      });
+      setErrorMessage(null);
+      return;
+    }
+
+    // Удаление на сервере
+    console.log(`🗑️ Удаление изображения ID ${image.id} на сервере`);
+    try {
+      const response = await fetch(`${IMAGE_DELETE_URL}${image.id}/`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.user.email }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Ошибка удаления изображения ID ${image.id}`);
       }
-      updatedImages[index] = null;
-      return {
-        ...prev!,
-        images: updatedImages,
-      };
-    });
-    setErrorMessage(null);
+
+      console.log(`✅ Изображение ID ${image.id} удалено`);
+      setFormData(prev => {
+        const updatedImages = [...prev!.images];
+        updatedImages[index] = null;
+        return {
+          ...prev!,
+          images: updatedImages,
+        };
+      });
+      setErrorMessage(null);
+    } catch (error) {
+      console.error(`❌ Ошибка удаления изображения ID ${image.id}:`, error);
+      setErrorMessage(`❌ ${error instanceof Error ? error.message : "Неизвестная ошибка"}`);
+    }
   };
 
   // Закрытие модального окна сезона
@@ -372,37 +410,75 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     setErrorMessage(null);
 
     try {
-      // Подготовка данных для отправки
-      const formDataToSend = new FormData();
-      formDataToSend.append("email", formData.user.email);
-      formDataToSend.append("beautyTitle", formData.beautyTitle);
-      formDataToSend.append("title", formData.title);
-      formDataToSend.append("other_titles", formData.other_titles);
-      formDataToSend.append("connect", String(formData.connect));
-      formDataToSend.append("user[email]", formData.user.email);
-      formDataToSend.append("user[family_name]", formData.user.family_name);
-      formDataToSend.append("user[first_name]", formData.user.first_name);
-      formDataToSend.append("user[father_name]", formData.user.father_name);
-      formDataToSend.append("user[phone]", formData.user.phone);
-      formDataToSend.append("coord[latitude]", formData.coord.latitude);
-      formDataToSend.append("coord[longitude]", formData.coord.longitude);
-      formDataToSend.append("coord[height]", formData.coord.height);
-      formDataToSend.append("difficulties[0][season]", String(formData.difficulties[0].season));
-      formDataToSend.append("difficulties[0][difficulty]", String(formData.difficulties[0].difficulty));
-      formDataToSend.append("route_description", formData.route_description);
-
-      // Добавление фотографий
+      // Этап 1: загрузка новых фотографий
       const imagesToUpload = formData.images.filter((img): img is ImageData => img !== null && !!img.file);
-      imagesToUpload.forEach((image, index) => {
-        formDataToSend.append(`images[${index}]`, image.file!, image.title);
-      });
+      const uploadedImages: { data: string; title: string }[] = [];
 
-      console.log("📤 Отправка обновления перевала:", Object.fromEntries(formDataToSend));
+      for (const image of imagesToUpload) {
+        const formDataUpload = new FormData();
+        formDataUpload.append("pereval_id", id!);
+        formDataUpload.append("image", image.file!);
+        formDataUpload.append("title", image.title);
 
-      // Отправка данных через POST /api/submitData/
+        console.log(`📤 Отправка изображения ${image.title}`);
+        const uploadResponse = await fetch(IMAGE_API_URL, {
+          method: "POST",
+          body: formDataUpload,
+        });
+
+        const uploadData = await uploadResponse.json();
+        if (!uploadResponse.ok) {
+          throw new Error(uploadData.message || `Ошибка загрузки изображения ${image.title}`);
+        }
+        console.log(`✅ Изображение ${image.title} загружено:`, uploadData);
+        uploadedImages.push({
+          data: uploadData.data || `pereval_images/${image.title}`,
+          title: image.title,
+        });
+      }
+
+      // Этап 2: подготовка данных для отправки
+      const updatedData = {
+        email: formData.user.email,
+        beautyTitle: formData.beautyTitle,
+        title: formData.title,
+        other_titles: formData.other_titles,
+        connect: formData.connect,
+        user: {
+          email: formData.user.email,
+          family_name: formData.user.family_name,
+          first_name: formData.user.first_name,
+          father_name: formData.user.father_name,
+          phone: formData.user.phone,
+        },
+        coord: {
+          latitude: Number(formData.coord.latitude),
+          longitude: Number(formData.coord.longitude),
+          height: Number(formData.coord.height),
+        },
+        status: formData.status,
+        difficulties: [
+          {
+            season: formData.difficulties[0].season,
+            difficulty: formData.difficulties[0].difficulty,
+          },
+        ],
+        route_description: formData.route_description,
+        images: [
+          ...formData.images
+            .filter((img): img is ImageData => img !== null && !!img.data)
+            .map(img => ({ data: img.data, title: img.title })),
+          ...uploadedImages,
+        ].slice(0, 3),
+      };
+
+      console.log("📤 Отправка обновления перевала:", updatedData);
+
+      // Этап 3: отправка данных через POST /api/submitData/
       const response = await fetch(API_URL, {
         method: "POST",
-        body: formDataToSend,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
       });
 
       const data = await response.json();
@@ -420,6 +496,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
             id: img.id,
             preview: `${MEDIA_URL}${img.data.replace("\\", "/")}`,
             title: img.title || `${index + 1}_image`,
+            data: img.data,
           };
         });
         setFormData(prev => ({
@@ -453,7 +530,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       <form onSubmit={handleSubmit} className="submit-form">
         {/* Секция: Данные перевала */}
         <fieldset className="submit-section">
-          <legend>Данные перевала</legend>
+          <legend>Данные F перевала</legend>
           <div className="form-group">
             <label htmlFor="beautyTitle">Название горного массива:</label>
             <input
@@ -604,7 +681,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
                     <span className="slot-label slot-title">{slotLabels[index]}</span>
                     <div className="image-actions">
                       <button
-                        onClick={() => handleDeleteLocal(index)}
+                        onClick={() => handleDeleteImage(index)}
                         className="delete-btn"
                       >
                         Удалить
