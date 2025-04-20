@@ -102,6 +102,22 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
           data.user.email.trim().toLowerCase() === userEmail.trim().toLowerCase() &&
           data.user.phone.replace(/\s+/g, "") === userPhone.replace(/\s+/g, "")
         ) {
+          // Сопоставление season.code с ID
+          const season = seasons.find(s => s.code === data.difficulties[0]?.season?.code) || { id: 0 };
+          // Сопоставление difficulty.code с ID
+          const difficulty = difficulties.find(d => d.code === data.difficulties[0]?.difficulty?.code) || { id: 0 };
+
+          // Формирование массива изображений
+          const loadedImages = (data.images || []).slice(0, 3).map((img: any, index: number) => ({
+            id: img.id,
+            preview: `${BASE_URL}/${img.data}`, // Предполагается, что data — относительный путь
+            title: img.title || `${index + 1}_image`,
+          }));
+          const images = [null, null, null];
+          loadedImages.forEach((img: ImageData, index: number) => {
+            images[index] = img;
+          });
+
           setFormData({
             beautyTitle: data.beautyTitle || "",
             title: data.title || "",
@@ -120,9 +136,9 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
               height: data.coord.height?.toString() || "",
             },
             status: data.status || 1,
-            difficulties: data.difficulties.length > 0 ? data.difficulties : [{ season: 0, difficulty: 0 }],
+            difficulties: [{ season: season.id, difficulty: difficulty.id }],
             route_description: data.route_description || "",
-            images: [null, null, null], // Инициализация пустых слотов
+            images,
           });
         } else {
           setErrorMessage("Редактирование запрещено! Либо статус не new, либо данные пользователя не совпадают.");
@@ -131,38 +147,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       .catch(error => {
         console.error("Ошибка загрузки перевала:", error);
         setErrorMessage("❌ Ошибка загрузки данных перевала");
-      });
-
-    // Загрузка фотографий
-    fetch(`${BASE_URL}/api/images/${id}/`)
-      .then(async response => {
-        const text = await response.text();
-        console.log("📥 Ответ от сервера (фотографии):", text);
-        try {
-          return JSON.parse(text);
-        } catch (error) {
-          console.error("❌ Ошибка парсинга JSON (фотографии):", text);
-          throw new Error("Сервер вернул не JSON-ответ");
-        }
-      })
-      .then((data: any[]) => {
-        const loadedImages = data.slice(0, 3).map((img, index) => ({
-          id: img.id,
-          preview: img.url,
-          title: img.title || `${index + 1}_image`,
-        }));
-        setFormData(prev => {
-          if (!prev) return prev;
-          const updatedImages = [...prev.images];
-          loadedImages.forEach((img, index) => {
-            updatedImages[index] = img;
-          });
-          return { ...prev, images: updatedImages };
-        });
-      })
-      .catch(error => {
-        console.error("Ошибка загрузки фотографий:", error);
-        // Не устанавливаем ошибку, чтобы форма работала без фотографий
       });
   }, [id, userEmail, userPhone]);
 
@@ -418,9 +402,9 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
 
       // Этап 2: обработка фотографий
       const imagesToUpload = formData.images.filter((img): img is ImageData => img !== null && !!img.file);
-      const imagesToDelete = formData.images
-        .filter((img): img is ImageData => img !== null && !!img.id && !formData.images.some(i => i?.id === img.id))
-        .map(img => img.id!);
+      const currentImages = formData.images.filter((img): img is ImageData => img !== null && !!img.id);
+      const initialImages = (formData.images.filter((img): img is ImageData => img !== null && !!img.id) || []).map(img => img.id!);
+      const imagesToDelete = initialImages.filter(id => !currentImages.some(img => img.id === id));
 
       // Загрузка новых фотографий
       if (imagesToUpload.length > 0) {
@@ -445,7 +429,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         }
       }
 
-      // Удаление старых фотографий (предполагаемый API)
+      // Удаление старых фотографий
       if (imagesToDelete.length > 0) {
         setSubmitStatus("Удаление старых фотографий...");
         for (const imageId of imagesToDelete) {
