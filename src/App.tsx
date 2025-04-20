@@ -11,7 +11,6 @@ import HomePage from "./pages/HomePage"; // Импорт HomePage
 import Profile from "./pages/Profile"; // Импорт Profile
 import MenuPage from "./pages/MenuPage"; // Импорт MenuPage
 import LoginPage from "./pages/LoginPage"; // Импорт LoginPage
-import UploadPhotos from "./pages/UploadPhotos"; // Импорт UploadPhotos
 import PerevalDetail from "./pages/PerevalDetail"; // Импорт PerevalDetail
 import "./index.css"; // Импорт стилей
 
@@ -81,7 +80,6 @@ function App() {
                     <Route path="/all-passes" element={<AllPass darkMode={darkMode} toggleTheme={toggleTheme} />} />
                     <Route path="/edit/:id" element={<EditPereval darkMode={darkMode} toggleTheme={toggleTheme} />} />
                     <Route path="/profile" element={userEmail !== "Нет email" ? <Profile darkMode={darkMode} toggleTheme={toggleTheme} /> : <Navigate to="/" />} />
-                    <Route path="/add-images/:perevalId" element={<UploadPhotos darkMode={darkMode} toggleTheme={toggleTheme} />} />
                     <Route path="/pereval/:id" element={<PerevalDetail darkMode={darkMode} toggleTheme={toggleTheme} />} />
                     <Route path="/pereval/new" element={<NewPereval darkMode={darkMode} toggleTheme={toggleTheme} />} />
                     <Route path="/pereval/edit/:id" element={<NewPereval darkMode={darkMode} toggleTheme={toggleTheme} />} />
