@@ -75,7 +75,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
   const userEmail = localStorage.getItem("user_email") || "";
   const userPhone = localStorage.getItem("user_phone") || "";
-  const [initialImageIds, setInitialImageIds] = useState<number[]>([]);
 
   // Загрузка данных перевала
   useEffect(() => {
@@ -115,14 +114,13 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
             title: img.title || `${index + 1}_image`,
           }));
 
-          // Инициализация массива images с типом (ImageData | null)[]
+          // Инициализация массива images
           const images: (ImageData | null)[] = [null, null, null];
           loadedImages.forEach((img, index) => {
             images[index] = img;
           });
 
-          // Сохраняем начальные ID изображений
-          setInitialImageIds(loadedImages.map(img => img.id!));
+          console.log("📸 Загруженные изображения:", images);
 
           setFormData({
             beautyTitle: data.beautyTitle || "",
@@ -173,6 +171,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!formData) return;
     const { name, value } = e.target;
+    console.log(`✏️ Изменение поля ${name}:`, value);
     setFormData(prev => ({
       ...prev!,
       [name]: value,
@@ -183,6 +182,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   const handleCoordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!formData) return;
     const { name, value } = e.target;
+    console.log(`📍 Изменение координаты ${name}:`, value);
     setFormData(prev => ({
       ...prev!,
       coord: {
@@ -233,6 +233,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       console.error(`Ошибка: ${name} получил невалидное значение "${value}"`);
       return;
     }
+    console.log(`🏔️ Изменение ${name}:`, newValue);
     setFormData(prev => ({
       ...prev!,
       difficulties: [{ ...prev!.difficulties[0], [name]: newValue }],
@@ -249,14 +250,15 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       preview: URL.createObjectURL(file),
       title: `${index + 1}_${file.name}`,
     };
-    setFormData(prev => ({
-      ...prev!,
-      images: [
-        ...prev!.images.slice(0, index),
-        newImage,
-        ...prev!.images.slice(index + 1),
-      ].slice(0, 3),
-    }));
+    console.log(`📷 Добавление изображения в слот ${index}:`, newImage.title);
+    setFormData(prev => {
+      const updatedImages = [...prev!.images];
+      updatedImages[index] = newImage;
+      return {
+        ...prev!,
+        images: updatedImages,
+      };
+    });
     setErrorMessage(null);
     e.target.value = "";
   };
@@ -277,14 +279,15 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         preview: URL.createObjectURL(file),
         title: `${index + 1}_${file.name}`,
       };
-      setFormData(prev => ({
-        ...prev!,
-        images: [
-          ...prev!.images.slice(0, index),
-          newImage,
-          ...prev!.images.slice(index + 1),
-        ].slice(0, 3),
-      }));
+      console.log(`📷 Перетаскивание изображения в слот ${index}:`, newImage.title);
+      setFormData(prev => {
+        const updatedImages = [...prev!.images];
+        updatedImages[index] = newImage;
+        return {
+          ...prev!,
+          images: updatedImages,
+        };
+      });
       setErrorMessage(null);
     }
   };
@@ -297,6 +300,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   // Обработчик локального удаления изображения
   const handleDeleteLocal = (index: number) => {
     if (!formData) return;
+    console.log(`🗑️ Удаление изображения из слота ${index}`);
     setFormData(prev => {
       const updatedImages = [...prev!.images];
       if (updatedImages[index] && updatedImages[index]!.preview && !updatedImages[index]!.id) {
@@ -406,12 +410,9 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         throw new Error(data.message || "Ошибка обновления перевала");
       }
 
-      // Этап 2: обработка фотографий
+      // Этап 2: загрузка новых фотографий
       const imagesToUpload = formData.images.filter((img): img is ImageData => img !== null && !!img.file);
-      const currentImages = formData.images.filter((img): img is ImageData => img !== null && !!img.id);
-      const imagesToDelete = initialImageIds.filter(id => !currentImages.some(img => img.id === id));
 
-      // Загрузка новых фотографий
       if (imagesToUpload.length > 0) {
         setSubmitStatus("Сохранение фотографий...");
         for (const image of imagesToUpload) {
@@ -434,23 +435,8 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         }
       }
 
-      // Удаление старых фотографий
-      if (imagesToDelete.length > 0) {
-        setSubmitStatus("Удаление старых фотографий...");
-        for (const imageId of imagesToDelete) {
-          console.log(`📤 Удаление изображения ID ${imageId}`);
-          const deleteResponse = await fetch(`${BASE_URL}/api/images/${imageId}/`, {
-            method: "DELETE",
-          });
-          if (!deleteResponse.ok) {
-            console.warn(`Ошибка удаления изображения ID ${imageId}`);
-          }
-          console.log(`✅ Изображение ID ${imageId} удалено`);
-        }
-      }
-
-      setSubmitStatus("✅ Перевал и фотографии успешно обновлены!");
-      setTimeout(() => navigate(`/pereval/${id}`), 1000);
+      setSubmitStatus("✅ Перевал и фотографии успешно обновлены! Старые фотографии не удаляются из-за ограничений сервера.");
+      setTimeout(() => navigate(`/pereval/${id}`), 2000);
     } catch (error) {
       console.error("❌ Ошибка обновления данных:", error);
       setErrorMessage(`❌ ${error instanceof Error ? error.message : "Неизвестная ошибка"}`);
@@ -518,7 +504,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
               value={formData.route_description}
               onChange={handleChange}
               className="submit-input"
-              rows={3}
+              rows={5}
             />
           </div>
         </fieldset>
@@ -620,6 +606,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
                       src={formData.images[index]!.preview}
                       alt={slotLabels[index]}
                       className="image-preview"
+                      onError={() => console.error(`Ошибка загрузки изображения: ${formData.images[index]!.preview}`)}
                     />
                     <span className="slot-label slot-title">{slotLabels[index]}</span>
                     <div className="image-actions">
