@@ -75,6 +75,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
   const userEmail = localStorage.getItem("user_email") || "";
   const userPhone = localStorage.getItem("user_phone") || "";
+  const [initialImageIds, setInitialImageIds] = useState<number[]>([]);
 
   // Загрузка данных перевала
   useEffect(() => {
@@ -108,15 +109,20 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
           const difficulty = difficulties.find(d => d.code === data.difficulties[0]?.difficulty?.code) || { id: 0 };
 
           // Формирование массива изображений
-          const loadedImages = (data.images || []).slice(0, 3).map((img: any, index: number) => ({
+          const loadedImages: ImageData[] = (data.images || []).slice(0, 3).map((img: any, index: number) => ({
             id: img.id,
-            preview: `${BASE_URL}/${img.data}`, // Предполагается, что data — относительный путь
+            preview: `${BASE_URL}/${img.data}`,
             title: img.title || `${index + 1}_image`,
           }));
-          const images = [null, null, null];
-          loadedImages.forEach((img: ImageData, index: number) => {
+
+          // Инициализация массива images с типом (ImageData | null)[]
+          const images: (ImageData | null)[] = [null, null, null];
+          loadedImages.forEach((img, index) => {
             images[index] = img;
           });
+
+          // Сохраняем начальные ID изображений
+          setInitialImageIds(loadedImages.map(img => img.id!));
 
           setFormData({
             beautyTitle: data.beautyTitle || "",
@@ -403,8 +409,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       // Этап 2: обработка фотографий
       const imagesToUpload = formData.images.filter((img): img is ImageData => img !== null && !!img.file);
       const currentImages = formData.images.filter((img): img is ImageData => img !== null && !!img.id);
-      const initialImages = (formData.images.filter((img): img is ImageData => img !== null && !!img.id) || []).map(img => img.id!);
-      const imagesToDelete = initialImages.filter(id => !currentImages.some(img => img.id === id));
+      const imagesToDelete = initialImageIds.filter(id => !currentImages.some(img => img.id === id));
 
       // Загрузка новых фотографий
       if (imagesToUpload.length > 0) {
