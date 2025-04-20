@@ -245,10 +245,16 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   };
 
   // Обработчик выбора файла для слота изображения
-  const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!formData || !files || files.length === 0) return;
     const file = files[0];
+
+    // Удаление старого изображения, если оно существует
+    if (formData.images[index]?.id) {
+      await handleDeleteImage(index);
+    }
+
     const newImage: ImageData = {
       file,
       preview: URL.createObjectURL(file),
@@ -268,7 +274,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   };
 
   // Обработчик Drag-and-Drop для изображений
-  const handleDrop = (index: number, e: React.DragEvent<HTMLLabelElement>) => {
+  const handleDrop = async (index: number, e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     if (!formData) return;
     const files = e.dataTransfer.files;
@@ -278,6 +284,12 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         setErrorMessage("❌ Пожалуйста, перетащите изображение!");
         return;
       }
+
+      // Удаление старого изображения, если оно существует
+      if (formData.images[index]?.id) {
+        await handleDeleteImage(index);
+      }
+
       const newImage: ImageData = {
         file,
         preview: URL.createObjectURL(file),
@@ -474,15 +486,15 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
 
       console.log("📤 Отправка обновления перевала:", updatedData);
 
-      // Этап 3: отправка данных через POST /api/submitData/
-      const response = await fetch(API_URL, {
-        method: "POST",
+      // Этап 3: отправка данных через PATCH /api/submitData/{id}/update/
+      const response = await fetch(`${API_URL}${id}/update/`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedData),
       });
 
       const data = await response.json();
-      console.log("✅ Ответ от сервера (POST):", data);
+      console.log("✅ Ответ от сервера (PATCH):", data);
 
       if (response.status !== 200 || data.state !== 1) {
         throw new Error(data.message || "Ошибка обновления перевала");
@@ -530,7 +542,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       <form onSubmit={handleSubmit} className="submit-form">
         {/* Секция: Данные перевала */}
         <fieldset className="submit-section">
-          <legend>Данные F перевала</legend>
+          <legend>Данные перевала</legend>
           <div className="form-group">
             <label htmlFor="beautyTitle">Название горного массива:</label>
             <input
