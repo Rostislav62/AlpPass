@@ -109,19 +109,6 @@ const MySubmits: React.FC<MySubmitsProps> = ({ darkMode, toggleTheme }) => {
                                             >
                                                 Редактировать
                                             </Link>
-
-                                            {/* Новый код ниже */}
-
-                                            {/* Новая ссылка на редактирование через PerevalForm */}
-                                            <Link
-                                                to={`/pereval/edit/${p.id}`} // Ссылка на новую форму редактирования
-                                                className="edit-link" // Класс для стилей
-                                                onClick={(e) => e.stopPropagation()} // Предотвращаем срабатывание handleRowClick
-                                            >
-                                                Редактировать (новая форма)
-                                            </Link>
-
-                                            {/* Конец нового кода */}
                                         </>
                                     )}
                                 </td>
