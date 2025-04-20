@@ -384,220 +384,6 @@ body {
   text-align: center; /* Центрирование */
 }
 
-/* *************************Стили для EditPhotos.tsx************************* */
-
-/* Контейнер страницы загрузки фото */
-.upload-photos-container {
-  text-align: center; /* Центрирование текста */
-  padding: 20px; /* Внутренние отступы */
-}
-
-/* Заголовок страницы */
-.upload-photos-title {
-  text-align: center; /* Центрирование */
-  margin-bottom: 20px; /* Нижний отступ */
-}
-
-/* Список текущих фото */
-.current-photos-list,
-.image-list {
-  display: flex; /* Flex-контейнер */
-  flex-direction: column; /* Элементы в колонку */
-  align-items: center; /* Центрирование по горизонтали */
-  gap: 20px; /* Расстояние между элементами */
-}
-
-/* Элемент списка фото */
-.photo-item,
-.image-item {
-  display: flex; /* Flex-контейнер */
-  flex-direction: column; /* Элементы в колонку */
-  align-items: center; /* Центрирование */
-  width: 200px; /* Фиксированная ширина */
-}
-
-/* Поле ввода для загрузки */
-.upload-photos-input {
-  width: 100%; /* Полная ширина */
-  max-width: 180px; /* Максимальная ширина */
-  margin: 0 auto; /* Центрирование */
-}
-
-/* Контейнер для кнопок действий */
-.image-actions {
-  display: flex; /* Flex-контейнер */
-  justify-content: center; /* Центрирование */
-  gap: 10px; /* Расстояние между кнопками */
-  margin-top: 10px; /* Верхний отступ */
-}
-
-/* Кнопка загрузки и удаления */
-.upload-btn,
-.delete-btn {
-  padding: 5px 10px; /* Внутренние отступы */
-}
-
-/* Кастомная кнопка для поля выбора файлов */
-.custom-file-upload {
-  display: inline-block; /* Блочный элемент */
-  padding: 8px 16px; /* Внутренние отступы */
-  background: linear-gradient(to right, #60a5fa, #2563eb); /* Градиентный фон */
-  color: white; /* Белый текст */
-  font-size: 1rem; /* Размер шрифта 16px */
-  font-weight: 600; /* Полужирный шрифт */
-  border-radius: 5px; /* Скругление углов */
-  cursor: pointer; /* Курсор указателя */
-  transition: background 0.3s; /* Плавный переход фона */
-}
-
-/* Эффект наведения для кастомной кнопки */
-.custom-file-upload:hover {
-  background: linear-gradient(to right, #3b82f6, #1d4ed8); /* Градиент при наведении */
-}
-
-/* Тёмная тема для кастомной кнопки */
-.dark-mode .custom-file-upload {
-  background: linear-gradient(to right, #4b5563, #1f2937); /* Градиент для тёмной темы */
-}
-
-/* Эффект наведения в тёмной теме */
-.dark-mode .custom-file-upload:hover {
-  background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
-}
-
-/* Скрытие стандартного input */
-.custom-file-upload input[type="file"] {
-  display: none; /* Полное скрытие */
-}
-
-/* Уменьшение размера превью изображений */
-.photo-preview,
-.image-preview {
-  max-width: 180px; /* Ограничение ширины превью */
-  max-height: 180px; /* Ограничение высоты превью */
-  object-fit: cover; /* Сохранение пропорций с обрезкой */
-  cursor: pointer; /* Курсор указателя */
-}
-
-/* Стили для слотов фотографий */
-.photo-slots {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.photo-slot {
-  position: relative;
-  padding: 10px;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dark-mode .photo-slot {
-  background: #1f2937;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Стили для пустого слота */
-.photo-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 150px;
-  border: 2px dashed #d1d5db;
-  border-radius: 8px;
-  background: #f3f4f6;
-  cursor: pointer;
-  text-align: center;
-  padding: 10px;
-}
-
-.dark-mode .photo-placeholder {
-  border-color: #4b5563;
-  background: #374151;
-}
-
-/* Стили для меток слотов */
-.slot-label {
-  font-size: 0.9rem;
-  color: #4b5563;
-  opacity: 0.5;
-}
-
-.dark-mode .slot-label {
-  color: #9ca3af;
-}
-
-.slot-title {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-weight: 600;
-}
-
-/* Скрытый input */
-.hidden-input {
-  display: none;
-}
-
-/* Стили для спиннера загрузки */
-.spinner {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #ffffff;
-  border-top: 2px solid transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Стили для модального окна подтверждения */
-.confirm-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.confirm-modal-content {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  width: 90%;
-}
-
-.dark-mode .confirm-modal-content {
-  background: #1f2937;
-  color: #e5e7eb;
-}
-
-.confirm-modal-content p {
-  margin-bottom: 20px;
-}
-
-.confirm-modal-content button {
-  margin: 0 10px;
-}
-
-
-
 
 
 /* *************************Стили для HomePage.tsx************************* */
@@ -1321,7 +1107,7 @@ body {
   color: #d1d5db; /* Светло-серый текст */
 }
 
-/* *************************Стили для Submit.tsx************************* */
+/* *************************Стили для NewPereval.tsx************************* */
 
 /* Контейнер формы добавления перевала */
 .submit-container {
@@ -1431,6 +1217,175 @@ body {
   background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
 }
 
+/* Стили для слотов фотографий */
+.photo-slots {
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование по горизонтали */
+  gap: 20px; /* Расстояние между элементами */
+  margin-bottom: 20px; /* Нижний отступ */
+}
+
+/* Слот для фотографии */
+.photo-slot {
+  position: relative; /* Относительное позиционирование */
+  padding: 10px; /* Внутренний отступ */
+  background: #ffffff; /* Белый фон */
+  border-radius: 8px; /* Скругление углов */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Тень */
+}
+
+/* Тёмная тема для слота */
+.dark-mode .photo-slot {
+  background: #1f2937; /* Тёмный фон */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Тень */
+}
+
+/* Пустой слот для фотографии */
+.photo-placeholder {
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование */
+  justify-content: center; /* Центрирование по вертикали */
+  height: 150px; /* Фиксированная высота */
+  border: 2px dashed #d1d5db; /* Пунктирная рамка */
+  border-radius: 8px; /* Скругление углов */
+  background: #f3f4f6; /* Светлый фон */
+  cursor: pointer; /* Курсор указателя */
+  text-align: center; /* Центрирование текста */
+  padding: 10px; /* Внутренний отступ */
+}
+
+/* Тёмная тема для пустого слота */
+.dark-mode .photo-placeholder {
+  border-color: #4b5563; /* Серая рамка */
+  background: #374151; /* Тёмный фон */
+}
+
+/* Метки слотов */
+.slot-label {
+  font-size: 0.9rem; /* Размер шрифта 14.4px */
+  color: #4b5563; /* Серый цвет */
+  opacity: 0.5; /* Полупрозрачность */
+}
+
+/* Тёмная тема для меток */
+.dark-mode .slot-label {
+  color: #9ca3af; /* Светло-серый цвет */
+}
+
+/* Заголовок слота */
+.slot-title {
+  position: absolute; /* Абсолютное позиционирование */
+  top: 10px; /* Отступ сверху */
+  left: 10px; /* Отступ слева */
+  font-weight: 600; /* Полужирный шрифт */
+}
+
+/* Скрытый input для загрузки */
+.hidden-input {
+  display: none; /* Полное скрытие */
+}
+
+/* Элемент загруженного изображения */
+.image-item {
+  display: flex; /* Flex-контейнер */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Центрирование */
+  width: 200px; /* Фиксированная ширина */
+}
+
+/* Превью изображения */
+.image-preview {
+  max-width: 180px; /* Ограничение ширины */
+  max-height: 180px; /* Ограничение высоты */
+  object-fit: cover; /* Обрезка с сохранением пропорций */
+  cursor: pointer; /* Курсор указателя */
+}
+
+/* Контейнер для кнопок действий */
+.image-actions {
+  display: flex; /* Flex-контейнер */
+  justify-content: center; /* Центрирование */
+  gap: 10px; /* Расстояние между кнопками */
+  margin-top: 10px; /* Верхний отступ */
+}
+
+/* Кнопка удаления */
+.delete-btn {
+  padding: 5px 10px; /* Внутренние отступы */
+  background: linear-gradient(to right, #ef4444, #dc2626); /* Красный градиент */
+  color: white; /* Белый текст */
+  border: none; /* Без границы */
+  border-radius: 5px; /* Скругление углов */
+  font-size: 0.875rem; /* Размер шрифта 14px */
+  cursor: pointer; /* Курсор указателя */
+  transition: background 0.3s; /* Плавный переход фона */
+}
+
+/* Эффект наведения для кнопки удаления */
+.delete-btn:hover {
+  background: linear-gradient(to right, #dc2626, #b91c1c); /* Тёмный красный градиент */
+}
+
+/* Тёмная тема для кнопки удаления */
+.dark-mode .delete-btn {
+  background: linear-gradient(to right, #b91c1c, #991b1b); /* Тёмный красный градиент */
+}
+
+/* Эффект наведения в тёмной теме */
+.dark-mode .delete-btn:hover {
+  background: linear-gradient(to right, #991b1b, #7f1d1d); /* Ещё темнее */
+}
+
+/* Кнопка GPS */
+.gps-btn {
+  padding: 8px 16px; /* Внутренние отступы */
+  background: linear-gradient(to right, #34d399, #059669); /* Зелёный градиент */
+  color: white; /* Белый текст */
+  border: none; /* Без границы */
+  border-radius: 5px; /* Скругление углов */
+  font-size: 1rem; /* Размер шрифта 16px */
+  cursor: pointer; /* Курсор указателя */
+  transition: background 0.3s; /* Плавный переход фона */
+}
+
+/* Эффект наведения для кнопки GPS */
+.gps-btn:hover {
+  background: linear-gradient(to right, #10b981, #047857); /* Тёмный зелёный градиент */
+}
+
+/* Тёмная тема для кнопки GPS */
+.dark-mode .gps-btn {
+  background: linear-gradient(to right, #6b7280, #374151); /* Серый градиент */
+}
+
+/* Эффект наведения в тёмной теме */
+.dark-mode .gps-btn:hover {
+  background: linear-gradient(to right, #9ca3af, #4b5563); /* Светлый серый градиент */
+}
+
+/* Отключённая кнопка GPS */
+.gps-btn:disabled {
+  background: #d1d5db; /* Серый фон */
+  color: #6b7280; /* Серый текст */
+  cursor: not-allowed; /* Курсор "запрещено" */
+}
+
+/* Тёмная тема для отключённой кнопки */
+.dark-mode .gps-btn:disabled {
+  background: #4b5563; /* Тёмный фон */
+  color: #d1d5db; /* Светло-серый текст */
+}
+
+/* Статус отправки */
+.submit-status {
+  font-size: 1rem; /* Размер шрифта 16px */
+  color: #10b981; /* Зелёный текст */
+  margin-bottom: 1rem; /* Нижний отступ */
+  text-align: center; /* Центрирование */
+}
+
 /* Модальное окно для выбора */
 .modal {
   position: fixed; /* Фиксированное положение */
@@ -1536,6 +1491,8 @@ body {
     width: 95%; /* Ширина для мобильных */
   }
 }
+
+
 
 /* *************************Стили для UserRegister.tsx************************* */
 
@@ -1724,116 +1681,4 @@ body {
 .photo-item span {
   flex-grow: 1; /* Занимает доступное пространство */
   margin-right: 1rem; /* Отступ справа */
-}
-
-/* *******************************  Стили для PhotosManager.tsx **************************** */
-.photo-slots {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.photo-slot {
-  position: relative;
-  padding: 10px;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dark-mode .photo-slot {
-  background: #1f2937;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.photo-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 150px;
-  border: 2px dashed #d1d5db;
-  border-radius: 8px;
-  background: #f3f4f6;
-  cursor: pointer;
-  text-align: center;
-  padding: 10px;
-}
-
-.dark-mode .photo-placeholder {
-  border-color: #4b5563;
-  background: #374151;
-}
-
-.slot-label {
-  font-size: 0.9rem;
-  color: #4b5563;
-  opacity: 0.5;
-}
-
-.dark-mode .slot-label {
-  color: #9ca3af;
-}
-
-.slot-title {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-weight: 600;
-}
-
-.hidden-input {
-  display: none;
-}
-
-.spinner {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #ffffff;
-  border-top: 2px solid transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.confirm-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.confirm-modal-content {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  width: 90%;
-}
-
-.dark-mode .confirm-modal-content {
-  background: #1f2937;
-  color: #e5e7eb;
-}
-
-.confirm-modal-content p {
-  margin-bottom: 20px;
-}
-
-.confirm-modal-content button {
-  margin: 0 10px;
 }
