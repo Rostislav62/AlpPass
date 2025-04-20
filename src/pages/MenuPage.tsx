@@ -16,17 +16,12 @@ const MenuPage: React.FC<MenuPageProps> = ({ darkMode, toggleTheme }) => {
         <div className={`menu-container ${darkMode ? "dark-mode" : "light-mode"}`}> {/* Главный контейнер с динамическим классом темы */}
             <h1 className="menu-title">Меню</h1> {/* Заголовок страницы с классом для стилизации */}
             <ul className="menu-list"> {/* Список пунктов меню с классом для стилизации */}
-                <li><Link to="/submit" className="menu-link">Новый перевал</Link></li> {/* Ссылка на страницу добавления перевала */}
+                {/* Изменено: Заменена ссылка на /submit на /pereval/new, текст изменён на "Новый перевал" */}
+                <li><Link to="/pereval/new" className="menu-link">Новый перевал</Link></li>
                 <li><Link to="/my-submits" className="menu-link">Мои перевалы</Link></li> {/* Ссылка на страницу перевалов пользователя */}
                 <li><Link to="/all-passes" className="menu-link">Список всех перевалов</Link></li> {/* Ссылка на страницу всех перевалов */}
                 <li><Link to="/profile" className="menu-link">Личный кабинет</Link></li> {/* Ссылка на страницу личного кабинета */}
-
-                {/* Новый код ниже */}
-
-                {/* Новая ссылка на новую форму добавления перевала */}
-                <li><Link to="/pereval/new" className="menu-link">Новый перевал (новая форма)</Link></li>
-
-                {/* Конец нового кода */}
+                {/* Изменено: Удалена ссылка на /pereval/new с текстом "Новый перевал (новая форма)" */}
             </ul> {/* Закрывающий тег списка */}
             <button onClick={toggleTheme} className="theme-btn"> {/* Кнопка переключения темы с обработчиком onClick */}
                 {darkMode ? "Светлая тема" : "Тёмная тема"} {/* Условный текст кнопки в зависимости от darkMode */}

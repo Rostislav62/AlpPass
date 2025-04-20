@@ -92,7 +92,7 @@ body {
   background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
 }
 
-/* Группа полей формы (используется в Submit.tsx, UserRegister.tsx, LoginPage.tsx, EditPereval.tsx, EditPhotos.tsx) */
+/* Группа полей формы (используется в Submit.tsx, UserRegister.tsx, LoginPage.tsx, EditPereval.tsx) */
 .form-group {
   display: flex; /* Flex-контейнер */
   flex-direction: column; /* Элементы в колонку */
@@ -1621,7 +1621,7 @@ body {
 
 /* *************************Стили для общих модальных окон************************* */
 
-/* Модальное окно для подтверждения (используется в EditPereval.tsx, EditPhotos.tsx) */
+/* Модальное окно для подтверждения (используется в EditPereval.tsx) */
 .confirm-modal {
   position: absolute; /* Абсолютное позиционирование */
   top: 50%; /* Центрирование по вертикали */
@@ -1651,7 +1651,7 @@ body {
   margin: 0 0.5rem; /* Отступы */
 }
 
-/* Список фотографий (используется в EditPereval.tsx, EditPhotos.tsx) */
+/* Список фотографий (используется в EditPereval.tsx) */
 .photos-list {
   margin: 1rem 0; /* Отступы */
   display: flex; /* Flex-контейнер */
