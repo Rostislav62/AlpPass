@@ -92,7 +92,7 @@ body {
   background: linear-gradient(to right, #6b7280, #374151); /* Градиент при наведении */
 }
 
-/* Группа полей формы (используется в Submit.tsx, UserRegister.tsx, LoginPage.tsx, EditPereval.tsx) */
+/* Группа полей формы (используется в UserRegister.tsx, LoginPage.tsx, EditPereval.tsx) */
 .form-group {
   display: flex; /* Flex-контейнер */
   flex-direction: column; /* Элементы в колонку */
@@ -106,7 +106,7 @@ body {
   font-weight: 500; /* Средний вес шрифта */
 }
 
-/* Сообщение об ошибке (используется в Submit.tsx, UserRegister.tsx, LoginPage.tsx, AllPass.tsx) */
+/* Сообщение об ошибке (используется в UserRegister.tsx, LoginPage.tsx, AllPass.tsx) */
 .error-message {
   font-size: 1rem; /* Размер шрифта 16px */
   color: #ef4444; /* Красный цвет */
@@ -1479,9 +1479,6 @@ body {
 
 /* Адаптивность для мобильных */
 @media (max-width: 600px) {
-  .submit-container {
-    padding: 10px; /* Меньший отступ */
-  }
 
   .submit-title {
     font-size: 1.25rem; /* Меньший шрифт */

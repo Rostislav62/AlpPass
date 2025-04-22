@@ -9,5 +9,8 @@
       }
     }
   ],
-  "outputDirectory": "build"
+  "outputDirectory": "build",
+  "env": {
+    "CI": "false"
+  }
 }

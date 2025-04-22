@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { transliterate } from "transliteration"; // 📌 Библиотека для транслитерации
+import { transliterate } from "transliteration";
 import "../index.css";
 
 // 📌 Интерфейс пропсов компонента
@@ -13,12 +13,12 @@ interface EditPerevalProps {
 
 // 📌 Интерфейс данных локального изображения
 interface ImageData {
-  file?: File; // Файл изображения (для новых изображений)
-  preview: string; // URL превью
-  title: string; // Имя файла (например, 1_843yrnd2abcd_gorax.jpg)
-  id?: number; // ID изображения на сервере (для существующих)
-  data?: string; // Путь к файлу на сервере (например, pereval_images/1_843yrnd2abcd_gorax.jpg)
-  isModified: boolean; // 📌 Изменено на обязательное поле
+  file?: File;
+  preview: string;
+  title: string;
+  id?: number;
+  data?: string;
+  isModified: boolean;
 }
 
 // 📌 Интерфейс данных формы
@@ -62,7 +62,6 @@ const difficulties = [
 const BASE_URL = "https://rostislav62.pythonanywhere.com";
 const API_URL = `${BASE_URL}/api/submitData/`;
 const IMAGE_API_URL = `${BASE_URL}/api/uploadImage/`;
-const IMAGE_DELETE_URL = `${BASE_URL}/api/uploadImage/delete/`;
 const MEDIA_URL = `${BASE_URL}/media/`;
 
 // 📌 Названия слотов для фотографий
@@ -70,24 +69,24 @@ const slotLabels = ["Подъём", "Седловина", "Спуск"];
 
 // 📌 Компонент EditPereval
 const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
-  const { id } = useParams<{ id: string }>(); // 📌 Получение ID перевала из URL
-  const navigate = useNavigate(); // 📌 Навигация для редиректа
-  const [formData, setFormData] = useState<PerevalFormData | null>(null); // 📌 Текущее состояние формы
-  const [initialFormData, setInitialFormData] = useState<PerevalFormData | null>(null); // 📌 Начальное состояние для отслеживания изменений
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // 📌 Сообщение об ошибке
-  const [submitStatus, setSubmitStatus] = useState<string | null>(null); // 📌 Статус отправки
-  const [loadingGPS, setLoadingGPS] = useState(false); // 📌 Статус загрузки GPS
-  const [showSeasonModal, setShowSeasonModal] = useState(false); // 📌 Показ модального окна для сезона
-  const [showDifficultyModal, setShowDifficultyModal] = useState(false); // 📌 Показ модального окна для сложности
-  const userEmail = localStorage.getItem("user_email") || ""; // 📌 Email пользователя из localStorage
-  const userPhone = localStorage.getItem("user_phone") || ""; // 📌 Телефон пользователя из localStorage
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<PerevalFormData | null>(null);
+  const [initialFormData, setInitialFormData] = useState<PerevalFormData | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [submitStatus, setSubmitStatus] = useState<string | null>(null);
+  const [loadingGPS, setLoadingGPS] = useState(false);
+  const [showSeasonModal, setShowSeasonModal] = useState(false);
+  const [showDifficultyModal, setShowDifficultyModal] = useState(false);
+  const userEmail = localStorage.getItem("user_email") || "";
+  const userPhone = localStorage.getItem("user_phone") || "";
 
   // 📌 Функция генерации имени файла
   const generateFileName = (index: number, perevalTitle: string, file: File): string => {
-    const prefix = `${index + 1}_`; // 📌 Приставка: 1_, 2_, 3_
-    const uniqueId = Math.random().toString(36).substring(2, 12); // 📌 Уникальный ID (10 символов)
-    const transliteratedTitle = transliterate(perevalTitle.toLowerCase()).replace(/[^a-z0-9]/g, ""); // 📌 Транслитерация, удаление спецсимволов
-    const extension = file.name.split(".").pop()?.toLowerCase() || "jpg"; // 📌 Расширение файла
+    const prefix = `${index + 1}_`;
+    const uniqueId = Math.random().toString(36).substring(2, 12);
+    const transliteratedTitle = transliterate(perevalTitle.toLowerCase()).replace(/[^a-z0-9]/g, "");
+    const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
     return `${prefix}${uniqueId}_${transliteratedTitle}.${extension}`;
   };
 
@@ -99,7 +98,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       return;
     }
 
-    // 📌 Запрос данных перевала
     fetch(`${API_URL}${id}/info/`)
       .then(async response => {
         const text = await response.text();
@@ -117,21 +115,17 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
           data.user.email.trim().toLowerCase() === userEmail.trim().toLowerCase() &&
           data.user.phone.replace(/\s+/g, "") === userPhone.replace(/\s+/g, "")
         ) {
-          // 📌 Сопоставление season.code с ID
           const season = seasons.find(s => s.code === data.difficulties[0]?.season?.code) || { id: 0 };
-          // 📌 Сопоставление difficulty.code с ID
           const difficulty = difficulties.find(d => d.code === data.difficulties[0]?.difficulty?.code) || { id: 0 };
 
-          // 📌 Формирование массива изображений
           const loadedImages: ImageData[] = (data.images || []).slice(0, 3).map((img: any, index: number) => ({
             id: img.id,
             preview: `${MEDIA_URL}${img.data.replace("\\", "/")}`,
             title: img.title || `${index + 1}_image`,
             data: img.data,
-            isModified: false, // 📌 Изначально изображения не изменены
+            isModified: false,
           }));
 
-          // 📌 Инициализация массива images
           const images: (ImageData | null)[] = [null, null, null];
           loadedImages.forEach((img, index) => {
             images[index] = img;
@@ -163,7 +157,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
           };
 
           setFormData(formData);
-          setInitialFormData(formData); // 📌 Сохранение начального состояния
+          setInitialFormData(formData);
         } else {
           setErrorMessage("Редактирование запрещено! Либо статус не new, либо данные пользователя не совпадают.");
         }
@@ -266,19 +260,16 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     if (!formData || !files || files.length === 0) return;
     const file = files[0];
 
-    // 📌 Проверка формата файла
     if (!["image/jpeg", "image/png"].includes(file.type)) {
       setErrorMessage(`❌ Недопустимый формат файла: ${file.name}. Используйте JPG или PNG.`);
       return;
     }
 
-    // 📌 Проверка размера файла (10 МБ = 10 * 1024 * 1024 байт)
     if (file.size > 10 * 1024 * 1024) {
       setErrorMessage(`❌ Файл слишком большой: ${file.name}. Максимальный размер: 10 МБ.`);
       return;
     }
 
-    // 📌 Генерация имени файла
     const fileName = generateFileName(index, formData.title, file);
     const newImage: ImageData = {
       file,
@@ -286,7 +277,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       title: fileName,
       data: `pereval_images/${fileName}`,
       isModified: true,
-      id: formData.images[index]?.id, // 📌 Сохранение ID для обновления записи
+      id: formData.images[index]?.id,
     };
 
     console.log(`📷 Добавление изображения в слот ${index}:`, fileName);
@@ -302,55 +293,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     e.target.value = "";
   };
 
-  // 📌 Обработчик Drag-and-Drop для изображений
-  const handleDrop = (index: number, e: React.DragEvent<HTMLLabelElement>) => {
-    e.preventDefault();
-    if (!formData) return;
-    const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-
-      // 📌 Проверка формата файла
-      if (!["image/jpeg", "image/png"].includes(file.type)) {
-        setErrorMessage(`❌ Недопустимый формат файла: ${file.name}. Используйте JPG или PNG.`);
-        return;
-      }
-
-      // 📌 Проверка размера файла
-      if (file.size > 10 * 1024 * 1024) {
-        setErrorMessage(`❌ Файл слишком большой: ${file.name}. Максимальный размер: 10 МБ.`);
-        return;
-      }
-
-      // 📌 Генерация имени файла
-      const fileName = generateFileName(index, formData.title, file);
-      const newImage: ImageData = {
-        file,
-        preview: URL.createObjectURL(file),
-        title: fileName,
-        data: `pereval_images/${fileName}`,
-        isModified: true,
-        id: formData.images[index]?.id, // 📌 Сохранение ID
-      };
-
-      console.log(`📷 Перетаскивание изображения в слот ${index}:`, fileName);
-      setFormData(prev => {
-        const updatedImages = [...prev!.images];
-        updatedImages[index] = newImage;
-        return {
-          ...prev!,
-          images: updatedImages,
-        };
-      });
-      setErrorMessage(null);
-    }
-  };
-
-  // 📌 Обработчик для предотвращения стандартного поведения dragover
-  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
-    e.preventDefault();
-  };
-
   // 📌 Обработчик удаления изображения
   const handleDeleteImage = (index: number) => {
     if (!formData) return;
@@ -360,14 +302,13 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       return;
     }
 
-    // 📌 Локальное удаление
     console.log(`🗑️ Локальное удаление изображения из слота ${index}:`, image.title);
     setFormData(prev => {
       const updatedImages = [...prev!.images];
       if (updatedImages[index]?.preview && updatedImages[index]?.isModified) {
         URL.revokeObjectURL(updatedImages[index]!.preview);
       }
-      updatedImages[index] = null; // 📌 Очистка слота
+      updatedImages[index] = null;
       return {
         ...prev!,
         images: updatedImages,
@@ -416,12 +357,16 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     return null;
   };
 
+  // 📌 Обработчик для предотвращения закрытия модального окна
+  const handleModalContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
   // 📌 Обработчик отправки формы
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData || !initialFormData) return;
 
-    // 📌 Валидация формы
     const validationError = validateForm();
     if (validationError) {
       setErrorMessage(`❌ ${validationError}`);
@@ -433,14 +378,12 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     setErrorMessage(null);
 
     try {
-      // 📌 Этап 1: загрузка новых изображений
       const imagesToUpload = formData.images.filter(
         (img): img is ImageData => img !== null && img.isModified === true && !!img.file
       );
       const uploadedImages: { data: string; title: string; id?: number }[] = [];
 
-      // 📌 Используем forEach вместо entries для совместимости
-      imagesToUpload.forEach((image, index) => {
+      for (const [index, image] of imagesToUpload.entries()) {
         const fileName = generateFileName(index, formData.title, image.file!);
         const formDataUpload = new FormData();
         formDataUpload.append("pereval_id", id!);
@@ -449,28 +392,25 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         formDataUpload.append("file_name", fileName);
 
         console.log(`📤 Отправка изображения ${fileName}`);
-        fetch(IMAGE_API_URL, {
+        const response = await fetch(IMAGE_API_URL, {
           method: "POST",
           body: formDataUpload,
-        })
-          .then(async response => {
-            const uploadData = await response.json();
-            if (!response.ok) {
-              throw new Error(`Ошибка загрузки ${image.title}: ${uploadData.message || "Ошибка сервера, попробуйте позже"}`);
-            }
-            console.log(`✅ Изображение ${fileName} загружено:`, uploadData);
-            uploadedImages.push({
-              data: `pereval_images/${fileName}`,
-              title: fileName,
-              id: image.id,
-            });
-          });
-      });
+        });
 
-      // 📌 Этап 2: подготовка данных для PATCH
+        const uploadData = await response.json();
+        if (!response.ok) {
+          throw new Error(`Ошибка загрузки ${image.title}: ${uploadData.message || "Ошибка сервера, попробуйте позже"}`);
+        }
+        console.log(`✅ Изображение ${fileName} загружено:`, uploadData);
+        uploadedImages.push({
+          data: `pereval_images/${fileName}`,
+          title: fileName,
+          id: image.id,
+        });
+      }
+
       const updatedData: any = { email: formData.user.email };
 
-      // 📌 Сравнение текстовых полей
       if (formData.beautyTitle !== initialFormData.beautyTitle) {
         updatedData.beautyTitle = formData.beautyTitle;
       }
@@ -506,16 +446,13 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         ];
       }
 
-      // 📌 Формирование массива images
       type ImagePayload = { data: string; title: string; id?: number } | { id: number; delete: boolean };
       const images: ImagePayload[] = formData.images
         .map((img, index) => {
           if (img === null && initialFormData.images[index] !== null) {
-            // 📌 Слот стал пустым, отправляем маркер удаления
             return { id: initialFormData.images[index]?.id, delete: true } as ImagePayload;
           }
           if (img && img.isModified) {
-            // 📌 Изменённое изображение
             return {
               data: `pereval_images/${generateFileName(index, formData.title, img.file!)}`,
               title: generateFileName(index, formData.title, img.file!),
@@ -523,10 +460,9 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
             } as ImagePayload;
           }
           if (img && !img.isModified) {
-            // 📌 Неизменённое изображение
             return { data: img.data, title: img.title, id: img.id } as ImagePayload;
           }
-          return null; // 📌 Пустой слот, изначально пустой
+          return null;
         })
         .filter((img): img is ImagePayload => img !== null);
 
@@ -536,7 +472,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
 
       console.log("📤 Отправка обновления перевала:", updatedData);
 
-      // 📌 Этап 3: отправка данных через PATCH
       const response = await fetch(`${API_URL}${id}/update/`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -559,21 +494,15 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     }
   };
 
-  // 📌 Если форма не загружена
   if (!formData) return <p className="loading-text">Загрузка...</p>;
 
   return (
     <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>
-      {/* 📌 Заголовок формы */}
       <h1 className="submit-title">Редактировать перевал</h1>
-      {/* 📌 Сообщение об ошибке */}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      {/* 📌 Статус отправки */}
       {submitStatus && <p className="submit-status">{submitStatus}</p>}
 
-      {/* 📌 Форма */}
       <form onSubmit={handleSubmit} className="submit-form">
-        {/* 📌 Секция: Данные перевала */}
         <fieldset className="submit-section">
           <legend>Данные перевала</legend>
           <div className="form-group">
@@ -624,7 +553,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
           </div>
         </fieldset>
 
-        {/* 📌 Секция: Координаты */}
         <fieldset className="submit-section">
           <legend>Координаты</legend>
           <div className="form-group">
@@ -668,7 +596,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
           </button>
         </fieldset>
 
-        {/* 📌 Секция: Уровень сложности */}
         <fieldset className="submit-section">
           <legend>Уровень сложности</legend>
           <div className="form-group">
@@ -691,7 +618,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
           </div>
         </fieldset>
 
-        {/* 📌 Секция: Фотографии */}
         <fieldset className="submit-section">
           <legend>Фотографии</legend>
           <h2 className="upload-photos-title">Редактирование фотографий</h2>
@@ -699,7 +625,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
             {[0, 1, 2].map(index => (
               <div key={index} className="photo-slot">
                 {formData.images[index] === null ? (
-                  // 📌 Пустой слот
                   <div className="photo-placeholder-container">
                     <button
                       type="button"
@@ -718,7 +643,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
                     <span className="slot-label slot-title">{slotLabels[index]}</span>
                   </div>
                 ) : (
-                  // 📌 Существующее или новое изображение
                   <div className="image-item">
                     <img
                       src={formData.images[index]!.preview}
@@ -757,14 +681,12 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
           </div>
         </fieldset>
 
-        {/* 📌 Кнопка отправки */}
         <button type="submit" className="submit-btn">Сохранить изменения</button>
       </form>
 
-      {/* 📌 Модальное окно для выбора сезона */}
       {showSeasonModal && (
         <div className="modal" onClick={() => setShowSeasonModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-content" onClick={handleModalContentClick}>
             <h2>Выберите сезон</h2>
             <div className="radio-container">
               {seasons.map(season => (
@@ -790,10 +712,9 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         </div>
       )}
 
-      {/* 📌 Модальное окно для выбора сложности */}
       {showDifficultyModal && (
         <div className="modal" onClick={() => setShowDifficultyModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-content" onClick={handleModalContentClick}>
             <h2>Выберите категорию сложности</h2>
             <div className="radio-container">
               {difficulties.map(diff => (
@@ -819,7 +740,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         </div>
       )}
 
-      {/* 📌 Кнопка переключения темы */}
       <button onClick={toggleTheme} className="theme-btn">
         {darkMode ? "Светлая тема" : "Тёмная тема"}
       </button>

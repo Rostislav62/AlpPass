@@ -8,13 +8,13 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.11.22",
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
     "@types/transliteration": "^1.6.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
-    "transliteration": "2.3.5",
+    "transliteration": "^2.3.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -26,7 +26,8 @@
     "postinstall": "npm cache clean --force"
   },
   "resolutions": {
-    "transliteration": "2.3.5"
+    "transliteration": "2.3.5",
+    "ajv": "6.12.6"
   },
   "eslintConfig": {
     "extends": [
@@ -53,6 +54,7 @@
     "@testing-library/dom": "^10.4.0",
     "ajv": "^8.12.0",
     "ajv-keywords": "^5.1.0",
+    "eslint": "^9.25.1",
     "jest": "^28.1.3",
     "jest-environment-jsdom": "^28.1.3",
     "react-scripts": "^5.0.1",
