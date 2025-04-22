@@ -14,7 +14,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
-    "transliteration": "^2.3.5",
+    "transliteration": "2.3.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -22,11 +22,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "preinstall": "npx npm-force-resolutions", 
-    "postinstall": "npm cache clean --force" 
+    "preinstall": "npx npm-force-resolutions",
+    "postinstall": "npm cache clean --force"
   },
   "resolutions": {
-    "transliteration": "^2.3.5" 
+    "transliteration": "2.3.5"
   },
   "eslintConfig": {
     "extends": [
