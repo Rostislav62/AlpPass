@@ -18,7 +18,7 @@ interface ImageData {
   title: string; // Имя файла (например, 1_843yrnd2abcd_gorax.jpg)
   id?: number; // ID изображения на сервере (для существующих)
   data?: string; // Путь к файлу на сервере (например, pereval_images/1_843yrnd2abcd_gorax.jpg)
-  isModified?: boolean; // Флаг изменения изображения
+  isModified: boolean; // 📌 Изменено на обязательное поле
 }
 
 // 📌 Интерфейс данных формы
@@ -435,11 +435,12 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     try {
       // 📌 Этап 1: загрузка новых изображений
       const imagesToUpload = formData.images.filter(
-        (img): img is ImageData => img !== null && img.isModified && !!img.file
+        (img): img is ImageData => img !== null && img.isModified === true && !!img.file
       );
       const uploadedImages: { data: string; title: string; id?: number }[] = [];
 
-      for (const [index, image] of imagesToUpload.entries()) {
+      // 📌 Используем forEach вместо entries для совместимости
+      imagesToUpload.forEach((image, index) => {
         const fileName = generateFileName(index, formData.title, image.file!);
         const formDataUpload = new FormData();
         formDataUpload.append("pereval_id", id!);
@@ -448,22 +449,23 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         formDataUpload.append("file_name", fileName);
 
         console.log(`📤 Отправка изображения ${fileName}`);
-        const uploadResponse = await fetch(IMAGE_API_URL, {
+        fetch(IMAGE_API_URL, {
           method: "POST",
           body: formDataUpload,
-        });
-
-        const uploadData = await uploadResponse.json();
-        if (!uploadResponse.ok) {
-          throw new Error(`Ошибка загрузки ${image.title}: ${uploadData.message || "Ошибка сервера, попробуйте позже"}`);
-        }
-        console.log(`✅ Изображение ${fileName} загружено:`, uploadData);
-        uploadedImages.push({
-          data: `pereval_images/${fileName}`,
-          title: fileName,
-          id: image.id,
-        });
-      }
+        })
+          .then(async response => {
+            const uploadData = await response.json();
+            if (!response.ok) {
+              throw new Error(`Ошибка загрузки ${image.title}: ${uploadData.message || "Ошибка сервера, попробуйте позже"}`);
+            }
+            console.log(`✅ Изображение ${fileName} загружено:`, uploadData);
+            uploadedImages.push({
+              data: `pereval_images/${fileName}`,
+              title: fileName,
+              id: image.id,
+            });
+          });
+      });
 
       // 📌 Этап 2: подготовка данных для PATCH
       const updatedData: any = { email: formData.user.email };
@@ -505,11 +507,12 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       }
 
       // 📌 Формирование массива images
-      const images = formData.images
+      type ImagePayload = { data: string; title: string; id?: number } | { id: number; delete: boolean };
+      const images: ImagePayload[] = formData.images
         .map((img, index) => {
           if (img === null && initialFormData.images[index] !== null) {
             // 📌 Слот стал пустым, отправляем маркер удаления
-            return { id: initialFormData.images[index]?.id, delete: true };
+            return { id: initialFormData.images[index]?.id, delete: true } as ImagePayload;
           }
           if (img && img.isModified) {
             // 📌 Изменённое изображение
@@ -517,15 +520,15 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
               data: `pereval_images/${generateFileName(index, formData.title, img.file!)}`,
               title: generateFileName(index, formData.title, img.file!),
               id: img.id,
-            };
+            } as ImagePayload;
           }
           if (img && !img.isModified) {
             // 📌 Неизменённое изображение
-            return { data: img.data, title: img.title, id: img.id };
+            return { data: img.data, title: img.title, id: img.id } as ImagePayload;
           }
           return null; // 📌 Пустой слот, изначально пустой
         })
-        .filter((img): img is { data?: string; title?: string; id?: number; delete?: boolean } => img !== null);
+        .filter((img): img is ImagePayload => img !== null);
 
       if (images.length > 0) {
         updatedData.images = images;
