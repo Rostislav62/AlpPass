@@ -81,7 +81,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   const userEmail = localStorage.getItem("user_email") || "";
   const userPhone = localStorage.getItem("user_phone") || "";
 
-  // 📌 Функция генерации имени файла (оставлена без изменений)
+  // 📌 Функция генерации имени файла
   const generateFileName = (index: number, perevalTitle: string, file: File): string => {
     const prefix = `${index + 1}_`;
     const uniqueId = Math.random().toString(36).substring(2, 12);
@@ -291,6 +291,48 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     });
     setErrorMessage(null);
     e.target.value = "";
+  };
+
+  // 📌 Обработчик Drag-and-Drop для изображений
+  const handleDrop = (index: number, e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    if (!formData) return;
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (!["image/jpeg", "image/png"].includes(file.type)) {
+        setErrorMessage(`❌ Недопустимый формат файла: ${file.name}. Используйте JPG или PNG.`);
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setErrorMessage(`❌ Файл слишком большой: ${file.name}. Максимальный размер: 10 МБ.`);
+        return;
+      }
+      const fileName = generateFileName(index, formData.title, file);
+      const newImage: ImageData = {
+        file,
+        preview: URL.createObjectURL(file),
+        title: fileName,
+        data: `pereval_images/${fileName}`,
+        isModified: true,
+        id: formData.images[index]?.id,
+      };
+      console.log(`📷 Добавление изображения в слот ${index} через Drag-and-Drop:`, fileName);
+      setFormData(prev => {
+        const updatedImages = [...prev!.images];
+        updatedImages[index] = newImage;
+        return {
+          ...prev!,
+          images: updatedImages,
+        };
+      });
+      setErrorMessage(null);
+    }
+  };
+
+  // 📌 Обработчик для предотвращения стандартного поведения dragover
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
   };
 
   // 📌 Обработчик удаления изображения
@@ -625,22 +667,23 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
             {[0, 1, 2].map(index => (
               <div key={index} className="photo-slot">
                 {formData.images[index] === null ? (
-                  // 📌 Пустой слот с пунктирной рамкой, кликабельный
-                  <div
+                  // 📌 Пустой слот
+                  <label
                     className="photo-placeholder"
-                    onClick={() => document.getElementById(`file-input-${index}`)?.click()}
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(index, e)}
                   >
-                    <span className="slot-label slot-title">{slotLabels[index]}</span>
                     <input
                       type="file"
-                      id={`file-input-${index}`}
                       accept="image/jpeg,image/png"
                       onChange={(e) => handleImageChange(index, e)}
                       className="hidden-input"
                     />
-                  </div>
+                    <span className="slot-label">Выберите фото, нажав здесь</span>
+                    <span className="slot-label slot-title">{slotLabels[index]}</span>
+                  </label>
                 ) : (
-                  // 📌 Слот с загруженным изображением, только кнопка "Удалить"
+                  // 📌 Загруженное изображение
                   <div className="image-item">
                     <img
                       src={formData.images[index]!.preview}
