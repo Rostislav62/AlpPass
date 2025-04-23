@@ -81,7 +81,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   const userEmail = localStorage.getItem("user_email") || "";
   const userPhone = localStorage.getItem("user_phone") || "";
 
-  // 📌 Функция генерации имени файла
+  // 📌 Функция генерации имени файла (оставлена без изменений)
   const generateFileName = (index: number, perevalTitle: string, file: File): string => {
     const prefix = `${index + 1}_`;
     const uniqueId = Math.random().toString(36).substring(2, 12);
@@ -625,14 +625,12 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
             {[0, 1, 2].map(index => (
               <div key={index} className="photo-slot">
                 {formData.images[index] === null ? (
-                  <div className="photo-placeholder-container">
-                    <button
-                      type="button"
-                      onClick={() => document.getElementById(`file-input-${index}`)?.click()}
-                      className="choose-btn"
-                    >
-                      Выбрать
-                    </button>
+                  // 📌 Пустой слот с пунктирной рамкой, кликабельный
+                  <div
+                    className="photo-placeholder"
+                    onClick={() => document.getElementById(`file-input-${index}`)?.click()}
+                  >
+                    <span className="slot-label slot-title">{slotLabels[index]}</span>
                     <input
                       type="file"
                       id={`file-input-${index}`}
@@ -640,9 +638,9 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
                       onChange={(e) => handleImageChange(index, e)}
                       className="hidden-input"
                     />
-                    <span className="slot-label slot-title">{slotLabels[index]}</span>
                   </div>
                 ) : (
+                  // 📌 Слот с загруженным изображением, только кнопка "Удалить"
                   <div className="image-item">
                     <img
                       src={formData.images[index]!.preview}
@@ -652,20 +650,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
                     />
                     <span className="slot-label slot-title">{slotLabels[index]}</span>
                     <div className="image-actions">
-                      <button
-                        type="button"
-                        onClick={() => document.getElementById(`file-input-${index}`)?.click()}
-                        className="choose-btn"
-                      >
-                        Выбрать
-                      </button>
-                      <input
-                        type="file"
-                        id={`file-input-${index}`}
-                        accept="image/jpeg,image/png"
-                        onChange={(e) => handleImageChange(index, e)}
-                        className="hidden-input"
-                      />
                       <button
                         type="button"
                         onClick={() => handleDeleteImage(index)}
