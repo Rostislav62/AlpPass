@@ -1,40 +1,41 @@
 // AlpPass/src/pages/NewPereval.tsx
 
-import React, { useState, useEffect } from "react"; // Импорт React и хуков
-import { useNavigate } from "react-router-dom"; // Импорт хука для навигации
-import "../index.css"; // Импорт глобальных стилей
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { transliterate } from "transliteration";
+import "../index.css";
 
 // Интерфейс пропсов компонента
 interface PerevalFormProps {
-  darkMode: boolean; // Пропс для тёмной темы
-  toggleTheme: () => void; // Пропс для переключения темы
+  darkMode: boolean;
+  toggleTheme: () => void;
 }
 
 // Интерфейс данных локального изображения
 interface ImageData {
-  file: File; // Файл изображения
-  preview: string; // URL превью
-  title: string; // Название изображения
+  file: File;
+  preview: string;
+  title: string;
 }
 
 // Интерфейс данных формы
 interface PerevalFormData {
-  beautyTitle: string; // Название горного массива
-  title: string; // Название перевала
-  other_titles: string; // Другие названия
-  connect: boolean; // Флаг соединения (всегда true для новых перевалов)
+  beautyTitle: string;
+  title: string;
+  other_titles: string;
+  connect: boolean;
   user: {
-    email: string; // Email пользователя
-    family_name: string; // Фамилия
-    first_name: string; // Имя
-    father_name: string; // Отчество (опционально)
-    phone: string; // Телефон
+    email: string;
+    family_name: string;
+    first_name: string;
+    father_name: string;
+    phone: string;
   };
-  coord: { latitude: string; longitude: string; height: string }; // Координаты
-  status: number; // Статус перевала
-  difficulties: { season: number; difficulty: number }[]; // Сезон и сложность
-  route_description: string; // Описание маршрута
-  images: (ImageData | null)[]; // Массив локальных изображений или null
+  coord: { latitude: string; longitude: string; height: string };
+  status: number;
+  difficulties: { season: number; difficulty: number }[];
+  route_description: string;
+  images: (ImageData | null)[];
 }
 
 // Списки сезонов и сложностей
@@ -56,39 +57,39 @@ const difficulties = [
 
 // Базовый URL API
 const BASE_URL = "https://rostislav62.pythonanywhere.com";
-const API_URL = `${BASE_URL}/api/submitData/`; // URL для данных перевала
-const IMAGE_API_URL = `${BASE_URL}/api/uploadImage/`; // URL для загрузки изображений
+const API_URL = `${BASE_URL}/api/submitData/`;
+const IMAGE_API_URL = `${BASE_URL}/api/uploadImage/`;
 
 // Названия слотов для фотографий
 const slotLabels = ["Подъём", "Седловина", "Спуск"];
 
 // Компонент PerevalForm
 const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
-  // Хук для навигации
   const navigate = useNavigate();
-
-  // Состояние формы
   const [formData, setFormData] = useState<PerevalFormData | null>(null);
-  // Состояние для ошибок
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  // Состояние для статуса отправки
   const [submitStatus, setSubmitStatus] = useState<string | null>(null);
-  // Состояние для загрузки GPS
   const [loadingGPS, setLoadingGPS] = useState(false);
-  // Состояние для модального окна сезона
   const [showSeasonModal, setShowSeasonModal] = useState(false);
-  // Состояние для модального окна сложности
   const [showDifficultyModal, setShowDifficultyModal] = useState(false);
-  // Состояние для ID перевала
-  const [, setPerevalId] = useState<string | null>(null); // Только setPerevalId для сохранения ID
+  const [, setPerevalId] = useState<string | null>(null);
 
-  // Инициализация формы для нового перевала
+  // Функция генерации имени файла (из EditPereval.tsx)
+  const generateFileName = (index: number, perevalTitle: string, file: File): string => {
+    const prefix = `${index + 1}_`;
+    const uniqueId = Math.random().toString(36).substring(2, 12);
+    const transliteratedTitle = transliterate(perevalTitle.toLowerCase()).replace(/[^a-z0-9]/g, "");
+    const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    return `${prefix}${uniqueId}_${transliteratedTitle}.${extension}`;
+  };
+
+  // Инициализация формы
   useEffect(() => {
     setFormData({
       beautyTitle: "",
       title: "",
       other_titles: "",
-      connect: true, // Всегда true для новых перевалов
+      connect: true,
       user: {
         email: localStorage.getItem("user_email") || "",
         family_name: localStorage.getItem("user_family_name") || "",
@@ -97,20 +98,20 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
         phone: localStorage.getItem("user_phone") || "",
       },
       coord: { latitude: "", longitude: "", height: "" },
-      status: 1, // Новый перевал
+      status: 1,
       difficulties: [{ season: 0, difficulty: 0 }],
       route_description: "",
-      images: [null, null, null], // Пустой массив для локальных изображений
+      images: [null, null, null],
     });
   }, []);
 
-  // Очистка URL.createObjectURL для локальных превью изображений
+  // Очистка URL.createObjectURL
   useEffect(() => {
     return () => {
       if (formData?.images) {
         formData.images.forEach(image => {
           if (image && image.preview) {
-            URL.revokeObjectURL(image.preview); // Освобождаем память
+            URL.revokeObjectURL(image.preview);
           }
         });
       }
@@ -187,15 +188,29 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
     }));
   };
 
-  // Обработчик выбора файла для слота изображения
+  // Обработчик выбора файла
   const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!formData || !files || files.length === 0) return;
     const file = files[0];
+
+    // Валидация формата
+    if (!["image/jpeg", "image/png"].includes(file.type)) {
+      setErrorMessage(`❌ Недопустимый формат файла: ${file.name}. Используйте JPG или PNG.`);
+      return;
+    }
+
+    // Валидация размера
+    if (file.size > 10 * 1024 * 1024) {
+      setErrorMessage(`❌ Файл слишком большой: ${file.name}. Максимальный размер: 10 МБ.`);
+      return;
+    }
+
+    const fileName = generateFileName(index, formData.title, file);
     const newImage: ImageData = {
       file,
       preview: URL.createObjectURL(file),
-      title: `${index + 1}_${file.name}`,
+      title: fileName,
     };
     setFormData(prev => ({
       ...prev!,
@@ -203,27 +218,37 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
         ...prev!.images.slice(0, index),
         newImage,
         ...prev!.images.slice(index + 1),
-      ].slice(0, 3), // Ограничиваем тремя слотами
+      ].slice(0, 3),
     }));
     setErrorMessage(null);
-    e.target.value = ""; // Сбрасываем input
+    e.target.value = "";
   };
 
-  // Обработчик Drag-and-Drop для изображений
+  // Обработчик Drag-and-Drop
   const handleDrop = (index: number, e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     if (!formData) return;
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
       const file = files[0];
-      if (!file.type.startsWith("image/")) {
-        setErrorMessage("❌ Пожалуйста, перетащите изображение!");
+
+      // Валидация формата
+      if (!["image/jpeg", "image/png"].includes(file.type)) {
+        setErrorMessage(`❌ Недопустимый формат файла: ${file.name}. Используйте JPG или PNG.`);
         return;
       }
+
+      // Валидация размера
+      if (file.size > 10 * 1024 * 1024) {
+        setErrorMessage(`❌ Файл слишком большой: ${file.name}. Максимальный размер: 10 МБ.`);
+        return;
+      }
+
+      const fileName = generateFileName(index, formData.title, file);
       const newImage: ImageData = {
         file,
         preview: URL.createObjectURL(file),
-        title: `${index + 1}_${file.name}`,
+        title: fileName,
       };
       setFormData(prev => ({
         ...prev!,
@@ -231,7 +256,7 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
           ...prev!.images.slice(0, index),
           newImage,
           ...prev!.images.slice(index + 1),
-        ].slice(0, 3), // Ограничиваем тремя слотами
+        ].slice(0, 3),
       }));
       setErrorMessage(null);
     }
@@ -248,9 +273,9 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
     setFormData(prev => {
       const updatedImages = [...prev!.images];
       if (updatedImages[index] && updatedImages[index]!.preview) {
-        URL.revokeObjectURL(updatedImages[index]!.preview); // Освобождаем память
+        URL.revokeObjectURL(updatedImages[index]!.preview);
       }
-      updatedImages[index] = null; // Очищаем слот
+      updatedImages[index] = null;
       return {
         ...prev!,
         images: updatedImages,
@@ -337,7 +362,7 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
         status: formData.status,
         difficulties: formData.difficulties,
         route_description: formData.route_description,
-        images: [], // Пустой массив для POST
+        images: [],
       };
 
       console.log("📤 Отправка нового перевала:", submitData);
@@ -363,12 +388,14 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
         setSubmitStatus("Сохранение фотографий...");
         for (let index = 0; index < imagesToUpload.length; index++) {
           const image = imagesToUpload[index];
+          const fileName = generateFileName(index, formData.title, image.file);
           const formDataUpload = new FormData();
           formDataUpload.append("pereval_id", data.id);
           formDataUpload.append("image", image.file);
-          formDataUpload.append("title", image.title);
+          formDataUpload.append("title", fileName);
+          formDataUpload.append("file_name", fileName);
 
-          console.log(`📤 Отправка изображения ${image.title}`);
+          console.log(`📤 Отправка изображения ${fileName}`);
           const uploadResponse = await fetch(IMAGE_API_URL, {
             method: "POST",
             body: formDataUpload,
@@ -376,9 +403,9 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
 
           const uploadData = await uploadResponse.json();
           if (!uploadResponse.ok) {
-            throw new Error(uploadData.message || `Ошибка загрузки изображения ${image.title}`);
+            throw new Error(uploadData.message || `Ошибка загрузки изображения ${fileName}`);
           }
-          console.log(`✅ Изображение ${image.title} успешно загружено:`, uploadData);
+          console.log(`✅ Изображение ${fileName} успешно загружено:`, uploadData);
         }
       }
 
@@ -391,21 +418,15 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
     }
   };
 
-  // Если форма не загружена
   if (!formData) return <p className="loading-text">Загрузка...</p>;
 
   return (
     <div className={`submit-container ${darkMode ? "dark-mode" : "light-mode"}`}>
-      {/* Заголовок формы */}
       <h1 className="submit-title">Добавить новый перевал</h1>
-      {/* Сообщение об ошибке */}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      {/* Статус отправки */}
       {submitStatus && <p className="submit-status">{submitStatus}</p>}
 
-      {/* Форма */}
       <form onSubmit={handleSubmit} className="submit-form">
-        {/* Секция: Данные перевала */}
         <fieldset className="submit-section">
           <legend>Данные перевала</legend>
           <div className="form-group">
@@ -456,7 +477,6 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
           </div>
         </fieldset>
 
-        {/* Секция: Координаты */}
         <fieldset className="submit-section">
           <legend>Координаты</legend>
           <div className="form-group">
@@ -500,7 +520,6 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
           </button>
         </fieldset>
 
-        {/* Секция: Уровень сложности */}
         <fieldset className="submit-section">
           <legend>Уровень сложности</legend>
           <div className="form-group">
@@ -523,7 +542,6 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
           </div>
         </fieldset>
 
-        {/* Секция: Фотографии */}
         <fieldset className="submit-section">
           <legend>Фотографии</legend>
           <h2 className="upload-photos-title">Добавление фотографий</h2>
@@ -531,7 +549,6 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
             {[0, 1, 2].map(index => (
               <div key={index} className="photo-slot">
                 {formData.images[index] === null ? (
-                  // Пустой слот
                   <label
                     className="photo-placeholder"
                     onDragOver={handleDragOver}
@@ -539,7 +556,7 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
                   >
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/jpeg,image/png"
                       onChange={(e) => handleImageChange(index, e)}
                       className="hidden-input"
                     />
@@ -547,7 +564,6 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
                     <span className="slot-label slot-title">{slotLabels[index]}</span>
                   </label>
                 ) : (
-                  // Локальное изображение
                   <div className="image-item">
                     <img
                       src={formData.images[index]!.preview}
@@ -570,11 +586,9 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
           </div>
         </fieldset>
 
-        {/* Кнопка отправки */}
         <button type="submit" className="submit-btn">Отправить</button>
       </form>
 
-      {/* Модальное окно для выбора сезона */}
       {showSeasonModal && (
         <div className="modal" onClick={() => setShowSeasonModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -603,7 +617,6 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
         </div>
       )}
 
-      {/* Модальное окно для выбора сложности */}
       {showDifficultyModal && (
         <div className="modal" onClick={() => setShowDifficultyModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -632,7 +645,6 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
         </div>
       )}
 
-      {/* Кнопка переключения темы */}
       <button onClick={toggleTheme} className="theme-btn">
         {darkMode ? "Светлая тема" : "Тёмная тема"}
       </button>
@@ -640,4 +652,4 @@ const PerevalForm: React.FC<PerevalFormProps> = ({ darkMode, toggleTheme }) => {
   );
 };
 
-export default PerevalForm; // Экспорт компонента
+export default PerevalForm;
