@@ -60,8 +60,8 @@ const difficulties = [
 
 // 📌 Базовые URL API
 const BASE_URL = "https://rostislav62.pythonanywhere.com";
-const API_URL = `${BASE_URL}/submitData/`; // 📌 Без /api/, как указано
-const IMAGE_API_URL = `${BASE_URL}/uploadImage/`; // 📌 Без /api/, как указано
+const API_URL = `${BASE_URL}/api/submitData/`;
+const IMAGE_API_URL = `${BASE_URL}/api/uploadImage/`;
 const MEDIA_URL = `${BASE_URL}/media/`;
 
 // 📌 Названия слотов для фотографий
@@ -81,17 +81,16 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   const userEmail = localStorage.getItem("user_email") || "";
   const userPhone = localStorage.getItem("user_phone") || "";
 
-  // 📌 Функция генерации имени файла для фотографии
-  // 📌 Формат: <index + 1>_<уникальный ID>_<транслитерированное название перевала>.jpg
+  // 📌 Функция генерации имени файла
   const generateFileName = (index: number, perevalTitle: string, file: File): string => {
-    const prefix = `${index + 1}_`; // 📌 Номер слота (1, 2, 3)
-    const uniqueId = Math.random().toString(36).substring(2, 12); // 📌 Случайный ID
-    const transliteratedTitle = transliterate(perevalTitle.toLowerCase()).replace(/[^a-z0-9]/g, ""); // 📌 Транслитерация заголовка
-    const extension = file.name.split(".").pop()?.toLowerCase() || "jpg"; // 📌 Расширение файла
-    return `${prefix}${uniqueId}_${transliteratedTitle}.${extension}`; // 📌 Итоговое имя файла
+    const prefix = `${index + 1}_`;
+    const uniqueId = Math.random().toString(36).substring(2, 12);
+    const transliteratedTitle = transliterate(perevalTitle.toLowerCase()).replace(/[^a-z0-9]/g, "");
+    const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    return `${prefix}${uniqueId}_${transliteratedTitle}.${extension}`;
   };
 
-  // 📌 Загрузка данных перевала с сервера
+  // 📌 Загрузка данных перевала
   useEffect(() => {
     if (!id) {
       console.error("❌ Ошибка: ID перевала отсутствует!");
@@ -99,78 +98,57 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       return;
     }
 
-    const fetchPereval = async () => {
-      try {
-        console.log(`📡 Запрос данных перевала: ${API_URL}${id}/info/`);
-        const response = await fetch(`${API_URL}${id}/info/`);
-        
-        // 📌 Логируем статус ответа
-        console.log(`📥 Ответ сервера: статус ${response.status} ${response.statusText}`);
-        
-        if (!response.ok) {
-          throw new Error(`Сервер вернул ошибку: ${response.status} ${response.statusText}`);
-        }
-
+    fetch(`${API_URL}${id}/info/`)
+      .then(async response => {
         const text = await response.text();
-        console.log("📄 Сырой ответ сервера:", text);
-
-        let data;
+        console.log("📥 Ответ от сервера (перевал):", text);
         try {
-          data = JSON.parse(text);
+          return JSON.parse(text);
         } catch (error) {
-          console.error("❌ Ошибка парсинга JSON:", error);
-          throw new Error("Сервер вернул невалидный JSON");
+          console.error("❌ Ошибка парсинга JSON:", text);
+          throw new Error("Сервер вернул не JSON-ответ");
         }
-
-        console.log("✅ Распарсенные данные:", data);
-
-        // 📌 Проверяем, можно ли редактировать перевал
+      })
+      .then((data: any) => {
         if (
           data.status === 1 &&
-          data.user?.email?.trim().toLowerCase() === userEmail.trim().toLowerCase() &&
-          data.user?.phone?.replace(/\s+/g, "") === userPhone.replace(/\s+/g, "")
+          data.user.email.trim().toLowerCase() === userEmail.trim().toLowerCase() &&
+          data.user.phone.replace(/\s+/g, "") === userPhone.replace(/\s+/g, "")
         ) {
-          // 📌 Находим сезон и сложность, используем значения по умолчанию, если не найдены
-          const season = seasons.find(s => s.code === data.difficulties?.[0]?.season?.code) || { id: 0 };
-          const difficulty = difficulties.find(d => d.code === data.difficulties?.[0]?.difficulty?.code) || { id: 0 };
+          const season = seasons.find(s => s.code === data.difficulties[0]?.season?.code) || { id: 0 };
+          const difficulty = difficulties.find(d => d.code === data.difficulties[0]?.difficulty?.code) || { id: 0 };
 
-          // 📌 Формируем массив изображений (до 3 слотов)
           const loadedImages: ImageData[] = (data.images || []).slice(0, 3).map((img: any, index: number) => ({
-            id: img.id || undefined, // 📌 Устанавливаем undefined, если id отсутствует
-            preview: `${MEDIA_URL}${img.data?.replace("\\", "/") || ""}`, // 📌 URL для отображения
-            title: img.title || `${index + 1}_image`, // 📌 Название файла
-            data: img.data || "", // 📌 Путь к файлу на сервере
-            isModified: false, // 📌 Фотография не изменена
+            id: img.id,
+            preview: `${MEDIA_URL}${img.data.replace("\\", "/")}`,
+            title: img.title || `${index + 1}_image`,
+            data: img.data,
+            isModified: false,
           }));
 
-          // 📌 Создаём массив из 3 слотов
           const images: (ImageData | null)[] = [null, null, null];
           loadedImages.forEach((img, index) => {
             images[index] = img;
           });
 
-          // 📌 Логируем количество загруженных фотографий
-          const loadedCount = loadedImages.length;
-          const emptySlots = 3 - loadedCount;
-          console.log(`📸 С сервера загрузилось ${loadedCount} фотографий. Заполнены ${loadedCount} слотов, ${emptySlots} слотов пустые.`);
+          console.log("📸 Загруженные изображения:", images);
 
-          // 📌 Формируем объект данных формы с безопасными значениями
-          const formData: PerevalFormData = {
+          const formData = {
             beautyTitle: data.beautyTitle || "",
             title: data.title || "",
             other_titles: data.other_titles || "",
-            connect: data.connect ?? true,
+            connect: data.connect || true,
             user: {
-              email: data.user?.email || "",
-              family_name: data.user?.family_name || "",
-              first_name: data.user?.first_name || "",
-              father_name: data.user?.father_name || "",
-              phone: data.user?.phone || "",
+              email: data.user.email || "",
+              family_name: data.user.family_name || "",
+              first_name: data.user.first_name || "",
+              father_name: data.user.father_name || "",
+              phone: data.user.phone || "",
             },
             coord: {
-              latitude: data.coord?.latitude?.toString() || "",
-              longitude: data.coord?.longitude?.toString() || "",
-              height: data.coord?.height?.toString() || "",
+              latitude: data.coord.latitude?.toString() || "",
+              longitude: data.coord.longitude?.toString() || "",
+              height: data.coord.height?.toString() || "",
             },
             status: data.status || 1,
             difficulties: [{ season: season.id, difficulty: difficulty.id }],
@@ -180,64 +158,14 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
 
           setFormData(formData);
           setInitialFormData(formData);
-          console.log("✅ Данные формы установлены:", formData);
         } else {
           setErrorMessage("Редактирование запрещено! Либо статус не new, либо данные пользователя не совпадают.");
-          console.warn("⚠️ Проверка прав не пройдена:", {
-            status: data.status,
-            userEmail: data.user?.email,
-            userPhone: data.user?.phone,
-            localEmail: userEmail,
-            localPhone: userPhone,
-          });
-
-          // 📌 Устанавливаем пустую форму, чтобы избежать бесконечной загрузки
-          setFormData({
-            beautyTitle: "",
-            title: "",
-            other_titles: "",
-            connect: true,
-            user: {
-              email: userEmail,
-              family_name: "",
-              first_name: "",
-              father_name: "",
-              phone: userPhone,
-            },
-            coord: { latitude: "", longitude: "", height: "" },
-            status: 1,
-            difficulties: [{ season: 0, difficulty: 0 }],
-            route_description: "",
-            images: [null, null, null],
-          });
         }
-      } catch (error) {
-        console.error("❌ Ошибка загрузки данных перевала:", error);
-        setErrorMessage(`❌ Ошибка загрузки данных: ${error instanceof Error ? error.message : "Неизвестная ошибка"}`);
-
-        // 📌 Устанавливаем форму по умолчанию, чтобы избежать бесконечной загрузки
-        setFormData({
-          beautyTitle: "",
-          title: "",
-          other_titles: "",
-          connect: true,
-          user: {
-            email: userEmail,
-            family_name: "",
-            first_name: "",
-            father_name: "",
-            phone: userPhone,
-          },
-          coord: { latitude: "", longitude: "", height: "" },
-          status: 1,
-          difficulties: [{ season: 0, difficulty: 0 }],
-          route_description: "",
-          images: [null, null, null],
-        });
-      }
-    };
-
-    fetchPereval();
+      })
+      .catch(error => {
+        console.error("❌ Ошибка загрузки перевала:", error);
+        setErrorMessage("❌ Ошибка загрузки данных перевала");
+      });
   }, [id, userEmail, userPhone]);
 
   // 📌 Очистка URL.createObjectURL для локальных превью
@@ -332,37 +260,27 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     if (!formData || !files || files.length === 0) return;
     const file = files[0];
 
-    // 📌 Проверяем формат файла
     if (!["image/jpeg", "image/png"].includes(file.type)) {
       setErrorMessage(`❌ Недопустимый формат файла: ${file.name}. Используйте JPG или PNG.`);
-      console.error(`❌ Недопустимый формат файла: ${file.name}`);
       return;
     }
 
-    // 📌 Проверяем размер файла (максимум 10 МБ)
     if (file.size > 10 * 1024 * 1024) {
       setErrorMessage(`❌ Файл слишком большой: ${file.name}. Максимальный размер: 10 МБ.`);
-      console.error(`❌ Файл слишком большой: ${file.name}`);
       return;
     }
 
-    // 📌 Генерируем имя файла
     const fileName = generateFileName(index, formData.title, file);
-
-    // 📌 Создаём объект для нового изображения
     const newImage: ImageData = {
       file,
-      preview: URL.createObjectURL(file), // 📌 Локальный URL для превью
-      title: fileName, // 📌 Имя файла
-      data: `pereval_images/${fileName}`, // 📌 Путь, где файл будет на сервере
-      isModified: true, // 📌 Отмечаем, что изображение новое
-      id: undefined, // 📌 Нет ID, так как это новое изображение (undefined для соответствия типу)
+      preview: URL.createObjectURL(file),
+      title: fileName,
+      data: `pereval_images/${fileName}`,
+      isModified: true,
+      id: formData.images[index]?.id,
     };
 
-    // 📌 Выводим сообщение в консоль
-    console.log(`📷 Новое изображение добавлено в слот ${index} (${slotLabels[index]}) локально: ${fileName}`);
-
-    // 📌 Обновляем массив изображений
+    console.log(`📷 Добавление изображения в слот ${index}:`, fileName);
     setFormData(prev => {
       const updatedImages = [...prev!.images];
       updatedImages[index] = newImage;
@@ -371,9 +289,8 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         images: updatedImages,
       };
     });
-
     setErrorMessage(null);
-    e.target.value = ""; // 📌 Очищаем input
+    e.target.value = "";
   };
 
   // 📌 Обработчик Drag-and-Drop для изображений
@@ -383,38 +300,24 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
       const file = files[0];
-
-      // 📌 Проверяем формат файла
       if (!["image/jpeg", "image/png"].includes(file.type)) {
         setErrorMessage(`❌ Недопустимый формат файла: ${file.name}. Используйте JPG или PNG.`);
-        console.error(`❌ Недопустимый формат файла: ${file.name}`);
         return;
       }
-
-      // 📌 Проверяем размер файла
       if (file.size > 10 * 1024 * 1024) {
         setErrorMessage(`❌ Файл слишком большой: ${file.name}. Максимальный размер: 10 МБ.`);
-        console.error(`❌ Файл слишком большой: ${file.name}`);
         return;
       }
-
-      // 📌 Генерируем имя файла
       const fileName = generateFileName(index, formData.title, file);
-
-      // 📌 Создаём объект для нового изображения
       const newImage: ImageData = {
         file,
         preview: URL.createObjectURL(file),
         title: fileName,
         data: `pereval_images/${fileName}`,
         isModified: true,
-        id: undefined, // 📌 Нет ID, так как это новое изображение (undefined для соответствия типу)
+        id: formData.images[index]?.id,
       };
-
-      // 📌 Выводим сообщение в консоль
-      console.log(`📷 Новое изображение добавлено в слот ${index} (${slotLabels[index]}) через Drag-and-Drop: ${fileName}`);
-
-      // 📌 Обновляем массив изображений
+      console.log(`📷 Добавление изображения в слот ${index} через Drag-and-Drop:`, fileName);
       setFormData(prev => {
         const updatedImages = [...prev!.images];
         updatedImages[index] = newImage;
@@ -423,7 +326,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
           images: updatedImages,
         };
       });
-
       setErrorMessage(null);
     }
   };
@@ -438,26 +340,22 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     if (!formData) return;
     const image = formData.images[index];
     if (!image) {
-      console.log(`🗑️ Слот ${index} (${slotLabels[index]}) уже пуст`);
+      console.log(`🗑️ Слот ${index} уже пуст`);
       return;
     }
 
-    // 📌 Выводим сообщение в консоль
-    console.log(`🗑️ Изображение в слоте ${index} (${slotLabels[index]}) удалено локально: ${image.title}`);
-
-    // 📌 Обновляем массив изображений, очищая слот
+    console.log(`🗑️ Локальное удаление изображения из слота ${index}:`, image.title);
     setFormData(prev => {
       const updatedImages = [...prev!.images];
       if (updatedImages[index]?.preview && updatedImages[index]?.isModified) {
-        URL.revokeObjectURL(updatedImages[index]!.preview); // 📌 Очищаем локальный URL
+        URL.revokeObjectURL(updatedImages[index]!.preview);
       }
-      updatedImages[index] = null; // 📌 Устанавливаем слот в null
+      updatedImages[index] = null;
       return {
         ...prev!,
         images: updatedImages,
       };
     });
-
     setErrorMessage(null);
   };
 
@@ -506,147 +404,185 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     e.stopPropagation();
   };
 
-  // 📌 Обработчик отправки формы
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData || !initialFormData) return;
+// 📌 Обработчик отправки формы
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!formData || !initialFormData) return;
 
-    // 📌 Проверяем валидность формы
-    const validationError = validateForm();
-    if (validationError) {
-      setErrorMessage(`❌ ${validationError}`);
-      console.log("📋 Текущее состояние formData:", formData);
-      return;
+  const validationError = validateForm();
+  if (validationError) {
+    setErrorMessage(`❌ ${validationError}`);
+    console.log("📋 Текущее состояние formData:", formData);
+    return;
+  }
+
+  // 📌 Проверка лимита изображений на клиенте
+  const currentImages = formData.images.filter(img => img !== null).length;
+  const deletedImages = formData.images.reduce((count, img, index) => {
+    if (img === null && initialFormData.images[index] !== null) {
+      return count + 1;
     }
+    return count;
+  }, 0);
+  const newImagesToAdd = formData.images.filter(
+    (img): img is ImageData => img !== null && img.isModified && !img.id
+  ).length;
+  const availableSlots = 3 - (currentImages - deletedImages);
 
-    setSubmitStatus("Сохранение перевала...");
-    setErrorMessage(null);
+  console.log(
+    `🔍 Проверка лимита: текущих=${currentImages}, удалённых=${deletedImages}, новых=${newImagesToAdd}, доступно=${availableSlots}`
+  );
 
-    try {
-      // 📌 Шаг 1: Удаляем все существующие фотографии на сервере
-      for (const image of initialFormData.images) {
-        if (image && image.id) {
-          console.log(`🗑️ Отправлен запрос на удаление изображения ID ${image.id}: ${image.title}`);
-          try {
-            const response = await fetch(`${IMAGE_API_URL}delete/${image.id}/`, {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email: formData.user.email }),
-            });
+  if (newImagesToAdd > availableSlots) {
+    setErrorMessage(`❌ Нельзя добавить ${newImagesToAdd} новых изображений. Доступно слотов: ${availableSlots}.`);
+    console.log(`❌ Превышен лимит: текущих=${currentImages}, удалённых=${deletedImages}, новых=${newImagesToAdd}`);
+    return;
+  }
 
-            if (response.ok) {
-              const data = await response.json();
-              console.log(`✅ Изображение ID ${image.id} удалено:`, data.message);
-            } else {
-              const errorData = await response.json();
-              console.error(`⚠️ Ошибка удаления изображения ID ${image.id}:`, errorData.message || response.statusText);
-              // 📌 Продолжаем, даже если ошибка
-            }
-          } catch (error) {
-            console.error(`⚠️ Ошибка при запросе удаления ID ${image.id}:`, error);
-            // 📌 Продолжаем, даже если ошибка
-          }
+  setSubmitStatus("Сохранение перевала...");
+  setErrorMessage(null);
+
+  try {
+    // 📌 Обработка изображений
+    const imagesToProcess = formData.images.filter(
+      (img): img is ImageData => img !== null && img.isModified && !!img.file
+    );
+    const uploadedImages: { data: string; title: string; id?: number }[] = [];
+
+    for (const [index, image] of imagesToProcess.entries()) {
+      const fileName = generateFileName(index, formData.title, image.file!);
+      const formDataUpload = new FormData();
+      formDataUpload.append("image", image.file!);
+      formDataUpload.append("title", fileName);
+      formDataUpload.append("file_name", fileName);
+
+      if (image.id) {
+        // 📌 Обновление существующего изображения через PATCH
+        console.log(`📤 Обновление изображения ID ${image.id}: ${fileName}`);
+        const response = await fetch(`${IMAGE_API_URL}${image.id}/`, {
+          method: "PATCH",
+          body: formDataUpload,
+        });
+
+        const uploadData = await response.json();
+        if (!response.ok) {
+          throw new Error(`Ошибка обновления изображения ID ${image.id}: ${uploadData.message || "Ошибка сервера"}`);
         }
-      }
-
-      // 📌 Шаг 2: Загружаем текущие фотографии из слотов
-      const imagesToUpload = formData.images.filter(
-        (img): img is ImageData => img !== null && !!img.file // 📌 Только непустые слоты с файлами
-      );
-
-      for (const [index, image] of imagesToUpload.entries()) {
-        const fileName = generateFileName(index, formData.title, image.file!);
-        const formDataUpload = new FormData();
-        formDataUpload.append("image", image.file!);
-        formDataUpload.append("title", fileName);
-        formDataUpload.append("file_name", fileName);
+        console.log(`✅ Изображение ID ${image.id} обновлено:`, uploadData);
+        uploadedImages.push({
+          data: uploadData.data,
+          title: uploadData.title,
+          id: image.id,
+        });
+      } else {
+        // 📌 Загрузка нового изображения через POST
         formDataUpload.append("pereval_id", id!);
+        console.log(`📤 Загрузка нового изображения ${fileName}`);
+        const response = await fetch(IMAGE_API_URL, {
+          method: "POST",
+          body: formDataUpload,
+        });
 
-        console.log(`📷 Отправлен запрос на загрузку изображения в слот ${index} (${slotLabels[index]}): ${fileName}`);
-
-        try {
-          const response = await fetch(IMAGE_API_URL, {
-            method: "POST",
-            body: formDataUpload,
-          });
-
-          const uploadData = await response.json();
-          if (!response.ok) {
-            console.error(`⚠️ Ошибка загрузки изображения ${fileName}:`, uploadData.message || response.statusText);
-            // 📌 Продолжаем, даже если ошибка
-          } else {
-            console.log(`✅ Изображение ${fileName} загружено: image_id=${uploadData.image_id}`);
-          }
-        } catch (error) {
-          console.error(`⚠️ Ошибка при запросе загрузки ${fileName}:`, error);
-          // 📌 Продолжаем, даже если ошибка
+        const uploadData = await response.json();
+        if (!response.ok) {
+          throw new Error(`Ошибка загрузки ${fileName}: ${uploadData.message || "Ошибка сервера"}`);
         }
+        console.log(`✅ Изображение ${fileName} загружено:`, uploadData);
+        uploadedImages.push({
+          data: uploadData.data,
+          title: uploadData.title,
+          id: uploadData.image_id,
+        });
       }
-
-      // 📌 Шаг 3: Формируем данные для обновления перевала (без поля images)
-      const updatedData: any = { email: formData.user.email };
-
-      if (formData.beautyTitle !== initialFormData.beautyTitle) {
-        updatedData.beautyTitle = formData.beautyTitle;
-      }
-      if (formData.title !== initialFormData.title) {
-        updatedData.title = formData.title;
-      }
-      if (formData.other_titles !== initialFormData.other_titles) {
-        updatedData.other_titles = formData.other_titles;
-      }
-      if (formData.route_description !== initialFormData.route_description) {
-        updatedData.route_description = formData.route_description;
-      }
-      if (
-        formData.coord.latitude !== initialFormData.coord.latitude ||
-        formData.coord.longitude !== initialFormData.coord.longitude ||
-        formData.coord.height !== initialFormData.coord.height
-      ) {
-        updatedData.coord = {
-          latitude: Number(formData.coord.latitude),
-          longitude: Number(formData.coord.longitude),
-          height: Number(formData.coord.height),
-        };
-      }
-      if (
-        formData.difficulties[0].season !== initialFormData.difficulties[0].season ||
-        formData.difficulties[0].difficulty !== initialFormData.difficulties[0].difficulty
-      ) {
-        updatedData.difficulties = [
-          {
-            season: formData.difficulties[0].season,
-            difficulty: formData.difficulties[0].difficulty,
-          },
-        ];
-      }
-
-      // 📌 Отправляем обновление перевала
-      console.log("📤 Отправка обновления перевала:", updatedData);
-
-      const response = await fetch(`${API_URL}${id}/update/`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedData),
-      });
-
-      const data = await response.json();
-      console.log("✅ Ответ от сервера (PATCH):", data);
-
-      if (response.status !== 200 || data.state !== 1) {
-        throw new Error(data.message || "Ошибка обновления перевала");
-      }
-
-      setSubmitStatus("✅ Перевал успешно обновлён!");
-      setTimeout(() => navigate(`/pereval/${id}`), 2000);
-    } catch (error) {
-      console.error("❌ Ошибка обновления данных:", error);
-      setErrorMessage("❌ Ошибка на сервере, попробуйте позже");
-      setSubmitStatus(null);
     }
-  };
 
-  // 📌 Рендеринг компонента
+    // 📌 Формирование данных для PATCH /submitData/<id>/update/
+    const updatedData: any = { email: formData.user.email };
+
+    if (formData.beautyTitle !== initialFormData.beautyTitle) {
+      updatedData.beautyTitle = formData.beautyTitle;
+    }
+    if (formData.title !== initialFormData.title) {
+      updatedData.title = formData.title;
+    }
+    if (formData.other_titles !== initialFormData.other_titles) {
+      updatedData.other_titles = formData.other_titles;
+    }
+    if (formData.route_description !== initialFormData.route_description) {
+      updatedData.route_description = formData.route_description;
+    }
+    if (
+      formData.coord.latitude !== initialFormData.coord.latitude ||
+      formData.coord.longitude !== initialFormData.coord.longitude ||
+      formData.coord.height !== initialFormData.coord.height
+    ) {
+      updatedData.coord = {
+        latitude: Number(formData.coord.latitude),
+        longitude: Number(formData.coord.longitude),
+        height: Number(formData.coord.height),
+      };
+    }
+    if (
+      formData.difficulties[0].season !== initialFormData.difficulties[0].season ||
+      formData.difficulties[0].difficulty !== initialFormData.difficulties[0].difficulty
+    ) {
+      updatedData.difficulties = [
+        {
+          season: formData.difficulties[0].season,
+          difficulty: formData.difficulties[0].difficulty,
+        },
+      ];
+    }
+
+    // 📌 Формирование массива images для отправки
+    type ImagePayload = { data: string; title: string; id?: number } | { id: number; delete: boolean };
+    const images: ImagePayload[] = formData.images
+      .map((img, index) => {
+        if (img === null && initialFormData.images[index] !== null) {
+          return { id: initialFormData.images[index]?.id, delete: true } as ImagePayload;
+        }
+        if (img && img.isModified) {
+          const uploadedImage = uploadedImages.find(u => u.title === img.title);
+          if (uploadedImage) {
+            return { data: uploadedImage.data, title: uploadedImage.title, id: uploadedImage.id } as ImagePayload;
+          }
+        }
+        if (img && !img.isModified) {
+          return { data: img.data, title: img.title, id: img.id } as ImagePayload;
+        }
+        return null;
+      })
+      .filter((img): img is ImagePayload => img !== null);
+
+    if (images.length > 0) {
+      updatedData.images = images;
+    }
+
+    console.log("📤 Отправка обновления перевала:", updatedData);
+
+    // 📌 Отправка PATCH /submitData/<id>/update/
+    const response = await fetch(`${API_URL}${id}/update/`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
+    });
+
+    const data = await response.json();
+    console.log("✅ Ответ от сервера (PATCH):", data);
+
+    if (response.status !== 200 || data.state !== 1) {
+      throw new Error(data.message || "Ошибка обновления перевала");
+    }
+
+    setSubmitStatus("✅ Перевал успешно обновлён!");
+    setTimeout(() => navigate(`/pereval/${id}`), 2000);
+  } catch (error) {
+    console.error("❌ Ошибка обновления данных:", error);
+    setErrorMessage(`❌ ${error instanceof Error ? error.message : "Ошибка сервера, попробуйте позже"}`);
+    setSubmitStatus(null);
+  }
+};
+
   if (!formData) return <p className="loading-text">Загрузка...</p>;
 
   return (
@@ -778,7 +714,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
             {[0, 1, 2].map(index => (
               <div key={index} className="photo-slot">
                 {formData.images[index] === null ? (
-                  // 📌 Пустой слот для загрузки фотографии
+                  // 📌 Пустой слот
                   <label
                     className="photo-placeholder"
                     onDragOver={handleDragOver}
@@ -794,7 +730,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
                     <span className="slot-label slot-title">{slotLabels[index]}</span>
                   </label>
                 ) : (
-                  // 📌 Загруженное изображение с превью и кнопкой "Удалить"
+                  // 📌 Загруженное изображение
                   <div className="image-item">
                     <img
                       src={formData.images[index]!.preview}
