@@ -99,63 +99,78 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
       return;
     }
 
-    fetch(`${API_URL}${id}/info/`)
-      .then(async response => {
-        const text = await response.text();
-        console.log("📥 Ответ от сервера (перевал):", text);
-        try {
-          return JSON.parse(text);
-        } catch (error) {
-          console.error("❌ Ошибка парсинга JSON:", text);
-          throw new Error("Сервер вернул не JSON-ответ");
+    const fetchPereval = async () => {
+      try {
+        console.log(`📡 Запрос данных перевала: ${API_URL}${id}/info/`);
+        const response = await fetch(`${API_URL}${id}/info/`);
+        
+        // 📌 Логируем статус ответа
+        console.log(`📥 Ответ сервера: статус ${response.status} ${response.statusText}`);
+        
+        if (!response.ok) {
+          throw new Error(`Сервер вернул ошибку: ${response.status} ${response.statusText}`);
         }
-      })
-      .then((data: any) => {
+
+        const text = await response.text();
+        console.log("📄 Сырой ответ сервера:", text);
+
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (error) {
+          console.error("❌ Ошибка парсинга JSON:", error);
+          throw new Error("Сервер вернул невалидный JSON");
+        }
+
+        console.log("✅ Распарсенные данные:", data);
+
+        // 📌 Проверяем, можно ли редактировать перевал
         if (
           data.status === 1 &&
-          data.user.email.trim().toLowerCase() === userEmail.trim().toLowerCase() &&
-          data.user.phone.replace(/\s+/g, "") === userPhone.replace(/\s+/g, "")
+          data.user?.email?.trim().toLowerCase() === userEmail.trim().toLowerCase() &&
+          data.user?.phone?.replace(/\s+/g, "") === userPhone.replace(/\s+/g, "")
         ) {
-          const season = seasons.find(s => s.code === data.difficulties[0]?.season?.code) || { id: 0 };
-          const difficulty = difficulties.find(d => d.code === data.difficulties[0]?.difficulty?.code) || { id: 0 };
+          // 📌 Находим сезон и сложность, используем значения по умолчанию, если не найдены
+          const season = seasons.find(s => s.code === data.difficulties?.[0]?.season?.code) || { id: 0 };
+          const difficulty = difficulties.find(d => d.code === data.difficulties?.[0]?.difficulty?.code) || { id: 0 };
 
-          // 📌 Формируем массив изображений (до 3 слотов) из ответа сервера
+          // 📌 Формируем массив изображений (до 3 слотов)
           const loadedImages: ImageData[] = (data.images || []).slice(0, 3).map((img: any, index: number) => ({
-            id: img.id, // 📌 Сохраняем ID фотографии для последующего удаления
-            preview: `${MEDIA_URL}${img.data.replace("\\", "/")}`, // 📌 URL для отображения
+            id: img.id || undefined, // 📌 Устанавливаем undefined, если id отсутствует
+            preview: `${MEDIA_URL}${img.data?.replace("\\", "/") || ""}`, // 📌 URL для отображения
             title: img.title || `${index + 1}_image`, // 📌 Название файла
-            data: img.data, // 📌 Путь к файлу на сервере
+            data: img.data || "", // 📌 Путь к файлу на сервере
             isModified: false, // 📌 Фотография не изменена
           }));
 
-          // 📌 Создаём массив из 3 слотов (заполненные или null)
+          // 📌 Создаём массив из 3 слотов
           const images: (ImageData | null)[] = [null, null, null];
           loadedImages.forEach((img, index) => {
             images[index] = img;
           });
 
-          // 📌 Выводим в консоль количество загруженных фотографий
+          // 📌 Логируем количество загруженных фотографий
           const loadedCount = loadedImages.length;
           const emptySlots = 3 - loadedCount;
           console.log(`📸 С сервера загрузилось ${loadedCount} фотографий. Заполнены ${loadedCount} слотов, ${emptySlots} слотов пустые.`);
 
-          // 📌 Формируем объект данных формы
-          const formData = {
+          // 📌 Формируем объект данных формы с безопасными значениями
+          const formData: PerevalFormData = {
             beautyTitle: data.beautyTitle || "",
             title: data.title || "",
             other_titles: data.other_titles || "",
-            connect: data.connect || true,
+            connect: data.connect ?? true,
             user: {
-              email: data.user.email || "",
-              family_name: data.user.family_name || "",
-              first_name: data.user.first_name || "",
-              father_name: data.user.father_name || "",
-              phone: data.user.phone || "",
+              email: data.user?.email || "",
+              family_name: data.user?.family_name || "",
+              first_name: data.user?.first_name || "",
+              father_name: data.user?.father_name || "",
+              phone: data.user?.phone || "",
             },
             coord: {
-              latitude: data.coord.latitude?.toString() || "",
-              longitude: data.coord.longitude?.toString() || "",
-              height: data.coord.height?.toString() || "",
+              latitude: data.coord?.latitude?.toString() || "",
+              longitude: data.coord?.longitude?.toString() || "",
+              height: data.coord?.height?.toString() || "",
             },
             status: data.status || 1,
             difficulties: [{ season: season.id, difficulty: difficulty.id }],
@@ -165,14 +180,64 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
 
           setFormData(formData);
           setInitialFormData(formData);
+          console.log("✅ Данные формы установлены:", formData);
         } else {
           setErrorMessage("Редактирование запрещено! Либо статус не new, либо данные пользователя не совпадают.");
+          console.warn("⚠️ Проверка прав не пройдена:", {
+            status: data.status,
+            userEmail: data.user?.email,
+            userPhone: data.user?.phone,
+            localEmail: userEmail,
+            localPhone: userPhone,
+          });
+
+          // 📌 Устанавливаем пустую форму, чтобы избежать бесконечной загрузки
+          setFormData({
+            beautyTitle: "",
+            title: "",
+            other_titles: "",
+            connect: true,
+            user: {
+              email: userEmail,
+              family_name: "",
+              first_name: "",
+              father_name: "",
+              phone: userPhone,
+            },
+            coord: { latitude: "", longitude: "", height: "" },
+            status: 1,
+            difficulties: [{ season: 0, difficulty: 0 }],
+            route_description: "",
+            images: [null, null, null],
+          });
         }
-      })
-      .catch(error => {
-        console.error("❌ Ошибка загрузки перевала:", error);
-        setErrorMessage("❌ Ошибка загрузки данных перевала");
-      });
+      } catch (error) {
+        console.error("❌ Ошибка загрузки данных перевала:", error);
+        setErrorMessage(`❌ Ошибка загрузки данных: ${error instanceof Error ? error.message : "Неизвестная ошибка"}`);
+
+        // 📌 Устанавливаем форму по умолчанию, чтобы избежать бесконечной загрузки
+        setFormData({
+          beautyTitle: "",
+          title: "",
+          other_titles: "",
+          connect: true,
+          user: {
+            email: userEmail,
+            family_name: "",
+            first_name: "",
+            father_name: "",
+            phone: userPhone,
+          },
+          coord: { latitude: "", longitude: "", height: "" },
+          status: 1,
+          difficulties: [{ season: 0, difficulty: 0 }],
+          route_description: "",
+          images: [null, null, null],
+        });
+      }
+    };
+
+    fetchPereval();
   }, [id, userEmail, userPhone]);
 
   // 📌 Очистка URL.createObjectURL для локальных превью
