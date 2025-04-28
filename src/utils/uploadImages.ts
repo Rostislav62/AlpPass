@@ -1,4 +1,4 @@
-import { ImageData, PerevalFormData } from "../pages/EditPereval";
+import { PerevalFormData } from "../pages/EditPereval";
 import { generateFileName } from "./generateFileName";
 
 const IMAGE_API_URL = "https://rostislav62.pythonanywhere.com/api/uploadImage/";
