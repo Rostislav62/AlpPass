@@ -33,7 +33,7 @@ const difficulties = [
 // 📌 Базовые URL API для отправки данных перевала и фотографий
 const BASE_URL = "https://rostislav62.pythonanywhere.com";
 const API_URL = `${BASE_URL}/api/submitData/`;
-const IMAGE_API_URL = `${BASE_URL}/api/uploadImage/`;
+// const IMAGE_API_URL = `${BASE_URL}/api/uploadImage/`;
 
 // 📌 Названия слотов для фотографий (используются в UI и логах)
 const slotLabels = ["Подъём", "Седловина", "Спуск"];

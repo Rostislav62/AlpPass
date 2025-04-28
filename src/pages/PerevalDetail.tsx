@@ -46,7 +46,7 @@ interface PerevalData {
 // 📌 Базовые URL для API и медиафайлов
 const BASE_URL = "https://rostislav62.pythonanywhere.com";
 const API_URL = `${BASE_URL}/api/submitData/`;
-const MEDIA_URL = `${BASE_URL}/media/`;
+// const MEDIA_URL = `${BASE_URL}/media/`;
 
 // 📌 Компонент PerevalDetail для отображения информации о перевале
 const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) => {

@@ -67,8 +67,8 @@ const difficulties = [
 // 📌 Базовые URL API
 const BASE_URL = "https://rostislav62.pythonanywhere.com";
 const API_URL = `${BASE_URL}/api/submitData/`;
-const IMAGE_API_URL = `${BASE_URL}/api/uploadImage/`;
-const MEDIA_URL = `${BASE_URL}/media/`;
+// const IMAGE_API_URL = `${BASE_URL}/api/uploadImage/`;
+// const MEDIA_URL = `${BASE_URL}/media/`;
 
 // 📌 Названия слотов для фотографий
 const slotLabels = ["Подъём", "Седловина", "Спуск"];
