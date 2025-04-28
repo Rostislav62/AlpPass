@@ -1,15 +1,18 @@
 // AlpPass/src/pages/PerevalDetail.tsx
 
-
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { loadImages } from "../utils/loadImages";
+import { ImageData } from "./EditPereval";
 import "../index.css";
 
+// 📌 Интерфейс пропсов компонента
 interface PerevalDetailProps {
   darkMode: boolean;
   toggleTheme: () => void;
 }
 
+// 📌 Интерфейс данных перевала, возвращаемых сервером
 interface PerevalData {
   id: number;
   beautyTitle: string;
@@ -40,30 +43,40 @@ interface PerevalData {
   route_description: string;
 }
 
+// 📌 Базовые URL для API и медиафайлов
 const BASE_URL = "https://rostislav62.pythonanywhere.com";
 const API_URL = `${BASE_URL}/api/submitData/`;
 const MEDIA_URL = `${BASE_URL}/media/`;
 
+// 📌 Компонент PerevalDetail для отображения информации о перевале
 const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) => {
   const { id } = useParams<{ id: string }>();
   const [pereval, setPereval] = useState<PerevalData | null>(null);
+  const [images, setImages] = useState<(ImageData | null)[]>([null, null, null]); // 📌 Храним распределённые фотографии
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"Подъём" | "Седловина" | "Спуск">("Седловина");
   const [modalImage, setModalImage] = useState<string | null>(null);
 
-  // Загрузка данных перевала
+  // 📌 Загрузка данных перевала и распределение фотографий
   useEffect(() => {
     const fetchPereval = async () => {
       try {
+        console.log(`📥 Запрос данных перевала ID ${id}`);
         const response = await fetch(`${API_URL}${id}/info/`);
         if (!response.ok) {
           throw new Error(`Ошибка загрузки данных: ${response.status}`);
         }
         const data = await response.json();
+        console.log("✅ Ответ от сервера:", data);
+
+        // 📌 Распределяем фотографии по слотам (Подъём, Седловина, Спуск) с помощью loadImages
+        const loadedImages = loadImages(data.images);
+        setImages(loadedImages);
         setPereval(data);
         setLoading(false);
       } catch (err) {
+        console.error("❌ Ошибка загрузки:", err);
         setError(`Ошибка: ${(err as Error).message}`);
         setLoading(false);
       }
@@ -72,39 +85,45 @@ const PerevalDetail: React.FC<PerevalDetailProps> = ({ darkMode, toggleTheme }) 
     fetchPereval();
   }, [id]);
 
-  // Обработчик переключения вкладок
+  // 📌 Обработчик переключения вкладок (Подъём, Седловина, Спуск)
   const handleTabClick = (tab: "Подъём" | "Седловина" | "Спуск") => {
+    console.log(`🔄 Переключение на вкладку: ${tab}`);
     setActiveTab(tab);
   };
 
-  // Обработчик открытия/закрытия модального окна
+  // 📌 Обработчик открытия/закрытия модального окна с увеличенным фото
   const handleImageClick = (imageUrl: string | null) => {
+    console.log(imageUrl ? `🔍 Открытие фото: ${imageUrl}` : "🔍 Закрытие модального окна");
     setModalImage(imageUrl);
   };
 
+  // 📌 Отображение загрузки
   if (loading) {
     return <div className={`pereval-container ${darkMode ? "dark-mode" : "light-mode"}`}>Загрузка...</div>;
   }
 
+  // 📌 Отображение ошибки
   if (error) {
     return <div className={`pereval-container ${darkMode ? "dark-mode" : "light-mode"}`}>{error}</div>;
   }
 
+  // 📌 Отображение, если перевал не найден
   if (!pereval) {
     return <div className={`pereval-container ${darkMode ? "dark-mode" : "light-mode"}`}>Перевал не найден</div>;
   }
 
-  // Форматирование даты в локальный формат
+  // 📌 Форматируем дату добавления перевала
   const formattedDate = new Date(pereval.add_time).toLocaleDateString();
 
-  // Определение фотографии для текущей вкладки
+  // 📌 Определяем фотографии для вкладок на основе массива images
   const tabImages = {
-    Подъём: pereval.images[0]?.data ? `${MEDIA_URL}${pereval.images[0].data.replace("\\", "/")}` : null,
-    Седловина: pereval.images[1]?.data ? `${MEDIA_URL}${pereval.images[1].data.replace("\\", "/")}` : null,
-    Спуск: pereval.images[2]?.data ? `${MEDIA_URL}${pereval.images[2].data.replace("\\", "/")}` : null,
+    Подъём: images[0]?.preview || null, // 📌 Используем preview из ImageData
+    Седловина: images[1]?.preview || null,
+    Спуск: images[2]?.preview || null,
   };
   const currentImage = tabImages[activeTab];
 
+  // 📌 JSX для рендеринга страницы
   return (
     <div className={`pereval-container ${darkMode ? "dark-mode" : "light-mode"}`}>
       {/* Заголовок */}

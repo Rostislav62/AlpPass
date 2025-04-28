@@ -1,8 +1,8 @@
-// AlpPass/src/pages/EditPereval.tsx
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { transliterate } from "transliteration";
+import { generateFileName } from "../utils/generateFileName";
+import { loadImages } from "../utils/loadImages";
+import { uploadImages } from "../utils/uploadImages";
 import "../index.css";
 
 // 📌 Интерфейс пропсов компонента
@@ -12,7 +12,7 @@ interface EditPerevalProps {
 }
 
 // 📌 Интерфейс данных локального изображения
-interface ImageData {
+export interface ImageData {
   file?: File;
   preview: string;
   title: string;
@@ -22,7 +22,7 @@ interface ImageData {
 }
 
 // 📌 Интерфейс данных формы
-interface PerevalFormData {
+export interface PerevalFormData {
   beautyTitle: string;
   title: string;
   other_titles: string;
@@ -87,15 +87,6 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   const userEmail = localStorage.getItem("user_email") || "";
   const userPhone = localStorage.getItem("user_phone") || "";
 
-  // 📌 Функция генерации имени файла
-  const generateFileName = (index: number, perevalTitle: string, file: File): string => {
-    const prefix = `${index + 1}_`;
-    const uniqueId = Math.random().toString(36).substring(2, 12);
-    const transliteratedTitle = transliterate(perevalTitle.toLowerCase()).replace(/[^a-z0-9]/g, "");
-    const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
-    return `${prefix}${uniqueId}_${transliteratedTitle}.${extension}`;
-  };
-
   // 📌 Загрузка данных перевала
   useEffect(() => {
     if (!id) {
@@ -124,20 +115,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
           const season = seasons.find(s => s.code === data.difficulties[0]?.season?.code) || { id: 0 };
           const difficulty = difficulties.find(d => d.code === data.difficulties[0]?.difficulty?.code) || { id: 0 };
 
-          const loadedImages: ImageData[] = (data.images || []).slice(0, 3).map((img: any, index: number) => ({
-            id: img.id,
-            preview: `${MEDIA_URL}${img.data.replace("\\", "/")}`,
-            title: img.title || `${index + 1}_image`,
-            data: img.data,
-            isModified: false,
-          }));
-
-          const images: (ImageData | null)[] = [null, null, null];
-          loadedImages.forEach((img, index) => {
-            images[index] = img;
-          });
-
-          console.log("📸 Загруженные изображения:", images);
+          const images = loadImages(data.images || []);
 
           const formData = {
             beautyTitle: data.beautyTitle || "",
@@ -286,11 +264,11 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     // 📌 Создаём объект для нового изображения
     const newImage: ImageData = {
       file,
-      preview: URL.createObjectURL(file), // 📌 Локальный URL для превью
-      title: fileName, // 📌 Имя файла
-      data: `pereval_images/${fileName}`, // 📌 Путь, где файл будет на сервере
-      isModified: true, // 📌 Отмечаем, что изображение новое
-      id: formData.images[index]?.id, // 📌 Сохраняем ID старой фотографии, если была
+      preview: URL.createObjectURL(file),
+      title: fileName,
+      data: `pereval_images/${fileName}`,
+      isModified: true,
+      id: formData.images[index]?.id,
     };
 
     // 📌 Выводим сообщение в консоль
@@ -307,7 +285,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     });
 
     setErrorMessage(null);
-    e.target.value = ""; // 📌 Очищаем input
+    e.target.value = "";
   };
 
   // 📌 Обработчик Drag-and-Drop для изображений
@@ -342,7 +320,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
         title: fileName,
         data: `pereval_images/${fileName}`,
         isModified: true,
-        id: formData.images[index]?.id, // 📌 Сохраняем ID старой фотографии, если была
+        id: formData.images[index]?.id,
       };
 
       // 📌 Выводим сообщение в консоль
@@ -383,9 +361,9 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     setFormData(prev => {
       const updatedImages = [...prev!.images];
       if (updatedImages[index]?.preview && updatedImages[index]?.isModified) {
-        URL.revokeObjectURL(updatedImages[index]!.preview); // 📌 Очищаем локальный URL
+        URL.revokeObjectURL(updatedImages[index]!.preview);
       }
-      updatedImages[index] = null; // 📌 Устанавливаем слот в null
+      updatedImages[index] = null;
       return {
         ...prev!,
         images: updatedImages,
@@ -443,7 +421,7 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
   // 📌 Обработчик отправки формы
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData || !initialFormData) return;
+    if (!formData || !initialFormData || !id) return;
 
     // 📌 Проверяем валидность формы
     const validationError = validateForm();
@@ -457,93 +435,8 @@ const EditPereval: React.FC<EditPerevalProps> = ({ darkMode, toggleTheme }) => {
     setErrorMessage(null);
 
     try {
-      // 📌 Шаг 1: Удаляем только фотографии, которые были заменены или удалены
-      for (let index = 0; index < 3; index++) {
-        const currentImage = formData.images[index];
-        const initialImage = initialFormData.images[index];
-
-        // 📌 Удаляем, если слот очищен (была фотография, а теперь null)
-        if (initialImage && !currentImage) {
-          console.log(`🗑️ Отправлен запрос на удаление изображения ID ${initialImage.id}: ${initialImage.title}`);
-          try {
-            const response = await fetch(`${IMAGE_API_URL}delete/${initialImage.id}/`, {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email: formData.user.email }),
-            });
-
-            if (response.ok) {
-              const data = await response.json();
-              console.log(`✅ Изображение ID ${initialImage.id} удалено:`, data.message);
-            } else {
-              const errorData = await response.json();
-              console.error(`⚠️ Ошибка удаления изображения ID ${initialImage.id}:`, errorData.message || response.statusText);
-              // 📌 Продолжаем, даже если ошибка
-            }
-          } catch (error) {
-            console.error(`⚠️ Ошибка при запросе удаления ID ${initialImage.id}:`, error);
-            // 📌 Продолжаем, даже если ошибка
-          }
-        }
-
-        // 📌 Удаляем старую фотографию, если она заменена новой
-        if (currentImage && currentImage.isModified && initialImage && initialImage.id) {
-          console.log(`🗑️ Отправлен запрос на удаление старого изображения ID ${initialImage.id}: ${initialImage.title}`);
-          try {
-            const response = await fetch(`${IMAGE_API_URL}delete/${initialImage.id}/`, {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email: formData.user.email }),
-            });
-
-            if (response.ok) {
-              const data = await response.json();
-              console.log(`✅ Изображение ID ${initialImage.id} удалено:`, data.message);
-            } else {
-              const errorData = await response.json();
-              console.error(`⚠️ Ошибка удаления изображения ID ${initialImage.id}:`, errorData.message || response.statusText);
-              // 📌 Продолжаем, даже если ошибка
-            }
-          } catch (error) {
-            console.error(`⚠️ Ошибка при запросе удаления ID ${initialImage.id}:`, error);
-            // 📌 Продолжаем, даже если ошибка
-          }
-        }
-      }
-
-      // 📌 Шаг 2: Загружаем только новые фотографии
-      const imagesToUpload = formData.images.filter(
-        (img): img is ImageData => img !== null && img.isModified && !!img.file // 📌 Только непустые слоты с новыми файлами
-      );
-
-      for (const [index, image] of imagesToUpload.entries()) {
-        const fileName = generateFileName(index, formData.title, image.file!);
-        const formDataUpload = new FormData();
-        formDataUpload.append("image", image.file!);
-        formDataUpload.append("title", fileName);
-        formDataUpload.append("file_name", fileName);
-        formDataUpload.append("pereval_id", id!);
-
-        console.log(`📷 Отправлен запрос на загрузку изображения в слот ${index} (${slotLabels[index]}): ${fileName}`);
-
-        try {
-          const response = await fetch(IMAGE_API_URL, {
-            method: "POST",
-            body: formDataUpload,
-          });
-
-          const uploadData = await response.json();
-          if (!response.ok) {
-            console.error(`⚠️ Ошибка загрузки изображения ${fileName}:`, uploadData.message || response.statusText);
-            // 📌 Продолжаем, даже если ошибка
-          } else {
-            console.log(`✅ Изображение ${fileName} загружено: image_id=${uploadData.image_id}`);
-          }
-        } catch (error) {
-          console.error(`⚠️ Ошибка при запросе загрузки ${fileName}:`, error);
-          // 📌 Продолжаем, даже если ошибка
-        }
-      }
+      // 📌 Шаг 1 и 2: Удаление и загрузка фотографий
+      await uploadImages(formData, initialFormData, id, slotLabels);
 
       // 📌 Шаг 3: Формируем данные для обновления перевала (без поля images)
       const updatedData: any = { email: formData.user.email };
